@@ -929,6 +929,193 @@
         font-size: 12px;
     }
 
+    /* ================================================== */
+    /* === تحسين الشريط العلوي في وضع الهاتف (سطر واحد) === */
+    /* ================================================== */
+
+    /* جعل الشريط العلوي صفاً واحداً متقارباً */
+    body.mobile-mode .user-top-bar {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 8px 10px !important;
+        margin-bottom: 15px !important;
+        border-radius: 10px !important;
+        flex-wrap: nowrap !important; /* يمنع نزول العناصر لسطر جديد */
+        overflow: hidden !important;
+    }
+
+    /* تصغير التحية واليد */
+    body.mobile-mode .user-greeting {
+        font-size: 16px !important;
+        white-space: nowrap !important;
+        gap: 3px !important;
+    }
+    body.mobile-mode .waving-hand {
+        font-size: 18px !important;
+    }
+
+    /* تقريب الأزرار من بعضها */
+    body.mobile-mode .top-bar-actions {
+        display: flex !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    /* توحيد مقاسات جميع الأزرار (المراسلة، الليلي، الترجمة، الخروج) لتكون مربعات صغيرة */
+    body.mobile-mode .top-action-btn, 
+    body.mobile-mode .logout-btn,
+    body.mobile-mode #translateBtn {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 8px !important;
+        font-size: 18px !important;
+        min-width: unset !important;
+    }
+
+    /* إخفاء كلمة "تسجيل خروج" وإبقاء أيقونة الباب فقط */
+    body.mobile-mode .logout-btn span:first-child {
+        display: none !important;
+    }
+
+    /* ضبط أيقونة الترجمة في الموبايل */
+    body.mobile-mode #translateIcon {
+        font-size: 18px !important;
+        margin: 0 !important;
+    }
+
+    /* إخفاء زر التفريغ الموجود بجانب شريط البحث والمجموع في وضع الهاتف فقط */
+    body.mobile-mode .search-container ~ .btn-clear {
+        display: none !important;
+    }
+    
+    /* =========================================================== */
+    /* === التنسيقات الشاملة لوضع الهاتف (Mobile Mode) المطورة === */
+    /* =========================================================== */
+
+    /* 1. الشريط العلوي (سطر واحد للأيقونات والاسم) */
+    body.mobile-mode .user-top-bar {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 8px 10px !important;
+        margin-bottom: 15px !important;
+        border-radius: 10px !important;
+        flex-wrap: nowrap !important;
+        overflow: hidden !important;
+    }
+
+    body.mobile-mode .user-greeting {
+        font-size: 16px !important;
+        white-space: nowrap !important;
+        gap: 3px !important;
+    }
+
+    body.mobile-mode .waving-hand {
+        font-size: 18px !important;
+    }
+
+    body.mobile-mode .top-bar-actions {
+        display: flex !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    body.mobile-mode .top-action-btn, 
+    body.mobile-mode .logout-btn,
+    body.mobile-mode #translateBtn {
+        width: 36px !important;
+        height: 36px !important;
+        padding: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        border-radius: 8px !important;
+        font-size: 18px !important;
+        min-width: unset !important;
+    }
+
+    body.mobile-mode .logout-btn span:first-child {
+        display: none !important; /* إخفاء كلمة تسجيل خروج */
+    }
+
+    body.mobile-mode #translateIcon {
+        font-size: 18px !important;
+        margin: 0 !important;
+    }
+
+    /* 2. إخفاء زر التفريغ بجوار البحث */
+    body.mobile-mode .search-container ~ .btn-clear {
+        display: none !important;
+    }
+
+    /* 3. شريط البحث والمجموع الكلي (سطر واحد متناسق) */
+    body.mobile-mode #userTopBar + div {
+        flex-wrap: nowrap !important;
+        gap: 6px !important;
+        margin-bottom: 10px !important;
+        justify-content: space-between !important;
+    }
+
+    body.mobile-mode .search-container {
+        flex: 1.8 !important; /* نسبة البحث */
+        min-width: 0 !important;
+        margin: 0 !important;
+    }
+
+    body.mobile-mode .search-box {
+        height: 38px !important;
+        padding: 0 10px !important;
+        font-size: 11px !important;
+        border-radius: 6px !important;
+    }
+
+    body.mobile-mode #userTopBar + div > div:nth-child(2) {
+        flex: 1.2 !important; /* نسبة المجموع */
+        min-width: 0 !important;
+        height: 38px !important;
+        padding: 0 5px !important;
+        font-size: 11px !important;
+        border-radius: 6px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 3px !important;
+    }
+
+    body.mobile-mode #mainTableGrandTotal {
+        font-size: 13px !important;
+    }
+
+    /* 4. أزرار المهام والتصدير (مسطحة وأنيقة) */
+    body.mobile-mode .icons-wrapper {
+        gap: 6px !important;
+        padding-bottom: 10px !important;
+        margin: 0 0 10px 0 !important;
+    }
+
+    body.mobile-mode .icon-box {
+        flex: 0 0 105px !important;
+        height: 34px !important; /* الارتفاع المسطح */
+        font-size: 10px !important;
+        border-radius: 6px !important;
+        padding: 0 5px !important;
+        line-height: 1.2 !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
+
+    body.mobile-mode .icon-box br {
+        display: none !important; /* منع سطر جديد داخل الزر */
+    } 
+
     </style>
 </head>
 <body>
@@ -1954,12 +2141,7 @@
         }
     }
 
-    function showMainApp() {
-        document.getElementById('loginOverlay').style.display = 'none';
-        document.getElementById('mainAppContainer').style.display = 'block';
-        document.getElementById('userTopBar').style.display = 'flex';
-        document.getElementById('greetingText').innerText = "مرحبا دكتور " + currentUser + "";
-    }
+    
 
     document.getElementById('passwordInput').addEventListener('keyup', function(event) {
         if (event.key === "Enter") {
@@ -9800,30 +9982,6 @@
     // === نظام تشغيل وضع الهاتف (Mobile Mode) ====
     // ============================================
     
-    function initMobileMode() {
-        // التحقق من الإعداد المحفوظ مسبقاً
-        const savedMode = localStorage.getItem('msl_mobileMode');
-        
-        // تفعيل المود إذا كان محفوظاً كـ true، أو إذا لم يكن هناك إعداد محفوظ وكان عرض الشاشة هاتفاً (أقل من 768px)
-        if (savedMode === 'true' || (savedMode === null && window.innerWidth <= 768)) {
-            document.body.classList.add('mobile-mode');
-        }
-        updateMobileToggleUI();
-    }
-
-    function toggleMobileMode() {
-        const body = document.body;
-        body.classList.toggle('mobile-mode');
-        const isMobile = body.classList.contains('mobile-mode');
-        
-        // حفظ تفضيل المستخدم
-        localStorage.setItem('msl_mobileMode', isMobile);
-        updateMobileToggleUI();
-        closeSystemMenu(); // إغلاق النافذة بعد الضغط
-        
-        // تنبيه بسيط
-        showToast(isMobile ? "تم تفعيل وضع الهاتف 📱" : "تم العودة للوضع المكتبي 💻");
-    }
 
     function updateMobileToggleUI() {
         const isMobile = document.body.classList.contains('mobile-mode');
@@ -9845,6 +10003,61 @@
         toast.innerText = msg;
         toast.style.display = 'block';
         setTimeout(() => { toast.style.display = 'none'; }, 2500);
+    }
+
+    // =========================================================
+    // === دوال وضع الهاتف والشريط العلوي (تحديث الاسم والتفعيل) ===
+    // =========================================================
+
+    // 1. دالة لتحديث نص التحية بناءً على وضع الشاشة
+    function updateGreetingText() {
+        if (!currentUser) return;
+        const greetingElement = document.getElementById('greetingText');
+        const isMobile = document.body.classList.contains('mobile-mode');
+        
+        if (isMobile) {
+            greetingElement.innerText = "د." + currentUser; // شكل مختصر للموبايل
+        } else {
+            greetingElement.innerText = "مرحبا دكتور " + currentUser; // شكل كامل للكمبيوتر
+        }
+    }
+
+    // 2. دالة إظهار التطبيق بعد تسجيل الدخول
+    function showMainApp() {
+        document.getElementById('loginOverlay').style.display = 'none';
+        document.getElementById('mainAppContainer').style.display = 'block';
+        document.getElementById('userTopBar').style.display = 'flex';
+        
+        // استدعاء دالة تحديث الاسم هنا
+        updateGreetingText(); 
+    }
+
+    // 3. دالة تهيئة وضع الهاتف عند فتح البرنامج
+    function initMobileMode() {
+        const savedMode = localStorage.getItem('msl_mobileMode');
+        
+        if (savedMode === 'true' || (savedMode === null && window.innerWidth <= 768)) {
+            document.body.classList.add('mobile-mode');
+        }
+        updateMobileToggleUI();
+        // تحديث الاسم ليناسب الشاشة عند الفتح
+        updateGreetingText(); 
+    }
+
+    // 4. دالة زر تشغيل/إيقاف وضع الهاتف
+    function toggleMobileMode() {
+        const body = document.body;
+        body.classList.toggle('mobile-mode');
+        const isMobile = body.classList.contains('mobile-mode');
+        
+        localStorage.setItem('msl_mobileMode', isMobile);
+        updateMobileToggleUI();
+        // تحديث الاسم فوراً عند الضغط
+        updateGreetingText(); 
+        
+        if(typeof closeSystemMenu === 'function') closeSystemMenu(); 
+        
+        showToast(isMobile ? "تم تفعيل وضع الهاتف 📱" : "تم العودة للوضع المكتبي 💻");
     }
 </script>
 </body>
