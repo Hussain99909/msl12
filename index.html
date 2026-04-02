@@ -803,13 +803,13 @@
         border: 1px solid #e8e8e8;
     }
 
-    /* إخفاء الأعمدة غير المطلوبة في الواجهة */
+    /* إخفاء الأعمدة غير المطلوبة في الواجهة (تم التعديل هنا) */
     body.mobile-mode #mainTable td:nth-child(1), /* التسلسل */
     body.mobile-mode #mainTable td:nth-child(4), /* الوحدة */
-    body.mobile-mode #mainTable td:nth-child(5), /* الكمية للشراء (البديل) */
     body.mobile-mode #mainTable td:nth-child(6), /* الرصيد */
     body.mobile-mode #mainTable td:nth-child(7), /* المصروف */
     body.mobile-mode #mainTable td:nth-child(8), /* الاحتياج السنوي */
+    body.mobile-mode #mainTable td:nth-child(9), /* الاحتياج الشهري (مغلق للقراءة فقط) */
     body.mobile-mode #mainTable td:nth-child(12) /* الملاحظات */ {
         display: none !important;
     }
@@ -883,8 +883,8 @@
         width: auto;
     }
 
-    /* 3. الاحتياج، السعر، المجموع (تقسيم 3 أعمدة متساوية) */
-    body.mobile-mode #mainTable td:nth-child(9),
+    /* 3. الاحتياج (الكمية)، السعر، المجموع (تم التعديل هنا لربطه بالعمود 5 القابل للتعديل) */
+    body.mobile-mode #mainTable td:nth-child(5),
     body.mobile-mode #mainTable td:nth-child(10),
     body.mobile-mode #mainTable td:nth-child(11) {
         width: 33.33%;
@@ -898,12 +898,12 @@
     }
 
     /* العناوين فوق الحقول */
-    body.mobile-mode #mainTable td:nth-child(9)::before { content: "الاحتياج"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; }
+    body.mobile-mode #mainTable td:nth-child(5)::before { content: "الاحتياج"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; }
     body.mobile-mode #mainTable td:nth-child(10)::before { content: "السعر"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; }
     body.mobile-mode #mainTable td:nth-child(11)::before { content: "المجموع"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; }
 
     /* حقول الاحتياج والسعر */
-    body.mobile-mode #mainTable td:nth-child(9) input,
+    body.mobile-mode #mainTable td:nth-child(5) input,
     body.mobile-mode #mainTable td:nth-child(10) input {
         width: 100%;
         border: 1px solid #ddd;
