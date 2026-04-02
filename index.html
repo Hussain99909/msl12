@@ -663,292 +663,271 @@
         }
 
         <button class="modal-menu-btn" onclick="toggleMobileMode()">
-         <strong>📱 وضع الهاتف (Mobile Mode)</strong>
-         <span id="mobileModeStatus">الحالة: معطل</span>
-        </button>
+        <strong>📱 وضع الهاتف (Mobile Mode)</strong>
+        <span id="mobileModeStatus">الحالة: معطل</span>
+    </button>
 
-        
-        /* تنسيق وضع الهاتف عند التفعيل */
-        body.mobile-mode {
-            zoom: 100% !important; /* إلغاء الزووم 75% في الموبايل */
-            padding: 10px;
-        }
+    <style>
+    /* تنسيق وضع الهاتف عند التفعيل */
+    body.mobile-mode {
+        zoom: 100% !important; /* إلغاء الزووم 75% في الموبايل */
+        padding: 10px;
+    }
 
-        body.mobile-mode .container {
-            width: 100%;
-            padding: 10px;
-        }
+    body.mobile-mode .container {
+        width: 100%;
+        padding: 10px;
+    }
 
-        /* تحويل الأيقونات للتمرير الجانبي */
-        body.mobile-mode .icons-wrapper {
-            display: flex;
-            overflow-x: auto;
-            white-space: nowrap;
-            justify-content: flex-start;
-            padding: 10px 5px;
-            gap: 10px;
-            -webkit-overflow-scrolling: touch;
-        }
+    /* تحويل الأيقونات للتمرير الجانبي */
+    body.mobile-mode .icons-wrapper {
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        justify-content: flex-start;
+        padding: 10px 5px;
+        gap: 10px;
+        -webkit-overflow-scrolling: touch;
+    }
 
-        body.mobile-mode .icon-box {
-            flex: 0 0 110px; /* عرض ثابت للأيقونة في التمرير */
-            height: 50px;
-            font-size: 11px;
-        }
+    body.mobile-mode .icon-box {
+        flex: 0 0 110px; /* عرض ثابت للأيقونة في التمرير */
+        height: 50px;
+        font-size: 11px;
+    }
 
-        /* تنسيق الجدول لوضع الهاتف (عرض عمودي للمعلومات) */
-        body.mobile-mode .table-responsive table {
-            min-width: 100%;
-        }
+    /* تنسيق الجدول لوضع الهاتف (عرض عمودي للمعلومات) */
+    body.mobile-mode .table-responsive table {
+        min-width: 100%;
+    }
 
-        body.mobile-mode thead { display: none; } /* إخفاء رأس الجدول */
+    body.mobile-mode thead { display: none; } /* إخفاء رأس الجدول */
 
-        body.mobile-mode tr {
-            display: block;
-            margin-bottom: 15px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            background: #fff;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+    body.mobile-mode tr {
+        display: block;
+        margin-bottom: 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        background: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
 
-        body.mobile-mode td {
-            display: block;
-            text-align: right;
-            border: none;
-            padding: 5px 0;
-            position: relative;
-        }
+    body.mobile-mode td {
+        display: block;
+        text-align: right;
+        border: none;
+        padding: 5px 0;
+        position: relative;
+    }
 
-        /* تنسيق الخلايا لتظهر كبيانات متداخلة */
-        body.mobile-mode .mobile-row-top { font-weight: bold; color: var(--primary-color); border-bottom: 1px solid #eee !important; margin-bottom: 5px; }
-        body.mobile-mode .mobile-row-sub { display: flex; justify-content: space-between; font-size: 13px; }
+    /* تنسيق الخلايا لتظهر كبيانات متداخلة */
+    body.mobile-mode .mobile-row-top { font-weight: bold; color: var(--primary-color); border-bottom: 1px solid #eee !important; margin-bottom: 5px; }
+    body.mobile-mode .mobile-row-sub { display: flex; justify-content: space-between; font-size: 13px; }
 
-        /* إخفاء شريط التمرير الجمالي */
-        body.mobile-mode .icons-wrapper::-webkit-scrollbar { display: none; }
-        
+    /* إخفاء شريط التمرير الجمالي */
+    body.mobile-mode .icons-wrapper::-webkit-scrollbar { display: none; }
+    
 
-        /* ========================================= */
-        /* ====== تصميم وضع الهاتف (Mobile Mode) === */
-        /* ========================================= */
+    /* ========================================= */
+    /* ====== تصميم وضع الهاتف (Mobile Mode) === */
+    /* ========================================= */
 
-        body.mobile-mode {
-            zoom: 100% !important; /* إلغاء التصغير في الهاتف */
-            background: #f0f2f5;
-        }
+    body.mobile-mode {
+        zoom: 100% !important; /* إلغاء التصغير في الهاتف */
+        background: #f0f2f5;
+    }
 
-        body.mobile-mode .container {
-            width: 100%;
-            padding: 10px;
-            box-shadow: none;
-            background: transparent;
-        }
+    body.mobile-mode .container {
+        width: 100%;
+        padding: 10px;
+        box-shadow: none;
+        background: transparent;
+    }
 
-        /* تحويل شبكة الأيقونات إلى تمرير جانبي */
-        body.mobile-mode .icons-wrapper {
-            display: flex !important;
-            flex-wrap: nowrap !important;
-            overflow-x: auto !important;
-            justify-content: flex-start !important;
-            padding-bottom: 15px;
-            gap: 12px;
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
+    /* تحويل شبكة الأيقونات إلى تمرير جانبي */
+    body.mobile-mode .icons-wrapper {
+        display: flex !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        justify-content: flex-start !important;
+        padding-bottom: 15px;
+        gap: 12px;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
 
-        body.mobile-mode .icons-wrapper::-webkit-scrollbar { height: 6px; }
-        body.mobile-mode .icons-wrapper::-webkit-scrollbar-thumb { background: #3498db; border-radius: 10px; }
+    body.mobile-mode .icons-wrapper::-webkit-scrollbar { height: 6px; }
+    body.mobile-mode .icons-wrapper::-webkit-scrollbar-thumb { background: #3498db; border-radius: 10px; }
 
-        body.mobile-mode .icon-box {
-            flex: 0 0 110px; /* تثبيت عرض الأيقونة لمنع انضغاطها */
-            height: 55px;
-        }
+    body.mobile-mode .icon-box {
+        flex: 0 0 110px; /* تثبيت عرض الأيقونة لمنع انضغاطها */
+        height: 55px;
+    }
 
-        /* تحويل الجدول إلى شكل بطاقات (Cards) */
-        body.mobile-mode .table-responsive {
-            border: none;
-            padding-bottom: 70px; /* مساحة للشريط السفلي */
-        }
+    /* تحويل الجدول إلى شكل بطاقات (Cards) */
+    body.mobile-mode .table-responsive {
+        border: none;
+        padding-bottom: 70px; /* مساحة للشريط السفلي */
+    }
 
-        body.mobile-mode #mainTable, 
-        body.mobile-mode #mainTable tbody, 
-        body.mobile-mode #mainTable tr {
-            display: block;
-            width: 100%;
-        }
+    body.mobile-mode #mainTable, 
+    body.mobile-mode #mainTable tbody, 
+    body.mobile-mode #mainTable tr {
+        display: block;
+        width: 100%;
+    }
 
-        body.mobile-mode #mainTable thead {
-            display: none; /* إخفاء رأس الجدول */
-        }
+    body.mobile-mode #mainTable thead {
+        display: none; /* إخفاء رأس الجدول */
+    }
 
-        body.mobile-mode #mainTable tr {
-            background: white;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            position: relative;
-            border: none;
-            border-right: 4px solid var(--primary-color, #3498db);
-        }
+    body.mobile-mode #mainTable tr {
+        background: white;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        position: relative;
+        border: none;
+        border-right: 4px solid var(--primary-color, #3498db);
+    }
 
-        /* إخفاء الأعمدة غير المطلوبة في وضع الهاتف (لكنها تبقى تعمل في البرمجة) */
-        body.mobile-mode #mainTable td:nth-child(1), /* التسلسل */
-        body.mobile-mode #mainTable td:nth-child(4), /* الوحدة */
-        body.mobile-mode #mainTable td:nth-child(5), /* الكمية للشراء */
-        body.mobile-mode #mainTable td:nth-child(6), /* الرصيد */
-        body.mobile-mode #mainTable td:nth-child(7), /* المصروف */
-        body.mobile-mode #mainTable td:nth-child(8), /* الاحتياج السنوي */
-        body.mobile-mode #mainTable td:nth-child(12) /* الملاحظات */ {
-            display: none !important;
-        }
+    /* إخفاء الأعمدة غير المطلوبة في وضع الهاتف (لكنها تبقى تعمل في البرمجة) */
+    body.mobile-mode #mainTable td:nth-child(1), /* التسلسل */
+    body.mobile-mode #mainTable td:nth-child(4), /* الوحدة */
+    body.mobile-mode #mainTable td:nth-child(5), /* الكمية للشراء */
+    body.mobile-mode #mainTable td:nth-child(6), /* الرصيد */
+    body.mobile-mode #mainTable td:nth-child(7), /* المصروف */
+    body.mobile-mode #mainTable td:nth-child(8), /* الاحتياج السنوي */
+    body.mobile-mode #mainTable td:nth-child(12) /* الملاحظات */ {
+        display: none !important;
+    }
 
-        /* تنسيق الخلايا المعروضة */
-        body.mobile-mode #mainTable td {
-            display: inline-block;
-            border: none;
-            padding: 2px 5px;
-            vertical-align: top;
-        }
+    /* تنسيق الخلايا المعروضة */
+    body.mobile-mode #mainTable td {
+        display: inline-block;
+        border: none;
+        padding: 2px 5px;
+        vertical-align: top;
+    }
 
-        /* 1. اسم المادة */
-        body.mobile-mode #mainTable td:nth-child(2) {
-            width: 100%;
-        }
-        body.mobile-mode #mainTable td:nth-child(2) input {
-            font-size: 16px !important;
-            font-weight: bold;
-            color: #2c3e50;
-            white-space: normal; /* السماح بالتفاف النص */
-            background: transparent !important;
-        }
+    /* 1. اسم المادة */
+    body.mobile-mode #mainTable td:nth-child(2) {
+        width: 100%;
+    }
+    body.mobile-mode #mainTable td:nth-child(2) input {
+        font-size: 16px !important;
+        font-weight: bold;
+        color: #2c3e50;
+        white-space: normal; /* السماح بالتفاف النص */
+        background: transparent !important;
+    }
 
-        /* 2. الرمز (أسفل الاسم) */
-        body.mobile-mode #mainTable td:nth-child(3) {
-            width: 100%;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
-        }
-        body.mobile-mode #mainTable td:nth-child(3) input {
-            font-size: 13px !important;
-            color: #7f8c8d;
-            background: transparent !important;
-        }
+    /* 2. الرمز (أسفل الاسم) */
+    body.mobile-mode #mainTable td:nth-child(3) {
+        width: 100%;
+        margin-bottom: 15px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+    }
+    body.mobile-mode #mainTable td:nth-child(3) input {
+        font-size: 13px !important;
+        color: #7f8c8d;
+        background: transparent !important;
+    }
 
-        /* 3. الاحتياج الشهري، السعر، والمجموع (بجانب بعضها) */
-        body.mobile-mode #mainTable td:nth-child(9),
-        body.mobile-mode #mainTable td:nth-child(10),
-        body.mobile-mode #mainTable td:nth-child(11) {
-            width: 32%;
-            text-align: center;
-            background: #f8f9fa;
-            border-radius: 8px;
-            margin: 0 1%;
-            padding: 5px;
-        }
+    /* 3. الاحتياج الشهري، السعر، والمجموع (بجانب بعضها) */
+    body.mobile-mode #mainTable td:nth-child(9),
+    body.mobile-mode #mainTable td:nth-child(10),
+    body.mobile-mode #mainTable td:nth-child(11) {
+        width: 32%;
+        text-align: center;
+        background: #f8f9fa;
+        border-radius: 8px;
+        margin: 0 1%;
+        padding: 5px;
+    }
 
-        /* إضافة عناوين توضيحية فوق الأرقام */
-        body.mobile-mode #mainTable td:nth-child(9)::before { content: "الاحتياج"; display: block; font-size: 11px; color: #7f8c8d; font-weight: bold; }
-        body.mobile-mode #mainTable td:nth-child(10)::before { content: "السعر"; display: block; font-size: 11px; color: #7f8c8d; font-weight: bold; }
-        body.mobile-mode #mainTable td:nth-child(11)::before { content: "المجموع"; display: block; font-size: 11px; color: #27ae60; font-weight: bold; }
+    /* إضافة عناوين توضيحية فوق الأرقام */
+    body.mobile-mode #mainTable td:nth-child(9)::before { content: "الاحتياج"; display: block; font-size: 11px; color: #7f8c8d; font-weight: bold; }
+    body.mobile-mode #mainTable td:nth-child(10)::before { content: "السعر"; display: block; font-size: 11px; color: #7f8c8d; font-weight: bold; }
+    body.mobile-mode #mainTable td:nth-child(11)::before { content: "المجموع"; display: block; font-size: 11px; color: #27ae60; font-weight: bold; }
 
-        body.mobile-mode #mainTable td input {
-            text-align: center;
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-top: 5px;
-            background: white;
-        }
+    body.mobile-mode #mainTable td input {
+        text-align: center;
+        padding: 5px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        margin-top: 5px;
+        background: white;
+    }
 
-        /* زر الحذف */
-        body.mobile-mode #mainTable td:nth-child(13) {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            width: auto;
-        }
-        body.mobile-mode #mainTable td:nth-child(13) button {
-            background: #ffebee;
-            color: #e74c3c;
-            padding: 5px 12px;
-            border-radius: 6px;
-        }
+    /* زر الحذف */
+    body.mobile-mode #mainTable td:nth-child(13) {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        width: auto;
+    }
+    body.mobile-mode #mainTable td:nth-child(13) button {
+        background: #ffebee;
+        color: #e74c3c;
+        padding: 5px 12px;
+        border-radius: 6px;
+    }
 
-        /* شريط التحكم السفلي (Bottom Bar) */
-        body.mobile-mode .controls {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: white;
-            padding: 12px 20px;
-            box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
-            z-index: 1000;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border-radius: 20px 20px 0 0;
-        }
+    /* شريط التحكم السفلي (Bottom Bar) */
+    body.mobile-mode .controls {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: white;
+        padding: 12px 20px;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.1);
+        z-index: 1000;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 20px 20px 0 0;
+    }
 
-        /* إخفاء الوقت والتاريخ في وضع الهاتف */
-        body.mobile-mode #digitalClock {
-            display: none !important;
-        }
+    /* إخفاء الوقت والتاريخ في وضع الهاتف */
+    body.mobile-mode #digitalClock {
+        display: none !important;
+    }
 
-        /* إخفاء نص الترجمة وإبقاء الأيقونة فقط */
-        body.mobile-mode #translateText {
-            display: none !important;
-        }
+    /* إخفاء نص الترجمة وإبقاء الأيقونة فقط */
+    body.mobile-mode #translateText {
+        display: none !important;
+    }
 
-        /* تعديل شكل زر الترجمة ليصبح أيقونة مربعة متناسقة مع باقي الأزرار العلوية */
-        body.mobile-mode #translateBtn {
-            padding: 0 !important;
-            width: 38px !important;
-            height: 38px !important;
-            display: flex !important;
-            justify-content: center !important;
-            align-items: center !important;
-        }
+    /* تعديل شكل زر الترجمة ليصبح أيقونة مربعة متناسقة مع باقي الأزرار العلوية */
+    body.mobile-mode #translateBtn {
+        padding: 0 !important;
+        width: 38px !important;
+        height: 38px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+    }
 
-        /* تصغير المسافة بين التحية (مرحبا دكتور) وأزرار التحكم لتوفير المساحة */
-        /* إخفاء التحية بالكامل في وضع الهاتف لتوفير مساحة للأزرار */
-        body.mobile-mode .user-greeting {
-            display: none !important;
-        }
+    /* تصغير المسافة بين التحية (مرحبا دكتور) وأزرار التحكم لتوفير المساحة */
+    body.mobile-mode .search-container {
+        flex: 1;
+    }
 
-        /* إخفاء زر التفريغ والمجموع العلوي في وضع الهاتف */
-        body.mobile-mode #topClearBtn,
-        body.mobile-mode .top-total-box {
-            display: none !important;
-        }
+    body.mobile-mode .search-box {
+        height: 38px;
+        font-size: 13px;
+    }
 
-        /* إخفاء المجموع السفلي في وضع الكمبيوتر (الديسكتوب) */
-        .mobile-total-box {
-            display: none;
-        }
-
-        /* إظهار وتنسيق المجموع السفلي في وضع الهاتف */
-        body.mobile-mode .mobile-total-box {
-            display: flex !important;
-            background: #e8f0fe;
-            padding: 8px 15px;
-            border-radius: 10px;
-            border: 2px solid #3498db;
-            color: #2c3e50;
-            font-size: 14px;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* توزيع المسافة بين المجموع وزر التفريغ في الشريط السفلي للهاتف */
-        body.mobile-mode .controls {
-            justify-content: space-between !important;
-            padding: 12px 15px;
-        }
+    body.mobile-mode .btn-clear {
+        min-width: 90px;
+        font-size: 12px;
+    }
 
     </style>
 </head>
@@ -1012,14 +991,11 @@
             <ul id="suggestions" class="suggestions-list"></ul>
         </div>
 
-
-        <div class="top-total-box" style="background: #e8f0fe; height: 36px; padding: 0 15px; box-sizing: border-box; border-radius: 8px; border: 2px solid #3498db; font-weight: bold; color: #2c3e50; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 200px;">
+        <div style="background: #e8f0fe; height: 36px; padding: 0 15px; box-sizing: border-box; border-radius: 8px; border: 2px solid #3498db; font-weight: bold; color: #2c3e50; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; min-width: 200px;">
             <span>المجموع الكلي:</span>
-            <span class="mainTableGrandTotal" id="mainTableGrandTotal" style="color: #27ae60; font-size: 16px; direction: ltr;">0</span>
+            <span id="mainTableGrandTotal" style="color: #27ae60; font-size: 16px; direction: ltr;">0</span>
             <span>دينار</span>
         </div>
-
-        <button id="topClearBtn" class="btn-clear" onclick="clearTable()" style="height: 36px; padding: 0 15px; box-sizing: border-box; font-size: 13px; border-radius: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center;">🗑️ تفريغ</button>
 
         <button class="btn-clear" onclick="clearTable()" style="height: 36px; padding: 0 15px; box-sizing: border-box; font-size: 13px; border-radius: 8px; font-weight: bold; display: flex; align-items: center; justify-content: center;">🗑️ تفريغ</button>
     </div>
@@ -1090,19 +1066,10 @@
         <div id="emptyMsg" style="text-align: center; padding: 20px; color: #aaa;">لم يتم اختيار أي مواد بعد. استخدم البحث في الأعلى.</div>
     </div>
 
-    
     <div class="controls">
         <input type="file" id="dbFileInput" accept=".xlsx, .xls" style="display:none;" onchange="handleFileSelect(this)">
-        
-        <div class="mobile-total-box">
-            <span>المجموع:</span>
-            <span class="mainTableGrandTotal" style="color: #27ae60; font-size: 16px; direction: ltr; font-weight: bold;">0</span>
-            <span>دينار</span>
-        </div>
-
         <button class="btn-clear" onclick="clearTable()">🗑️ تفريغ القائمة</button>
     </div>
-
 </div>
 
 <div id="exportOptionsModal" class="modal-overlay" style="z-index: 2700;">
@@ -9536,7 +9503,6 @@
     }
     
     // دالة لحساب وتحديث المجموع الكلي للجدول الرئيسي
-    // دالة لحساب وتحديث المجموع الكلي للجدول الرئيسي
     function updateMainTableGrandTotal() {
         const rows = document.querySelectorAll("#tableBody tr");
         let grandTotal = 0;
@@ -9548,11 +9514,10 @@
             }
         });
         
-        // تحديث جميع حقول المجموع (سواء في الأعلى أو في الشريط السفلي للهاتف)
-        const totalDisplays = document.querySelectorAll(".mainTableGrandTotal");
-        totalDisplays.forEach(display => {
-            display.innerText = grandTotal.toLocaleString('en-US');
-        });
+        const totalDisplay = document.getElementById("mainTableGrandTotal");
+        if (totalDisplay) {
+            totalDisplay.innerText = grandTotal.toLocaleString('en-US');
+        }
     }
 
     // ============================================
