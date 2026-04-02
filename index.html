@@ -1267,7 +1267,25 @@
         padding: 0 !important;
         margin: 0 !important;
     }
+    
+    /* جعل الاسم قابلاً للسحب الجانبي (تمرير أفقي) وإخفاء شريط التمرير المزعج */
+    .scrollable-name {
+        white-space: nowrap !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch; /* لتنعيم السحب في الجوال */
+        scrollbar-width: none; /* فايرفوكس */
+        width: 100%;
+    }
+    .scrollable-name::-webkit-scrollbar {
+        display: none; /* كروم وسفاري */
+    }
 
+    /* تطبيق نفس الفكرة على الاسم داخل كارت المادة المضافة لمنع تداخله مع أيقونة الحذف */
+    body.mobile-mode #mainTable td:nth-child(2) input {
+        white-space: nowrap !important;
+        overflow-x: auto !important;
+        width: 100% !important;
+    }
     </style>
 </head>
 <body>
@@ -4721,7 +4739,7 @@
                     }
 
                     li.innerHTML = `
-                        <div style="text-align: right; font-weight: bold; color: #1a3b5c; margin-bottom: 12px; font-size: 15px;">${item.name}</div>
+                        <div class="scrollable-name" style="text-align: right; font-weight: bold; color: #1a3b5c; margin-bottom: 12px; font-size: 15px;">${item.name}</div>
                         <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                             <div style="flex: 1; background: #3498db; color: white; border-radius: 15px; padding: 6px 15px; text-align: right; font-weight: bold; font-size: 14px;">
                                 احتياج: ${annualNeed}
