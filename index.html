@@ -10121,32 +10121,43 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 (function() {
     const originalClick = HTMLAnchorElement.prototype.click;
 
-    // دالة مخصصة لمشاركة الملفات عبر الهاتف أو تنزيلها كبديل
-    async function shareOrDownload(url, filename) {
+    // دالة مخصصة لمشاركة مجموعة من الملفات دفعة واحدة
+    async function shareMultipleFiles(filesArray, title) {
         try {
-            // جلب البيانات وتحويلها إلى ملف حقيقي
-            const response = await fetch(url);
-            const blob = await response.blob();
-            const file = new File([blob], filename, { type: blob.type });
-
-            // التحقق مما إذا كان المتصفح/الهاتف يدعم مشاركة الملفات
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+            // التحقق مما إذا كان المتصفح يدعم مشاركة الملفات المتعددة
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: filesArray })) {
                 if(typeof showToast === 'function') showToast("⏳ جاري فتح نافذة المشاركة...");
                 await navigator.share({
-                    files: [file],
-                    title: filename
+                    files: filesArray,
+                    title: title
                 });
             } else {
-                // إذا كان المتصفح لا يدعم المشاركة، نعود للتنزيل العادي
-                triggerDownloadFallback(url, filename);
+                // إذا كان المتصفح لا يدعم المشاركة، نعود للتنزيل العادي لكل ملف
+                filesArray.forEach(file => {
+                    const url = URL.createObjectURL(file);
+                    triggerDownloadFallback(url, file.name);
+                });
             }
         } catch (error) {
             console.error("Share error:", error);
+            // في حال فشل المشاركة (مثلاً المستخدم أغلق النافذة) لا نفعل شيئاً لتجنب إزعاج المستخدم
+            // أو يمكن تفعيل التنزيل الاحتياطي هنا إذا رغبت
+        }
+    }
+
+    // دالة لتحويل رابط واحد إلى ملف ومشاركته (تستخدم لملفات الإكسل)
+    async function shareSingleUrl(url, filename) {
+        try {
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const file = new File([blob], filename, { type: blob.type });
+            await shareMultipleFiles([file], filename);
+        } catch (error) {
             triggerDownloadFallback(url, filename);
         }
     }
 
-    // دالة التنزيل الاحتياطية
+    // دالة التنزيل الاحتياطية (للحاسوب أو إذا فشلت المشاركة)
     function triggerDownloadFallback(url, filename) {
         const fallbackLink = document.createElement('a');
         fallbackLink.href = url;
@@ -10157,7 +10168,6 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
     // اعتراض أوامر النقر على الروابط
     HTMLAnchorElement.prototype.click = function() {
-        // منع الدوران اللانهائي
         if (this.getAttribute('data-no-intercept') === 'true') {
             return originalClick.call(this);
         }
@@ -10167,7 +10177,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         if (isMobile && this.download) {
             const isDoc = this.download.endsWith('.doc');
             
-            // 1. إذا كان ملف وورد (موافقة شراء الخ)، نحوله لصورة ثم نشاركه
+            // 1. إذا كان ملف وورد (موافقة شراء الخ)، نحوله لصور ونجمعها
             if (isDoc) {
                 fetch(this.href)
                     .then(res => res.text())
@@ -10178,51 +10188,49 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                         this.setAttribute('data-no-intercept', 'true');
                         originalClick.call(this);
                     });
-                return; // إيقاف النقر الافتراضي
+                return; 
             }
             
-            // 2. إذا كان ملف آخر (مثل Excel)، نشاركه مباشرة
+            // 2. إذا كان ملف آخر (مثل Excel)، نشاركه كملف واحد
             if (navigator.share) {
-                shareOrDownload(this.href, this.download);
-                return; // إيقاف النقر الافتراضي
+                shareSingleUrl(this.href, this.download);
+                return; 
             }
         }
         
-        // التشغيل الطبيعي (للحاسبة أو في حال عدم تطابق الشروط)
+        // التشغيل الطبيعي
         originalClick.call(this);
     };
 
     async function generateImageViaIframe(htmlContent, originalFileName) {
-        if(typeof showToast === 'function') showToast("⏳ جاري تحضير الصورة بأبعاد (A4)، يرجى الانتظار...");
+        if(typeof showToast === 'function') showToast("⏳ جاري تحضير الصور بأبعاد (A4)، يرجى الانتظار...");
 
-        // 1. سحب التنسيقات الأصلية للوورد
         let styleMatch = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
         let originalStyle = styleMatch ? styleMatch[1] : '';
 
-        // 2. تنظيف الكود
         let bodyContent = htmlContent;
         const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
         if (bodyMatch) bodyContent = bodyMatch[1];
         bodyContent = bodyContent.replace(/<div class="?Section1"?[^>]*>/gi, '');
         bodyContent = bodyContent.replace(/<\/div>\s*$/i, '');
 
-        // الحل الجذري للشعار: استبداله برابط أونلاين + فك الحماية (CORS)
+        // معالجة الشعار
         bodyContent = bodyContent.replace(/src=["']?OIP\.gif["']?/gi, 'src="https://i.ibb.co/6RS356SN/OIP.gif" crossorigin="anonymous"');
 
-        // 3. تقسيم الصفحات 
         const pages = bodyContent.split(/<br[^>]*class="?page-break"?[^>]*>|<br[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*>|<div[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*><\/div>/gi);
         const baseName = originalFileName.replace('.doc', '').replace('.docx', '');
+
+        // 🟢 مصفوفة لتجميع الصور قبل إرسالها
+        const generatedImagesAsFiles = [];
 
         for (let i = 0; i < pages.length; i++) {
             let pageHtml = pages[i].trim();
             if (!pageHtml || pageHtml === '</div>') continue;
 
-            // إزالة المسافات العملاقة
             pageHtml = pageHtml.replace(/margin-top:\s*[1-9]\d{2,}px/gi, 'margin-top: 40px');
             pageHtml = pageHtml.replace(/margin-bottom:\s*[1-9]\d{2,}px/gi, 'margin-bottom: 20px');
             pageHtml = pageHtml.replace(/padding-top:\s*[1-9]\d{2,}px/gi, 'padding-top: 20px');
 
-            // 4. بناء Iframe معزول
             const iframe = document.createElement('iframe');
             iframe.style.position = 'fixed';
             iframe.style.right = '-9999px'; 
@@ -10239,71 +10247,35 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 <head>
                     <style>
                         ${originalStyle}
-                        html, body {
-                            width: 794px !important;
-                            height: 1123px !important;
-                            margin: 0 !important;
-                            padding: 0 !important;
-                            background: white !important;
-                            overflow: hidden;
-                        }
-                        
-                        .a4-page {
-                            width: 794px;
-                            height: 1123px;
-                            padding: 40px 50px;
-                            box-sizing: border-box;
-                            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
-                            color: black;
-                            background: white;
-                            position: relative;
-                        }
-
+                        html, body { width: 794px !important; height: 1123px !important; margin: 0 !important; padding: 0 !important; background: white !important; overflow: hidden; }
+                        .a4-page { width: 794px; height: 1123px; padding: 40px 50px; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: black; background: white; position: relative; }
                         table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 15px !important; }
                         th, td { padding: 8px 5px !important; color: black !important; }
-                        
                         table:not(.header-table):not(.signature-table):not(.table-footer-sigs) { border: 1px solid black !important; }
-                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) td,
-                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) th { border: 1px solid black !important; }
-
-                        .header-table, .header-table th, .header-table td,
-                        .signature-table, .signature-table th, .signature-table td,
-                        .table-footer-sigs, .table-footer-sigs th, .table-footer-sigs td,
-                        table[border="0"], table[border="0"] th, table[border="0"] td {
-                            border: none !important;
-                        }
-                        
+                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) td, table:not(.header-table):not(.signature-table):not(.table-footer-sigs) th { border: 1px solid black !important; }
+                        .header-table, .header-table th, .header-table td, .signature-table, .signature-table th, .signature-table td, .table-footer-sigs, .table-footer-sigs th, .table-footer-sigs td, table[border="0"], table[border="0"] th, table[border="0"] td { border: none !important; }
                         .signature-table { margin-top: 50px !important; margin-bottom: 10px !important; }
-
                         * { max-width: 100%; word-wrap: break-word; }
                         ::-webkit-scrollbar { display: none; } 
                     </style>
                 </head>
                 <body>
-                    <div class="a4-page">
-                        ${pageHtml}
-                    </div>
+                    <div class="a4-page">${pageHtml}</div>
                 </body>
                 </html>
             `);
             doc.close();
 
             try {
-                // مستشعر ذكي: انتظار اكتمال تحميل الشعار قبل التقاط الصورة
                 const images = Array.from(doc.querySelectorAll('img'));
                 await Promise.all(images.map(img => {
                     if (img.complete) return Promise.resolve();
-                    return new Promise((resolve) => {
-                        img.onload = resolve;
-                        img.onerror = resolve; 
-                    });
+                    return new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; });
                 }));
                 
                 await new Promise(r => setTimeout(r, 200)); 
 
                 const elementToCapture = doc.querySelector('.a4-page');
-
-                // التقاط الصورة
                 const canvas = await html2canvas(elementToCapture, { 
                     scale: 2, 
                     useCORS: true,       
@@ -10318,15 +10290,25 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 const fileName = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
                 
-                // مشاركة الصورة كملف بدلاً من تنزيلها مباشرة
-                await shareOrDownload(imgData, fileName);
+                // 🟢 تحويل الـ Base64 إلى ملف حقيقي وإضافته للمصفوفة بدلاً من مشاركته فوراً
+                const res = await fetch(imgData);
+                const blob = await res.blob();
+                const imageFile = new File([blob], fileName, { type: 'image/jpeg' });
+                generatedImagesAsFiles.push(imageFile);
 
             } catch(e) {
                 console.error("خطأ في تكوين الصورة:", e);
-                alert("حدث خطأ أثناء تحويل الصفحة رقم " + (i+1) + " إلى صورة.");
             } finally {
                 document.body.removeChild(iframe);
             }
+        }
+
+        // 🟢 بعد انتهاء الحلقة وتجميع كل الصفحات، نقوم بمشاركتها دفعة واحدة
+        if (generatedImagesAsFiles.length > 0) {
+            await shareMultipleFiles(generatedImagesAsFiles, baseName);
+            if(typeof showToast === 'function') showToast("✅ تم التجهيز للمشاركة!");
+        } else {
+            alert("حدث خطأ، لم يتم توليد أي صفحات.");
         }
     }
 })();
