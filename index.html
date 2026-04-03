@@ -10111,6 +10111,180 @@
         
         showToast(isMobile ? "تم تفعيل وضع الهاتف 📱" : "تم العودة للوضع المكتبي 💻");
     }
+
+
+    
+</script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script>
+(function() {
+    const originalClick = HTMLAnchorElement.prototype.click;
+    HTMLAnchorElement.prototype.click = function() {
+        if (this.getAttribute('data-no-intercept') !== 'true' && 
+            document.body.classList.contains('mobile-mode') && 
+            this.download && 
+            this.download.endsWith('.doc')) 
+        {
+            fetch(this.href)
+                .then(res => res.text())
+                .then(text => {
+                    generateImageViaIframe(text, this.download);
+                }).catch(err => {
+                    console.error(err);
+                    this.setAttribute('data-no-intercept', 'true');
+                    originalClick.call(this);
+                });
+            return;
+        }
+        originalClick.call(this);
+    };
+
+    async function generateImageViaIframe(htmlContent, originalFileName) {
+        if(typeof showToast === 'function') showToast("⏳ جاري تحضير الصورة بأبعاد (A4)، يرجى الانتظار...");
+
+        // 1. سحب التنسيقات الأصلية للوورد
+        let styleMatch = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
+        let originalStyle = styleMatch ? styleMatch[1] : '';
+
+        // 2. تنظيف الكود
+        let bodyContent = htmlContent;
+        const bodyMatch = htmlContent.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+        if (bodyMatch) bodyContent = bodyMatch[1];
+        bodyContent = bodyContent.replace(/<div class="?Section1"?[^>]*>/gi, '');
+        bodyContent = bodyContent.replace(/<\/div>\s*$/i, '');
+
+        // ========================================================
+        // الحل الجذري للشعار: استبداله برابط أونلاين + فك الحماية (CORS)
+        // ========================================================
+        bodyContent = bodyContent.replace(/src=["']?OIP\.gif["']?/gi, 'src="https://i.ibb.co/6RS356SN/OIP.gif" crossorigin="anonymous"');
+
+        // 3. تقسيم الصفحات 
+        const pages = bodyContent.split(/<br[^>]*class="?page-break"?[^>]*>|<br[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*>|<div[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*><\/div>/gi);
+        const baseName = originalFileName.replace('.doc', '').replace('.docx', '');
+
+        for (let i = 0; i < pages.length; i++) {
+            let pageHtml = pages[i].trim();
+            if (!pageHtml || pageHtml === '</div>') continue;
+
+            // إزالة المسافات العملاقة
+            pageHtml = pageHtml.replace(/margin-top:\s*[1-9]\d{2,}px/gi, 'margin-top: 40px');
+            pageHtml = pageHtml.replace(/margin-bottom:\s*[1-9]\d{2,}px/gi, 'margin-bottom: 20px');
+            pageHtml = pageHtml.replace(/padding-top:\s*[1-9]\d{2,}px/gi, 'padding-top: 20px');
+
+            // 4. بناء Iframe معزول
+            const iframe = document.createElement('iframe');
+            iframe.style.position = 'fixed';
+            iframe.style.right = '-9999px'; 
+            iframe.style.top = '0';
+            iframe.style.width = '794px';    
+            iframe.style.height = '1123px';  
+            iframe.style.border = 'none';
+            document.body.appendChild(iframe);
+
+            const doc = iframe.contentWindow.document;
+            doc.open();
+            doc.write(`
+                <html dir="rtl">
+                <head>
+                    <style>
+                        ${originalStyle}
+                        html, body {
+                            width: 794px !important;
+                            height: 1123px !important;
+                            margin: 0 !important;
+                            padding: 0 !important;
+                            background: white !important;
+                            overflow: hidden;
+                        }
+                        
+                        .a4-page {
+                            width: 794px;
+                            height: 1123px;
+                            padding: 40px 50px;
+                            box-sizing: border-box;
+                            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+                            color: black;
+                            background: white;
+                            position: relative;
+                        }
+
+                        table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 15px !important; }
+                        th, td { padding: 8px 5px !important; color: black !important; }
+                        
+                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) { border: 1px solid black !important; }
+                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) td,
+                        table:not(.header-table):not(.signature-table):not(.table-footer-sigs) th { border: 1px solid black !important; }
+
+                        .header-table, .header-table th, .header-table td,
+                        .signature-table, .signature-table th, .signature-table td,
+                        .table-footer-sigs, .table-footer-sigs th, .table-footer-sigs td,
+                        table[border="0"], table[border="0"] th, table[border="0"] td {
+                            border: none !important;
+                        }
+                        
+                        .signature-table { margin-top: 50px !important; margin-bottom: 10px !important; }
+
+                        * { max-width: 100%; word-wrap: break-word; }
+                        ::-webkit-scrollbar { display: none; } 
+                    </style>
+                </head>
+                <body>
+                    <div class="a4-page">
+                        ${pageHtml}
+                    </div>
+                </body>
+                </html>
+            `);
+            doc.close();
+
+            try {
+                // ========================================================
+                // مستشعر ذكي: انتظار اكتمال تحميل الشعار قبل التقاط الصورة
+                // ========================================================
+                const images = Array.from(doc.querySelectorAll('img'));
+                await Promise.all(images.map(img => {
+                    if (img.complete) return Promise.resolve();
+                    return new Promise((resolve) => {
+                        img.onload = resolve;
+                        img.onerror = resolve; // نكمل حتى لو حدث خطأ لكي لا تتوقف العملية
+                    });
+                }));
+                
+                await new Promise(r => setTimeout(r, 200)); // استراحة بسيطة لضمان الرسم
+
+                const elementToCapture = doc.querySelector('.a4-page');
+
+                // التقاط الصورة وتصديرها بأمان
+                const canvas = await html2canvas(elementToCapture, { 
+                    scale: 2, 
+                    useCORS: true,       // السماح بجلب الصورة من السيرفر الخارجي
+                    allowTaint: false,   // يجب أن تكون false لكي يُسمح لنا بحفظ الصورة في الهاتف
+                    backgroundColor: "#ffffff",
+                    width: 794,
+                    height: 1123,
+                    windowWidth: 794,
+                    windowHeight: 1123
+                });
+                
+                const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                
+                const link = document.createElement('a');
+                link.download = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
+                link.href = imgData;
+                link.setAttribute('data-no-intercept', 'true'); 
+                link.click();
+            } catch(e) {
+                console.error("خطأ في تكوين الصورة:", e);
+                alert("حدث خطأ أثناء تحويل الصفحة رقم " + (i+1) + " إلى صورة.");
+            } finally {
+                document.body.removeChild(iframe);
+            }
+        }
+        if(typeof showToast === 'function') showToast("✅ تم حفظ الصورة (مع الشعار) بنجاح!");
+    }
+})();
+</script>
 </script>
 </body>
 </html>
