@@ -6093,7 +6093,7 @@
         document.body.removeChild(link);
     }
 
-    function exportPurchaseForm(useShort, wordCount, fontSize) {
+function exportPurchaseForm(useShort, wordCount, fontSize) {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
         
@@ -6106,9 +6106,9 @@
             <style>
                 @page Section1 {
                     size: 8.5in 11.0in; 
-                    margin: 0.5in; /* تم تصغير الهامش الكلي ليصبح نصف إنش */
-                    mso-header-margin: .3in; /* تقليل هامش رأس الصفحة */
-                    mso-footer-margin: .3in; /* تقليل هامش تذييل الصفحة */
+                    margin: 0.5in; 
+                    mso-header-margin: .3in; 
+                    mso-footer-margin: .3in; 
                 }
                 div.Section1 {
                     page: Section1;
@@ -6166,7 +6166,7 @@
             <div style='margin-top:5.0pt'>
                 
                 <div align=left>
-                    <table class=MsoNormalTable dir=ltr border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                    <table class="MsoNormalTable signature-table" dir=ltr border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
                      <tr>
                       <td style='padding:3.75pt 0in 7.5pt 0in; border:none; text-align:left;'>
                       <p class=MsoNormal align=left style='text-align:left; direction:ltr;'><strong><span lang=AR-SA style='font-size:14.0pt'>مقدم الطلب</span></strong></p>
@@ -6181,7 +6181,7 @@
                 <p align=center dir=RTL style='margin-top:3.75pt'><b><span lang=AR-SA>- نؤيد الاحتياج وبالأعداد المذكورة اعلاه -</span></b></p>
 
                 <div align=center>
-                    <table class=MsoNormalTable dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
                      <tr>
                       <td style='padding:7.5pt 0in 7.5pt 0in; border:none; width:33%;'>
                       <p class=MsoNormal align=center style='margin-top:30.0pt; text-align:center;'><b><span lang=AR-SA style='font-size:14.0pt'>عضو</span></b></p>
@@ -6201,7 +6201,7 @@
                 <p dir=RTL style='margin-top:7.5pt;margin-bottom:7.5pt'><strong><span lang=AR-SA>نؤيد توفر الاعتماد المالي ............................ المبلغ رقما وكتابتا ............................</span></strong></p>
 
                 <div align=right>
-                    <table class=MsoNormalTable dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
                      <tr>
                       <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
                       <p class=MsoNormal style='margin-top:11.25pt'><strong><span lang=AR-SA style='font-size:14.0pt'>التاريخ : &nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></strong></p>
@@ -6216,7 +6216,7 @@
                 <div class=MsoNormal align=center style='margin-top:7.5pt'><hr size=2 width="100%" align=center></div>
 
                 <div align=right>
-                    <table class=MsoNormalTable dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
+                    <table class="MsoNormalTable signature-table" dir=rtl border=0 cellspacing=0 cellpadding=0 width="100%" style='border:none;'>
                      <tr>
                       <td style='padding:3.75pt 3.75pt 3.75pt 3.75pt; border:none;'>
                       <p class=MsoNormal style='margin-top:37.5pt'><b><span lang=AR-SA style='font-size:14.0pt'>مصادقة المسؤول المباشر</span></b></p>
@@ -10115,28 +10115,80 @@
 
     
 </script>
- <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 (function() {
     const originalClick = HTMLAnchorElement.prototype.click;
-    HTMLAnchorElement.prototype.click = function() {
-        if (this.getAttribute('data-no-intercept') !== 'true' && 
-            document.body.classList.contains('mobile-mode') && 
-            this.download && 
-            this.download.endsWith('.doc')) 
-        {
-            fetch(this.href)
-                .then(res => res.text())
-                .then(text => {
-                    generateImageViaIframe(text, this.download);
-                }).catch(err => {
-                    console.error(err);
-                    this.setAttribute('data-no-intercept', 'true');
-                    originalClick.call(this);
+
+    // دالة مخصصة لمشاركة الملفات عبر الهاتف أو تنزيلها كبديل
+    async function shareOrDownload(url, filename) {
+        try {
+            // جلب البيانات وتحويلها إلى ملف حقيقي
+            const response = await fetch(url);
+            const blob = await response.blob();
+            const file = new File([blob], filename, { type: blob.type });
+
+            // التحقق مما إذا كان المتصفح/الهاتف يدعم مشاركة الملفات
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                if(typeof showToast === 'function') showToast("⏳ جاري فتح نافذة المشاركة...");
+                await navigator.share({
+                    files: [file],
+                    title: filename
                 });
-            return;
+            } else {
+                // إذا كان المتصفح لا يدعم المشاركة، نعود للتنزيل العادي
+                triggerDownloadFallback(url, filename);
+            }
+        } catch (error) {
+            console.error("Share error:", error);
+            triggerDownloadFallback(url, filename);
         }
+    }
+
+    // دالة التنزيل الاحتياطية
+    function triggerDownloadFallback(url, filename) {
+        const fallbackLink = document.createElement('a');
+        fallbackLink.href = url;
+        fallbackLink.download = filename;
+        fallbackLink.setAttribute('data-no-intercept', 'true');
+        originalClick.call(fallbackLink);
+    }
+
+    // اعتراض أوامر النقر على الروابط
+    HTMLAnchorElement.prototype.click = function() {
+        // منع الدوران اللانهائي
+        if (this.getAttribute('data-no-intercept') === 'true') {
+            return originalClick.call(this);
+        }
+
+        const isMobile = document.body.classList.contains('mobile-mode');
+        
+        if (isMobile && this.download) {
+            const isDoc = this.download.endsWith('.doc');
+            
+            // 1. إذا كان ملف وورد (موافقة شراء الخ)، نحوله لصورة ثم نشاركه
+            if (isDoc) {
+                fetch(this.href)
+                    .then(res => res.text())
+                    .then(text => {
+                        generateImageViaIframe(text, this.download);
+                    }).catch(err => {
+                        console.error(err);
+                        this.setAttribute('data-no-intercept', 'true');
+                        originalClick.call(this);
+                    });
+                return; // إيقاف النقر الافتراضي
+            }
+            
+            // 2. إذا كان ملف آخر (مثل Excel)، نشاركه مباشرة
+            if (navigator.share) {
+                shareOrDownload(this.href, this.download);
+                return; // إيقاف النقر الافتراضي
+            }
+        }
+        
+        // التشغيل الطبيعي (للحاسبة أو في حال عدم تطابق الشروط)
         originalClick.call(this);
     };
 
@@ -10154,9 +10206,7 @@
         bodyContent = bodyContent.replace(/<div class="?Section1"?[^>]*>/gi, '');
         bodyContent = bodyContent.replace(/<\/div>\s*$/i, '');
 
-        // ========================================================
         // الحل الجذري للشعار: استبداله برابط أونلاين + فك الحماية (CORS)
-        // ========================================================
         bodyContent = bodyContent.replace(/src=["']?OIP\.gif["']?/gi, 'src="https://i.ibb.co/6RS356SN/OIP.gif" crossorigin="anonymous"');
 
         // 3. تقسيم الصفحات 
@@ -10239,27 +10289,25 @@
             doc.close();
 
             try {
-                // ========================================================
                 // مستشعر ذكي: انتظار اكتمال تحميل الشعار قبل التقاط الصورة
-                // ========================================================
                 const images = Array.from(doc.querySelectorAll('img'));
                 await Promise.all(images.map(img => {
                     if (img.complete) return Promise.resolve();
                     return new Promise((resolve) => {
                         img.onload = resolve;
-                        img.onerror = resolve; // نكمل حتى لو حدث خطأ لكي لا تتوقف العملية
+                        img.onerror = resolve; 
                     });
                 }));
                 
-                await new Promise(r => setTimeout(r, 200)); // استراحة بسيطة لضمان الرسم
+                await new Promise(r => setTimeout(r, 200)); 
 
                 const elementToCapture = doc.querySelector('.a4-page');
 
-                // التقاط الصورة وتصديرها بأمان
+                // التقاط الصورة
                 const canvas = await html2canvas(elementToCapture, { 
                     scale: 2, 
-                    useCORS: true,       // السماح بجلب الصورة من السيرفر الخارجي
-                    allowTaint: false,   // يجب أن تكون false لكي يُسمح لنا بحفظ الصورة في الهاتف
+                    useCORS: true,       
+                    allowTaint: false,   
                     backgroundColor: "#ffffff",
                     width: 794,
                     height: 1123,
@@ -10268,12 +10316,11 @@
                 });
                 
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
+                const fileName = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
                 
-                const link = document.createElement('a');
-                link.download = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
-                link.href = imgData;
-                link.setAttribute('data-no-intercept', 'true'); 
-                link.click();
+                // مشاركة الصورة كملف بدلاً من تنزيلها مباشرة
+                await shareOrDownload(imgData, fileName);
+
             } catch(e) {
                 console.error("خطأ في تكوين الصورة:", e);
                 alert("حدث خطأ أثناء تحويل الصفحة رقم " + (i+1) + " إلى صورة.");
@@ -10281,7 +10328,6 @@
                 document.body.removeChild(iframe);
             }
         }
-        if(typeof showToast === 'function') showToast("✅ تم حفظ الصورة (مع الشعار) بنجاح!");
     }
 })();
 </script>
