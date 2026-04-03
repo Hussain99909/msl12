@@ -10116,15 +10116,55 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
     
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <script>
 (function() {
     const originalClick = HTMLAnchorElement.prototype.click;
 
-    // دالة مخصصة لمشاركة مجموعة من الملفات دفعة واحدة
+    // --- نافذة اختيار صيغة المشاركة ---
+    async function promptShareFormat() {
+        return new Promise((resolve) => {
+            const overlay = document.createElement('div');
+            overlay.className = 'modal-overlay';
+            overlay.style.display = 'flex';
+            overlay.style.zIndex = '9999';
+
+            const content = document.createElement('div');
+            content.className = 'modal-content';
+            content.style.width = '350px';
+
+            content.innerHTML = `
+                <div class="modal-title">📤 خيارات المشاركة</div>
+                <div style="font-size: 14px; color: #555; margin-bottom: 20px;">كيف تفضل إرسال هذا الملف؟</div>
+                
+                <button id="btnSharePdf" class="modal-menu-btn" style="background: #eafaf1; border-color: #27ae60;">
+                    <strong>📄 مشاركة كملف PDF</strong>
+                    <span>دمج جميع الصفحات في ملف واحد (مستحسن للطباعة)</span>
+                </button>
+                
+                <button id="btnShareImg" class="modal-menu-btn" style="background: #e8f0fe; border-color: #3498db;">
+                    <strong>🖼️ مشاركة كصور</strong>
+                    <span>إرسال كل صفحة كصورة مستقلة في المحادثة</span>
+                </button>
+                
+                <div style="margin-top: 15px;">
+                    <button id="btnShareCancel" class="btn-cancel" style="width: 100%;">إلغاء الأمر</button>
+                </div>
+            `;
+
+            overlay.appendChild(content);
+            document.body.appendChild(overlay);
+
+            document.getElementById('btnSharePdf').onclick = () => { overlay.remove(); resolve('pdf'); };
+            document.getElementById('btnShareImg').onclick = () => { overlay.remove(); resolve('image'); };
+            document.getElementById('btnShareCancel').onclick = () => { overlay.remove(); resolve(null); };
+        });
+    }
+
+    // --- المشاركة المتعددة عبر الهاتف ---
     async function shareMultipleFiles(filesArray, title) {
         try {
-            // التحقق مما إذا كان المتصفح يدعم مشاركة الملفات المتعددة
             if (navigator.share && navigator.canShare && navigator.canShare({ files: filesArray })) {
                 if(typeof showToast === 'function') showToast("⏳ جاري فتح نافذة المشاركة...");
                 await navigator.share({
@@ -10132,7 +10172,6 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     title: title
                 });
             } else {
-                // إذا كان المتصفح لا يدعم المشاركة، نعود للتنزيل العادي لكل ملف
                 filesArray.forEach(file => {
                     const url = URL.createObjectURL(file);
                     triggerDownloadFallback(url, file.name);
@@ -10140,12 +10179,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             }
         } catch (error) {
             console.error("Share error:", error);
-            // في حال فشل المشاركة (مثلاً المستخدم أغلق النافذة) لا نفعل شيئاً لتجنب إزعاج المستخدم
-            // أو يمكن تفعيل التنزيل الاحتياطي هنا إذا رغبت
         }
     }
 
-    // دالة لتحويل رابط واحد إلى ملف ومشاركته (تستخدم لملفات الإكسل)
     async function shareSingleUrl(url, filename) {
         try {
             const response = await fetch(url);
@@ -10157,7 +10193,6 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         }
     }
 
-    // دالة التنزيل الاحتياطية (للحاسوب أو إذا فشلت المشاركة)
     function triggerDownloadFallback(url, filename) {
         const fallbackLink = document.createElement('a');
         fallbackLink.href = url;
@@ -10166,8 +10201,8 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         originalClick.call(fallbackLink);
     }
 
-    // اعتراض أوامر النقر على الروابط
-    HTMLAnchorElement.prototype.click = function() {
+    // --- اعتراض النقرات ---
+    HTMLAnchorElement.prototype.click = async function() {
         if (this.getAttribute('data-no-intercept') === 'true') {
             return originalClick.call(this);
         }
@@ -10177,12 +10212,18 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         if (isMobile && this.download) {
             const isDoc = this.download.endsWith('.doc');
             
-            // 1. إذا كان ملف وورد (موافقة شراء الخ)، نحوله لصور ونجمعها
             if (isDoc) {
-                fetch(this.href)
+                // إيقاف المعالجة وإظهار نافذة الخيارات للمستخدم
+                const format = await promptShareFormat();
+                if (!format) return; // تم النقر على "إلغاء"
+
+                const href = this.href;
+                const download = this.download;
+
+                fetch(href)
                     .then(res => res.text())
                     .then(text => {
-                        generateImageViaIframe(text, this.download);
+                        generateImageViaIframe(text, download, format);
                     }).catch(err => {
                         console.error(err);
                         this.setAttribute('data-no-intercept', 'true');
@@ -10191,19 +10232,18 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 return; 
             }
             
-            // 2. إذا كان ملف آخر (مثل Excel)، نشاركه كملف واحد
             if (navigator.share) {
                 shareSingleUrl(this.href, this.download);
                 return; 
             }
         }
         
-        // التشغيل الطبيعي
         originalClick.call(this);
     };
 
-    async function generateImageViaIframe(htmlContent, originalFileName) {
-        if(typeof showToast === 'function') showToast("⏳ جاري تحضير الصور بأبعاد (A4)، يرجى الانتظار...");
+    // --- محرك توليد الصور والـ PDF ---
+    async function generateImageViaIframe(htmlContent, originalFileName, format) {
+        if(typeof showToast === 'function') showToast("⏳ جاري التجهيز بأبعاد (A4)، يرجى الانتظار...");
 
         let styleMatch = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
         let originalStyle = styleMatch ? styleMatch[1] : '';
@@ -10220,8 +10260,8 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         const pages = bodyContent.split(/<br[^>]*class="?page-break"?[^>]*>|<br[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*>|<div[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*><\/div>/gi);
         const baseName = originalFileName.replace('.doc', '').replace('.docx', '');
 
-        // 🟢 مصفوفة لتجميع الصور قبل إرسالها
-        const generatedImagesAsFiles = [];
+        const generatedImagesAsFiles = []; // لحفظ الصور الفردية
+        const generatedImagesAsBase64 = []; // لحفظ الصور لتصدير الـ PDF
 
         for (let i = 0; i < pages.length; i++) {
             let pageHtml = pages[i].trim();
@@ -10288,25 +10328,56 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 });
                 
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
-                const fileName = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
                 
-                // 🟢 تحويل الـ Base64 إلى ملف حقيقي وإضافته للمصفوفة بدلاً من مشاركته فوراً
-                const res = await fetch(imgData);
-                const blob = await res.blob();
-                const imageFile = new File([blob], fileName, { type: 'image/jpeg' });
-                generatedImagesAsFiles.push(imageFile);
+                if (format === 'image') {
+                    // إذا اختار صور منفصلة
+                    const fileName = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
+                    const res = await fetch(imgData);
+                    const blob = await res.blob();
+                    const imageFile = new File([blob], fileName, { type: 'image/jpeg' });
+                    generatedImagesAsFiles.push(imageFile);
+                } else if (format === 'pdf') {
+                    // إذا اختار PDF، نحفظ بيانات الصورة لمعالجتها لاحقاً
+                    generatedImagesAsBase64.push(imgData);
+                }
 
             } catch(e) {
-                console.error("خطأ في تكوين الصورة:", e);
+                console.error("خطأ في تكوين الصفحة:", e);
             } finally {
                 document.body.removeChild(iframe);
             }
         }
 
-        // 🟢 بعد انتهاء الحلقة وتجميع كل الصفحات، نقوم بمشاركتها دفعة واحدة
-        if (generatedImagesAsFiles.length > 0) {
+        // --- المعالجة النهائية حسب خيار المستخدم ---
+        if (format === 'image' && generatedImagesAsFiles.length > 0) {
             await shareMultipleFiles(generatedImagesAsFiles, baseName);
-            if(typeof showToast === 'function') showToast("✅ تم التجهيز للمشاركة!");
+            if(typeof showToast === 'function') showToast("✅ جاهز للمشاركة كصور!");
+            
+        } else if (format === 'pdf' && generatedImagesAsBase64.length > 0) {
+            if(typeof showToast === 'function') showToast("⏳ جاري دمج الصور في ملف PDF...");
+            
+            // استدعاء مكتبة jsPDF
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            // إضافة الصور كصفحات
+            for (let i = 0; i < generatedImagesAsBase64.length; i++) {
+                if (i > 0) pdf.addPage();
+                // أبعاد ورقة A4 بوحدة المليمتر
+                pdf.addImage(generatedImagesAsBase64[i], 'JPEG', 0, 0, 210, 297);
+            }
+
+            // تحويل الـ PDF إلى ملف جاهز للمشاركة
+            const pdfBlob = pdf.output('blob');
+            const pdfFile = new File([pdfBlob], baseName + '.pdf', { type: 'application/pdf' });
+            
+            await shareMultipleFiles([pdfFile], baseName);
+            if(typeof showToast === 'function') showToast("✅ جاهز للمشاركة كملف PDF!");
+            
         } else {
             alert("حدث خطأ، لم يتم توليد أي صفحات.");
         }
