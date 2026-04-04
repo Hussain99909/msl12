@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>نظام إدارة المشتريات الطبي - الإصدار المطور + صيدلة وعلاج</title>
     
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
@@ -733,6 +733,11 @@
     /* ====== تصميم وضع الهاتف (Mobile Mode) === */
     /* ========================================= */
 
+    body.mobile-mode * {
+        touch-action: manipulation !important;
+    }
+
+
     body.mobile-mode {
         zoom: 100% !important; /* إلغاء التصغير في الهاتف */
         background: #f0f2f5;
@@ -1167,6 +1172,159 @@
     body.mobile-mode .icon-box br {
         display: none !important; /* منع سطر جديد داخل الزر */
     } 
+
+    /* ================================================== */
+    /* === إخفاء نصوص المجموع في الهاتف لتثبيت شريط البحث === */
+    /* ================================================== */
+
+    /* إخفاء الكلمة الأولى (المجموع الكلي:) والكلمة الأخيرة (دينار) */
+    body.mobile-mode #userTopBar + div > div:nth-child(2) span:first-child,
+    body.mobile-mode #userTopBar + div > div:nth-child(2) span:last-child {
+        display: none !important;
+    }
+
+    /* تجميل الرقم المتبقي وإضافة أيقونة فلوس بدال الكلمات */
+    body.mobile-mode #mainTableGrandTotal {
+        font-size: 15px !important;
+        font-weight: bold !important;
+        width: 100% !important;
+        text-align: center !important;
+    }
+
+    body.mobile-mode #mainTableGrandTotal::before {
+        content: ""; 
+    }
+    
+    /* ========================================================= */
+    /* === 1. جعل الشاشة ثابتة كالتطبيقات وتمرير الجدول فقط ==== */
+    /* ========================================================= */
+    body.mobile-mode {
+        height: 100vh !important;
+        height: 100dvh !important; /* دعم الهواتف الحديثة */
+        overflow: hidden !important; /* منع تمرير الصفحة بالكامل */
+    }
+
+    body.mobile-mode .container {
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+        padding: 10px 10px 0 10px !important; /* إلغاء الحواف السفلية المزعجة */
+        box-sizing: border-box !important;
+    }
+
+    /* حماية الأشرطة العلوية من الانضغاط عند امتلاء الجدول */
+    body.mobile-mode .user-top-bar,
+    body.mobile-mode #userTopBar + div,
+    body.mobile-mode .icons-wrapper {
+        flex-shrink: 0 !important; 
+    }
+
+    /* جعل منطقة الجدول هي الوحيدة القابلة للسحب للأعلى والأسفل */
+    body.mobile-mode .table-responsive {
+        flex-grow: 1 !important; /* تمدد لأخذ المساحة المتبقية */
+        overflow-y: auto !important; /* تفعيل التمرير العمودي هنا فقط */
+        overflow-x: hidden !important;
+        padding-bottom: 80px !important; /* ترك مساحة للشريط السفلي */
+        -webkit-overflow-scrolling: touch !important; /* تمرير ناعم لأجهزة آيفون */
+        border: none !important;
+    }
+
+    /* ========================================================= */
+    /* === 2. تثبيت شريط البحث والمجموع وحمايته من التشوه ====== */
+    /* ========================================================= */
+    
+    /* الحاوية التي تضم البحث والمجموع */
+    body.mobile-mode #userTopBar + div {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        width: 100% !important;
+        gap: 8px !important;
+        margin: 0 0 10px 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    /* شريط البحث (يأخذ 65% من المساحة بثبات) */
+    body.mobile-mode .search-container {
+        flex: 1 1 65% !important; 
+        min-width: 0 !important; 
+        margin: 0 !important;
+    }
+
+    body.mobile-mode .search-box {
+        width: 100% !important;
+        height: 40px !important;
+    }
+
+    /* مربع المجموع الكلي (يأخذ 35% من المساحة بثبات ولا يتمدد) */
+    body.mobile-mode #userTopBar + div > div:nth-child(2) {
+        flex: 0 0 35% !important; 
+        max-width: 35% !important; 
+        height: 40px !important;
+        padding: 0 5px !important;
+        display: flex !important;
+        justify-content: center !important;
+        align-items: center !important;
+        overflow: hidden !important; /* إخفاء أي زيادة تكسر المربع */
+    }
+
+    /* رقم المجموع (إذا أصبح بالمليارات سيتم إضافة 3 نقاط (...) ولن يدفع شريط البحث) */
+    body.mobile-mode #mainTableGrandTotal {
+        font-size: 14px !important;
+        font-weight: bold !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important; /* وضع نقاط للأرقام العملاقة */
+        max-width: 100% !important;
+        display: inline-block !important;
+    }
+    
+    /* ========================================================= */
+    /* === إصلاح توافق الوضع الليلي مع وضع الهاتف (Dark & Mobile) === */
+    /* ========================================================= */
+    
+    /* خلفية التطبيق في الوضعين */
+    body.dark-mode.mobile-mode {
+        background: #121212 !important;
+    }
+
+    /* خلفية البطاقات (الصفوف) وإطارها */
+    body.dark-mode.mobile-mode #mainTable tr {
+        background: #1e1e1e !important;
+        border-color: #333 !important;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5) !important;
+    }
+
+    /* اسم المادة */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(2) input {
+        color: #e0e0e0 !important;
+    }
+
+    /* العناوين الثابتة مثل (رمز: ، الاحتياج ، السعر) */
+    body.dark-mode.mobile-mode #mainTable td::before {
+        color: #aaa !important;
+    }
+
+    /* حقول إدخال الاحتياج والسعر داخل البطاقات */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(5) input,
+    body.dark-mode.mobile-mode #mainTable td:nth-child(10) input {
+        background: #333 !important;
+        color: #fff !important;
+        border-color: #555 !important;
+    }
+
+    /* الشريط السفلي (Bottom Bar) */
+    body.dark-mode.mobile-mode .controls {
+        background: #1e1e1e !important;
+        box-shadow: 0 -4px 15px rgba(0,0,0,0.5) !important;
+        border-top: 1px solid #333 !important;
+    }
+
+    /* الخط الفاصل الدقيق تحت الرمز الوطني */
+    body.dark-mode.mobile-mode #mainTable td:nth-child(3) {
+        border-bottom-color: #333 !important;
+    }
 
     </style>
 </head>
