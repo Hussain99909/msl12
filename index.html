@@ -10260,16 +10260,17 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         const pages = bodyContent.split(/<br[^>]*class="?page-break"?[^>]*>|<br[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*>|<div[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*><\/div>/gi);
         const baseName = originalFileName.replace('.doc', '').replace('.docx', '');
 
-        const generatedImagesAsFiles = []; // لحفظ الصور الفردية
-        const generatedImagesAsBase64 = []; // لحفظ الصور لتصدير الـ PDF
+        const generatedImagesAsFiles = []; 
+        const generatedImagesAsBase64 = []; 
 
         for (let i = 0; i < pages.length; i++) {
             let pageHtml = pages[i].trim();
             if (!pageHtml || pageHtml === '</div>') continue;
 
-            pageHtml = pageHtml.replace(/margin-top:\s*[1-9]\d{2,}px/gi, 'margin-top: 40px');
-            pageHtml = pageHtml.replace(/margin-bottom:\s*[1-9]\d{2,}px/gi, 'margin-bottom: 20px');
-            pageHtml = pageHtml.replace(/padding-top:\s*[1-9]\d{2,}px/gi, 'padding-top: 20px');
+            // تنظيف المسافات الضخمة
+            pageHtml = pageHtml.replace(/margin-top:\s*[1-9]\d{2,}px/gi, 'margin-top: 30px');
+            pageHtml = pageHtml.replace(/margin-bottom:\s*[1-9]\d{2,}px/gi, 'margin-bottom: 15px');
+            pageHtml = pageHtml.replace(/padding-top:\s*[1-9]\d{2,}px/gi, 'padding-top: 15px');
 
             const iframe = document.createElement('iframe');
             iframe.style.position = 'fixed';
@@ -10288,13 +10289,32 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <style>
                         ${originalStyle}
                         html, body { width: 794px !important; height: 1123px !important; margin: 0 !important; padding: 0 !important; background: white !important; overflow: hidden; }
-                        .a4-page { width: 794px; height: 1123px; padding: 40px 50px; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: black; background: white; position: relative; }
-                        table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 15px !important; }
-                        th, td { padding: 8px 5px !important; color: black !important; }
+                        
+                        /* تم تقليل الـ padding الخارجي لإعطاء مساحة أكبر للمحتوى */
+                        .a4-page { width: 794px; height: 1123px; padding: 30px 40px; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: black; background: white; position: relative; }
+                        
+                        table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
+                        th, td { padding: 6px 4px !important; color: black !important; }
+                        
                         table:not(.header-table):not(.signature-table):not(.table-footer-sigs) { border: 1px solid black !important; }
                         table:not(.header-table):not(.signature-table):not(.table-footer-sigs) td, table:not(.header-table):not(.signature-table):not(.table-footer-sigs) th { border: 1px solid black !important; }
+                        
                         .header-table, .header-table th, .header-table td, .signature-table, .signature-table th, .signature-table td, .table-footer-sigs, .table-footer-sigs th, .table-footer-sigs td, table[border="0"], table[border="0"] th, table[border="0"] td { border: none !important; }
-                        .signature-table { margin-top: 50px !important; margin-bottom: 10px !important; }
+                        
+                        /* ========================================= */
+                        /* حل مشكلة المساحات الضخمة في استمارة الشراء */
+                        /* ========================================= */
+                        .signature-table { margin-top: 15px !important; margin-bottom: 5px !important; }
+                        p.MsoNormal { line-height: 1.1 !important; margin-bottom: 2px !important; }
+                        
+                        /* ضغط المسافات المبرمجة بـ pt */
+                        p[style*="margin-top:30.0pt"], p[style*="margin-top:37.5pt"] { margin-top: 15px !important; }
+                        p[style*="margin-top:11.25pt"] { margin-top: 5px !important; }
+                        div[style*="margin-top:15.0pt"], div[style*="margin-top:5.0pt"] { margin-top: 5px !important; margin-bottom: 5px !important; }
+                        td[style*="padding:7.5pt"] { padding: 2px !important; }
+                        hr { margin: 2px 0 !important; }
+                        /* ========================================= */
+
                         * { max-width: 100%; word-wrap: break-word; }
                         ::-webkit-scrollbar { display: none; } 
                     </style>
@@ -10330,14 +10350,12 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
                 
                 if (format === 'image') {
-                    // إذا اختار صور منفصلة
                     const fileName = baseName + (pages.length > 1 ? `_صفحة${i+1}` : '') + '.jpg';
                     const res = await fetch(imgData);
                     const blob = await res.blob();
                     const imageFile = new File([blob], fileName, { type: 'image/jpeg' });
                     generatedImagesAsFiles.push(imageFile);
                 } else if (format === 'pdf') {
-                    // إذا اختار PDF، نحفظ بيانات الصورة لمعالجتها لاحقاً
                     generatedImagesAsBase64.push(imgData);
                 }
 
@@ -10356,7 +10374,6 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         } else if (format === 'pdf' && generatedImagesAsBase64.length > 0) {
             if(typeof showToast === 'function') showToast("⏳ جاري دمج الصور في ملف PDF...");
             
-            // استدعاء مكتبة jsPDF
             const { jsPDF } = window.jspdf;
             const pdf = new jsPDF({
                 orientation: 'portrait',
@@ -10364,14 +10381,11 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 format: 'a4'
             });
 
-            // إضافة الصور كصفحات
             for (let i = 0; i < generatedImagesAsBase64.length; i++) {
                 if (i > 0) pdf.addPage();
-                // أبعاد ورقة A4 بوحدة المليمتر
                 pdf.addImage(generatedImagesAsBase64[i], 'JPEG', 0, 0, 210, 297);
             }
 
-            // تحويل الـ PDF إلى ملف جاهز للمشاركة
             const pdfBlob = pdf.output('blob');
             const pdfFile = new File([pdfBlob], baseName + '.pdf', { type: 'application/pdf' });
             
