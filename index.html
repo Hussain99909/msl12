@@ -1198,11 +1198,7 @@
     /* ================================================== */
         /* === تصميم الدردشة الذكي لوضع الهاتف (Sliding) === */
         /* ================================================== */
-        
-        /* ================================================== */
-        /* === إصلاح أبعاد نافذة الدردشة في الموبايل === */
-        /* ================================================== */
-        
+               
         body.mobile-mode #chatModal .modal-content {
             width: 100vw !important;
             height: 100vh !important;
@@ -1426,182 +1422,7 @@
     }
 
 
-    /* ============================================================ */
-    /* === تحويل جداول الاحتياج (المواد والأدوية) لنظام البطاقات في الهاتف === */
-    /* ============================================================ */
 
-    body.mobile-mode #zeroNeedModal .modal-content,
-    body.mobile-mode #aboveNeedModal .modal-content,
-    body.mobile-mode #zeroNeedMedModal .modal-content,
-    body.mobile-mode #aboveNeedMedModal .modal-content {
-        width: 100vw !important;
-        height: 100vh !important;
-        max-width: 100% !important;
-        max-height: 100% !important;
-        border-radius: 0 !important;
-        margin: 0 !important;
-        padding: 10px !important;
-        display: flex;
-        flex-direction: column;
-    }
-
-    /* تحويل الجداول إلى نظام بطاقات متطابق مع القائمة الرئيسية */
-    body.mobile-mode #zn_tableBody, 
-    body.mobile-mode #an_tableBody,
-    body.mobile-mode #znm_tableBody,
-    body.mobile-mode #anm_tableBody {
-        display: block;
-        width: 100%;
-    }
-
-    body.mobile-mode #zeroNeedModal table,
-    body.mobile-mode #aboveNeedModal table,
-    body.mobile-mode #zeroNeedMedModal table,
-    body.mobile-mode #aboveNeedMedModal table {
-        display: block;
-        border: none;
-    }
-
-    body.mobile-mode #zeroNeedModal thead,
-    body.mobile-mode #aboveNeedModal thead,
-    body.mobile-mode #zeroNeedMedModal thead,
-    body.mobile-mode #aboveNeedMedModal thead {
-        display: none !important; /* إخفاء رؤوس الجداول */
-    }
-
-    body.mobile-mode #zn_tableBody tr, 
-    body.mobile-mode #an_tableBody tr,
-    body.mobile-mode #znm_tableBody tr,
-    body.mobile-mode #anm_tableBody tr {
-        display: flex !important;
-        flex-wrap: wrap;
-        background: #fff;
-        margin-bottom: 12px;
-        border-radius: 12px;
-        padding: 12px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        position: relative;
-        border: 1px solid #eee;
-        width: 100%;
-        box-sizing: border-box;
-    }
-
-    /* إخفاء الأعمدة غير الضرورية في وضع الهاتف (التسلسل، الرمز، الوحدة) لتوفير المساحة */
-    body.mobile-mode #zn_tableBody td:nth-child(1),
-    body.mobile-mode #an_tableBody td:nth-child(1),
-    body.mobile-mode #znm_tableBody td:nth-child(1),
-    body.mobile-mode #anm_tableBody td:nth-child(1),
-    body.mobile-mode #zn_tableBody td:nth-child(3),
-    body.mobile-mode #an_tableBody td:nth-child(3),
-    body.mobile-mode #znm_tableBody td:nth-child(3),
-    body.mobile-mode #anm_tableBody td:nth-child(3),
-    body.mobile-mode #zn_tableBody td:nth-child(4),
-    body.mobile-mode #an_tableBody td:nth-child(4),
-    body.mobile-mode #znm_tableBody td:nth-child(4),
-    body.mobile-mode #anm_tableBody td:nth-child(4) {
-        display: none !important;
-    }
-
-    /* اسم المادة (عرض كامل) */
-    body.mobile-mode #zn_tableBody td:nth-child(2),
-    body.mobile-mode #an_tableBody td:nth-child(2),
-    body.mobile-mode #znm_tableBody td:nth-child(2),
-    body.mobile-mode #anm_tableBody td:nth-child(2) {
-        width: 85%;
-        font-size: 16px !important;
-        color: #2c3e50;
-        font-weight: bold;
-        text-align: right;
-        border: none;
-        padding-bottom: 10px;
-    }
-
-    /* زر الحذف (أعلى يسار البطاقة) */
-    body.mobile-mode #zn_tableBody td:last-child,
-    body.mobile-mode #an_tableBody td:last-child,
-    body.mobile-mode #znm_tableBody td:last-child,
-    body.mobile-mode #anm_tableBody td:last-child {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        width: auto;
-        border: none;
-    }
-
-    /* حقول الأرقام (الاحتياج والكمية) - سطر واحد */
-    body.mobile-mode #zn_tableBody td:nth-child(5),
-    body.mobile-mode #zn_tableBody td:nth-child(6),
-    body.mobile-mode #an_tableBody td:nth-child(5),
-    body.mobile-mode #an_tableBody td:nth-child(6),
-    body.mobile-mode #znm_tableBody td:nth-child(5),
-    body.mobile-mode #znm_tableBody td:nth-child(6),
-    body.mobile-mode #anm_tableBody td:nth-child(5),
-    body.mobile-mode #anm_tableBody td:nth-child(6) {
-        width: 50% !important;
-        display: flex;
-        flex-direction: column;
-        padding: 5px;
-        border: none;
-    }
-
-    body.mobile-mode #zn_tableBody td::before,
-    body.mobile-mode #an_tableBody td::before,
-    body.mobile-mode #znm_tableBody td::before,
-    body.mobile-mode #anm_tableBody td::before {
-        font-size: 11px;
-        color: #7f8c8d;
-        margin-bottom: 4px;
-        font-weight: bold;
-    }
-
-    /* إضافة مسميات فوق الحقول */
-    body.mobile-mode #zn_tableBody td:nth-child(5)::before, 
-    body.mobile-mode #an_tableBody td:nth-child(5)::before,
-    body.mobile-mode #znm_tableBody td:nth-child(5)::before,
-    body.mobile-mode #anm_tableBody td:nth-child(5)::before { content: "الاحتياج الشهري"; }
-
-    body.mobile-mode #zn_tableBody td:nth-child(6)::before, 
-    body.mobile-mode #an_tableBody td:nth-child(6)::before,
-    body.mobile-mode #znm_tableBody td:nth-child(6)::before,
-    body.mobile-mode #anm_tableBody td:nth-child(6)::before { content: "الكمية المطلوبة"; }
-
-    /* حقل السبب (عرض كامل تحت الأرقام) */
-    body.mobile-mode #zn_tableBody td:nth-child(7),
-    body.mobile-mode #an_tableBody td:nth-child(7),
-    body.mobile-mode #znm_tableBody td:nth-child(7),
-    body.mobile-mode #anm_tableBody td:nth-child(7) {
-        width: 100% !important;
-        border: none;
-        padding-top: 10px;
-        border-top: 1px dashed #eee;
-        margin-top: 10px;
-    }
-
-    body.mobile-mode #zn_tableBody td:nth-child(7)::before,
-    body.mobile-mode #an_tableBody td:nth-child(7)::before,
-    body.mobile-mode #znm_tableBody td:nth-child(7)::before,
-    body.mobile-mode #anm_tableBody td:nth-child(7)::before { content: "سبب الشراء:"; display: block; }
-
-    /* تحسين شكل المدخلات في الموبايل */
-    body.mobile-mode .zn-table-input {
-        height: 38px;
-        font-size: 14px !important;
-        background: #f8f9fa !important;
-    }
-
-    /* الوضع الليلي للموبايل في هذه النوافذ */
-    body.dark-mode.mobile-mode #zn_tableBody tr, 
-    body.dark-mode.mobile-mode #an_tableBody tr,
-    body.dark-mode.mobile-mode #znm_tableBody tr,
-    body.dark-mode.mobile-mode #anm_tableBody tr {
-        background: #1e1e1e;
-        border-color: #333;
-    }
-    body.dark-mode.mobile-mode .zn-table-input {
-        background: #2a2a2a !important;
-        color: #fff;
-        border-color: #444;
-    }
     </style>
 </head>
 <body>
@@ -10738,14 +10559,22 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
     // 1. دالة لتحديث نص التحية بناءً على وضع الشاشة
     function updateGreetingText() {
-        if (!currentUser) return;
+        if (!currentUser) {
+            // إذا لم يوجد مستخدم بعد، حاول جلبه من الذاكرة
+            const storedUser = localStorage.getItem('msl_currentUser');
+            if (storedUser) currentUser = storedUser;
+            else return; // إذا لا يوجد مستخدم فعلياً لا تفعل شيئاً
+        }
+        
         const greetingElement = document.getElementById('greetingText');
         const isMobile = document.body.classList.contains('mobile-mode');
         
-        if (isMobile) {
-            greetingElement.innerText = "د." + currentUser; // شكل مختصر للموبايل
-        } else {
-            greetingElement.innerText = "مرحبا دكتور " + currentUser; // شكل كامل للكمبيوتر
+        if (greetingElement) {
+            if (isMobile) {
+                greetingElement.innerText = "د." + currentUser;
+            } else {
+                greetingElement.innerText = "مرحبا دكتور " + currentUser;
+            }
         }
     }
 
@@ -10763,12 +10592,17 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
     function initMobileMode() {
         const savedMode = localStorage.getItem('msl_mobileMode');
         
+        // الكشف عن الوضع المحفوظ أو حجم الشاشة
         if (savedMode === 'true' || (savedMode === null && window.innerWidth <= 768)) {
             document.body.classList.add('mobile-mode');
         }
+        
         updateMobileToggleUI();
-        // تحديث الاسم ليناسب الشاشة عند الفتح
-        updateGreetingText(); 
+        
+        // السطر الأهم: تحديث نص التحية فور تهيئة النظام
+        if (currentUser) {
+            updateGreetingText(); 
+        }
     }
 
     // 4. دالة زر تشغيل/إيقاف وضع الهاتف
