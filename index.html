@@ -11484,7 +11484,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
 <script>
 (function() {
-    // حفظ دالة النقر الأصلية لتجنب التكرار
+    // 1. حفظ دالة النقر الأصلية لتجنب التكرار
     const originalClick = HTMLAnchorElement.prototype.click;
 
     // --- تصميم وإظهار القائمة الذكية للملفات ---
@@ -11493,7 +11493,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
             overlay.style.display = 'flex';
-            overlay.style.zIndex = '9999';
+            overlay.style.zIndex = '99999'; // لضمان ظهوره فوق الدردشة
             overlay.style.alignItems = 'flex-end'; // لظهور القائمة من الأسفل في الموبايل
 
             const content = document.createElement('div');
@@ -11591,56 +11591,73 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         originalClick.call(fallbackLink);
     }
 
-    // --- اعتراض النقرات على الروابط ---
+    // --- المحرك الرئيسي لتوجيه الأوامر (الآن يعترض جميع أنواع النقر) ---
+    async function handleFileAction(anchor) {
+        const isMobile = document.body.classList.contains('mobile-mode');
+        if (!isMobile || !anchor.download) return false; // دع الرابط يعمل بشكل طبيعي إذا كنا في الكمبيوتر
+
+        const fileName = anchor.download;
+        const fileUrl = anchor.href;
+
+        // إظهار القائمة المنبثقة
+        const action = await promptFileActions(fileName, fileUrl);
+        if (!action) return true; // تم النقر على إلغاء، لا تفعل شيئاً
+
+        if (action === 'download') {
+            triggerDownloadFallback(fileUrl, fileName);
+        } 
+        else if (action === 'share_file') {
+            shareNativeFile(fileUrl, fileName);
+        } 
+        else if (action === 'convert_image' || action === 'convert_pdf') {
+            const format = action === 'convert_image' ? 'image' : 'pdf';
+            
+            // إذا كان الملف صورة
+            if(fileName.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                 convertImageToFormat(fileUrl, fileName, format);
+                 return true;
+            }
+
+            // إذا كان الملف DOC (مولد كـ HTML من النظام)
+            fetch(fileUrl)
+                .then(res => res.text())
+                .then(text => {
+                    generateVisualViaIframe(text, fileName, format);
+                }).catch(err => {
+                    alert("تعذر قراءة محتوى الملف للتحويل.");
+                    triggerDownloadFallback(fileUrl, fileName);
+                });
+        }
+        return true; 
+    }
+
+    // 2. اعتراض النقرات البرمجية (عند التصدير من أزرار النظام)
     HTMLAnchorElement.prototype.click = async function() {
-        // إذا كان الرابط يمتلك هذا الوسم، نفذ النقر الافتراضي (للتنزيل الإجباري)
         if (this.getAttribute('data-no-intercept') === 'true') {
             return originalClick.call(this);
         }
-
-        const isMobile = document.body.classList.contains('mobile-mode');
         
-        // إذا كنا في وضع الهاتف والروابط تحتوي على سمة download (ملفات)
-        if (isMobile && this.download) {
-            const fileName = this.download;
-            const fileUrl = this.href;
-
-            // إظهار القائمة المنبثقة
-            const action = await promptFileActions(fileName, fileUrl);
-            
-            if (!action) return; // تم النقر على إلغاء
-
-            if (action === 'download') {
-                triggerDownloadFallback(fileUrl, fileName);
-            } 
-            else if (action === 'share_file') {
-                shareNativeFile(fileUrl, fileName);
-            } 
-            else if (action === 'convert_image' || action === 'convert_pdf') {
-                const format = action === 'convert_image' ? 'image' : 'pdf';
-                
-                // إذا كان الملف صورة، نشاركها مباشرة كصورة أو نضعها في PDF
-                if(fileName.match(/\.(jpeg|jpg|gif|png)$/i)) {
-                     convertImageToFormat(fileUrl, fileName, format);
-                     return;
-                }
-
-                // إذا كان الملف DOC (مولد كـ HTML من النظام)
-                fetch(fileUrl)
-                    .then(res => res.text())
-                    .then(text => {
-                        generateVisualViaIframe(text, fileName, format);
-                    }).catch(err => {
-                        alert("تعذر قراءة محتوى الملف للتحويل.");
-                        triggerDownloadFallback(fileUrl, fileName);
-                    });
-            }
-            return; // إيقاف تنفيذ النقر الافتراضي
-        }
+        // إذا قام نظامنا بمعالجة الرابط، أوقف النقر الطبيعي
+        if (await handleFileAction(this)) return;
         
-        // في الكمبيوتر أو روابط عادية، نفذ النقر الطبيعي
         originalClick.call(this);
     };
+
+    // 3. اعتراض النقرات الفيزيائية (لمس الشاشة على ملف في الدردشة)
+    document.addEventListener('click', async function(e) {
+        const anchor = e.target.closest('a');
+        if (!anchor) return;
+        
+        if (anchor.getAttribute('data-no-intercept') === 'true') return;
+        
+        if (anchor.hasAttribute('download')) {
+            const isMobile = document.body.classList.contains('mobile-mode');
+            if (isMobile) {
+                e.preventDefault(); // إيقاف التنزيل الفوري
+                await handleFileAction(anchor);
+            }
+        }
+    });
 
     // --- دالة مساعدة لتحويل الصور المباشرة لـ PDF أو مشاركتها ---
     async function convertImageToFormat(url, filename, format) {
