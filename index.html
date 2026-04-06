@@ -1198,7 +1198,11 @@
     /* ================================================== */
         /* === تصميم الدردشة الذكي لوضع الهاتف (Sliding) === */
         /* ================================================== */
-               
+        
+        /* ================================================== */
+        /* === إصلاح أبعاد نافذة الدردشة في الموبايل === */
+        /* ================================================== */
+        
         body.mobile-mode #chatModal .modal-content {
             width: 100vw !important;
             height: 100vh !important;
@@ -10493,6 +10497,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             document.body.classList.add('mobile-mode');
         }
         updateMobileStatusUI();
+        
+        // السطر الجديد الذي سيجبر النص على التحديث فوراً
+        updateGreetingText(); 
     }
 
     // استدعاء الوظيفة عند التحميل
@@ -10559,23 +10566,31 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
     // 1. دالة لتحديث نص التحية بناءً على وضع الشاشة
     function updateGreetingText() {
-        if (!currentUser) {
-            // إذا لم يوجد مستخدم بعد، حاول جلبه من الذاكرة
-            const storedUser = localStorage.getItem('msl_currentUser');
-            if (storedUser) currentUser = storedUser;
-            else return; // إذا لا يوجد مستخدم فعلياً لا تفعل شيئاً
-        }
-        
+        if (!currentUser) return;
         const greetingElement = document.getElementById('greetingText');
         const isMobile = document.body.classList.contains('mobile-mode');
         
-        if (greetingElement) {
-            if (isMobile) {
-                greetingElement.innerText = "د." + currentUser;
-            } else {
-                greetingElement.innerText = "مرحبا دكتور " + currentUser;
-            }
+        if (isMobile) {
+            greetingElement.innerText = "د." + currentUser; // شكل مختصر للموبايل
+        } else {
+            greetingElement.innerText = "مرحبا دكتور " + currentUser; // شكل كامل للكمبيوتر
         }
+
+        // إضافة مستمع لمراقبة تغير حجم الشاشة أو تدوير الهاتف
+        window.addEventListener('resize', function() {
+            const isSmallScreen = window.innerWidth <= 768;
+            const savedMode = localStorage.getItem('msl_mobileMode') === 'true';
+            
+            // تفعيل الوضع تلقائياً إذا صغرت الشاشة
+            if (isSmallScreen || savedMode) {
+                document.body.classList.add('mobile-mode');
+            } else {
+                document.body.classList.remove('mobile-mode');
+            }
+            
+            // تحديث الاختصار (د. / مرحبا دكتور)
+            updateGreetingText();
+        });
     }
 
     // 2. دالة إظهار التطبيق بعد تسجيل الدخول
@@ -10592,17 +10607,12 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
     function initMobileMode() {
         const savedMode = localStorage.getItem('msl_mobileMode');
         
-        // الكشف عن الوضع المحفوظ أو حجم الشاشة
         if (savedMode === 'true' || (savedMode === null && window.innerWidth <= 768)) {
             document.body.classList.add('mobile-mode');
         }
-        
         updateMobileToggleUI();
-        
-        // السطر الأهم: تحديث نص التحية فور تهيئة النظام
-        if (currentUser) {
-            updateGreetingText(); 
-        }
+        // تحديث الاسم ليناسب الشاشة عند الفتح
+        updateGreetingText(); 
     }
 
     // 4. دالة زر تشغيل/إيقاف وضع الهاتف
