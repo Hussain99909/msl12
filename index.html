@@ -1425,7 +1425,195 @@
         border-bottom-color: #333 !important;
     }
 
+    /* ================================================================== */
+    /* === تصميم وضع الهاتف لنوافذ (احتياج صفر) و (فوق الحاجة) === */
+    /* ================================================================== */
 
+    /* إلغاء العرض الثابت للجدول وجعله مرناً */
+    body.mobile-mode #zeroNeedModal table,
+    body.mobile-mode #aboveNeedModal table {
+        min-width: 100% !important;
+        display: block;
+    }
+
+    /* إخفاء رأس الجدول في وضع الهاتف */
+    body.mobile-mode #zeroNeedModal thead,
+    body.mobile-mode #aboveNeedModal thead {
+        display: none !important;
+    }
+
+    body.mobile-mode #zeroNeedModal tbody,
+    body.mobile-mode #aboveNeedModal tbody {
+        display: block;
+        width: 100%;
+    }
+
+    /* تحويل الصف إلى بطاقة (Card) */
+    body.mobile-mode #zeroNeedModal tr,
+    body.mobile-mode #aboveNeedModal tr {
+        display: flex !important;
+        flex-wrap: wrap;
+        background: #fff;
+        margin-bottom: 15px;
+        border-radius: 12px;
+        padding: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        position: relative;
+        border: 1px solid #e8e8e8;
+    }
+
+    /* 1. إخفاء التسلسل لتوفير المساحة */
+    body.mobile-mode #zeroNeedModal td:nth-child(1),
+    body.mobile-mode #aboveNeedModal td:nth-child(1) {
+        display: none !important;
+    }
+
+    /* 2. اسم المادة (العنوان الرئيسي للبطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(2),
+    body.mobile-mode #aboveNeedModal td:nth-child(2) {
+        width: 100%;
+        border: none;
+        font-size: 16px;
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 0 0 10px 40px; /* ترك مساحة لزر الحذف */
+        border-bottom: 1px solid #f0f0f0;
+        margin-bottom: 10px;
+        text-align: right;
+        display: block;
+    }
+
+    /* 3 & 4. الرمز الوطني والوحدة (بجانب بعضهما) */
+    body.mobile-mode #zeroNeedModal td:nth-child(3),
+    body.mobile-mode #zeroNeedModal td:nth-child(4),
+    body.mobile-mode #aboveNeedModal td:nth-child(3),
+    body.mobile-mode #aboveNeedModal td:nth-child(4) {
+        width: 50%;
+        border: none;
+        font-size: 13px;
+        color: #7f8c8d;
+        padding: 5px 0;
+        display: block;
+        text-align: right;
+    }
+    body.mobile-mode #zeroNeedModal td:nth-child(3)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(3)::before { content: "الرمز: "; font-weight: bold; color: #555; }
+    body.mobile-mode #zeroNeedModal td:nth-child(4)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(4)::before { content: "الوحدة: "; font-weight: bold; color: #555; }
+
+    /* 5 & 6. الاحتياج الشهري والكمية (حقول الإدخال جنباً إلى جنب) */
+    body.mobile-mode #zeroNeedModal td:nth-child(5),
+    body.mobile-mode #zeroNeedModal td:nth-child(6),
+    body.mobile-mode #aboveNeedModal td:nth-child(5),
+    body.mobile-mode #aboveNeedModal td:nth-child(6) {
+        width: 50%;
+        border: none;
+        padding: 10px 5px;
+        display: block;
+        box-sizing: border-box;
+    }
+
+    /* إضافة عناوين توضيحية فوق حقول الإدخال */
+    body.mobile-mode #zeroNeedModal td:nth-child(5)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(5)::before { content: "الاحتياج الشهري"; display: block; font-size: 12px; color: #555; font-weight: bold; margin-bottom: 5px; text-align: center; }
+    body.mobile-mode #zeroNeedModal td:nth-child(6)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(6)::before { content: "الكمية للشراء"; display: block; font-size: 12px; color: #555; font-weight: bold; margin-bottom: 5px; text-align: center; }
+
+    body.mobile-mode .zn-table-input {
+        width: 100% !important;
+        height: 40px;
+        font-size: 15px;
+    }
+
+    /* 7. حقل السبب (يأخذ العرض بالكامل أسفل البطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(7),
+    body.mobile-mode #aboveNeedModal td:nth-child(7) {
+        width: 100%;
+        border: none;
+        border-top: 1px solid #f0f0f0;
+        padding-top: 10px;
+        margin-top: 10px;
+        display: block;
+        clear: both; /* لضمان نزوله أسفل الحقول السابقة */
+    }
+
+    body.mobile-mode #zeroNeedModal td:nth-child(7)::before,
+    body.mobile-mode #aboveNeedModal td:nth-child(7)::before { 
+        content: "السبب:"; 
+        display: block; 
+        font-size: 13px; 
+        color: #555; 
+        font-weight: bold; 
+        margin-bottom: 8px; 
+        text-align: right; 
+    }
+
+    /* تنسيق الحاوية التي تضم مربع النص وزر الاختيار ▼ */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) > div,
+    body.mobile-mode #aboveNeedModal td:nth-child(7) > div {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+        align-items: center;
+    }
+
+    /* 🌟 السطر السحري: منع مربع النص من التمدد وقص النص الطويل بـ (...) */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) input[type="text"],
+    body.mobile-mode #aboveNeedModal td:nth-child(7) input[type="text"] {
+        flex: 1; /* يأخذ المساحة المتبقية فقط */
+        min-width: 0; /* ضروري جداً لمنع الـ flexbox من التمدد بسبب النص الطويل */
+        text-overflow: ellipsis; /* إضافة نقاط (...) إذا كان النص طويلاً */
+        white-space: nowrap; /* منع نزول النص لسطر جديد داخل الحقل */
+        overflow: hidden; /* إخفاء النص الزائد */
+        font-size: 13px !important;
+    }
+
+    /* زر القائمة المنسدلة للأسباب الجاهزة */
+    body.mobile-mode #zeroNeedModal td:nth-child(7) select,
+    body.mobile-mode #aboveNeedModal td:nth-child(7) select {
+        flex-shrink: 0; /* يمنع الزر من الانضغاط */
+        width: 45px !important;
+    }y.mobile-mode #aboveNeedModal td:nth-child(7)::before { content: "السبب:"; display: block; font-size: 13px; color: #555; font-weight: bold; margin-bottom: 8px; text-align: right; }
+
+    /* 8. زر الحذف (في أعلى يسار البطاقة) */
+    body.mobile-mode #zeroNeedModal td:nth-child(8),
+    body.mobile-mode #aboveNeedModal td:nth-child(8) {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        padding: 0;
+        width: auto;
+        border: none;
+        display: block !important;
+    }
+    body.mobile-mode #zeroNeedModal td:nth-child(8) button,
+    body.mobile-mode #aboveNeedModal td:nth-child(8) button {
+        background: #ffeaa7;
+        color: #e74c3c !important;
+        padding: 5px 10px;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    /* --- توافق الوضع الليلي لهذه البطاقات --- */
+    body.dark-mode.mobile-mode #zeroNeedModal tr,
+    body.dark-mode.mobile-mode #aboveNeedModal tr {
+        background: #1e1e1e !important;
+        border-color: #333 !important;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td:nth-child(2),
+    body.dark-mode.mobile-mode #aboveNeedModal td:nth-child(2) {
+        color: #64b5f6;
+        border-bottom-color: #333;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td:nth-child(7),
+    body.dark-mode.mobile-mode #aboveNeedModal td:nth-child(7) {
+        border-top-color: #333;
+    }
+    body.dark-mode.mobile-mode #zeroNeedModal td::before,
+    body.dark-mode.mobile-mode #aboveNeedModal td::before {
+        color: #aaa !important;
+    }
 
     </style>
 </head>
@@ -3752,7 +3940,7 @@
         div.id = `msg-${msg.id}`; 
         
         let contentHtml = '';
-        const deleteBtnHtml = isMe || true ? `<button class="msg-delete-btn" title="مسح الرسالة" onclick="deleteMessage('${msg.id}')">✖</button>` : '';
+        const deleteBtnHtml = `<button class="msg-delete-btn" title="مسح الرسالة" onclick="deleteMessage('${msg.id}')">✖</button>`;
         
         if (msg.type === 'text') {
             contentHtml = `<div>${escapeHtml(msg.content)}</div>`;
@@ -3767,44 +3955,40 @@
         } else if (msg.type === 'audio') {
             contentHtml = `<audio controls src="${msg.content}" style="max-width:200px;"></audio>`;
         } else if (msg.type === 'session') {
-            // معالجة ذكية لاستخراج نوع الجلسة والبيانات من داخل الحزمة
+            // معالجة ذكية لاستخراج نوع الجلسة
             let sType = 'main';
             let actualData = [];
             let iCount = 0;
 
-            // إذا كانت البيانات مرسلة بالطريقة الجديدة ومغلفة داخل كائن
             if (msg.sessionData && msg.sessionData.sessionType) {
                 sType = msg.sessionData.sessionType;
                 actualData = msg.sessionData.sessionData;
                 iCount = msg.sessionData.itemsCount || 0;
-            } 
-            // توافق مع الرسائل القديمة جداً
-            else {
+            } else {
                 sType = msg.sessionType || 'main';
                 actualData = msg.sessionData || [];
                 iCount = msg.itemsCount || (Array.isArray(actualData) ? actualData.length : 0);
             }
 
+            // تحديد المسميات والألوان حسب نوع الجلسة
             let typeName = "القائمة الرئيسية";
             let typeIcon = "📑";
             let btnColor = "#27ae60";
 
-            if (sType === 'zn') { typeName = "احتياج صفر"; typeIcon = "🛒"; btnColor = "#3498db"; }
-            else if (sType === 'an') { typeName = "فوق الحاجة"; typeIcon = "🛒"; btnColor = "#e67e22"; }
+            if (sType === 'zn') { typeName = "احتياج صفر (مواد)"; typeIcon = "🛒"; btnColor = "#3498db"; }
+            else if (sType === 'an') { typeName = "فوق الحاجة (مواد)"; typeIcon = "🛒"; btnColor = "#e67e22"; }
+            else if (sType === 'znm') { typeName = "احتياج صفر (أدوية)"; typeIcon = "💊"; btnColor = "#3498db"; }
+            else if (sType === 'anm') { typeName = "فوق الحاجة (أدوية)"; typeIcon = "💊"; btnColor = "#e67e22"; }
             else if (sType === 'eval') { typeName = "الفحص والتقييم"; typeIcon = "📋"; btnColor = "#8e44ad"; }
 
-            // تشفير آمن للبيانات المستخرجة
             let rawJson = "[]";
-            try {
-                rawJson = JSON.stringify(actualData);
-            } catch(e) {}
-            
+            try { rawJson = JSON.stringify(actualData); } catch(e) {}
             const safeData = btoa(unescape(encodeURIComponent(rawJson)));
 
             contentHtml = `
                 <div class="chat-special-content">
                     <strong>${typeIcon} جلسة عمل (${typeName})</strong><br>
-                    <small>العدد: ${iCount} مادة</small><br>
+                    <small>العدد: ${iCount} مادة/دواء</small><br>
                     <button style="margin-top:8px; background:${btnColor}; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;" 
                     onclick='loadSessionFromChatBase64("${safeData}", "${sType}")'>📥 فتح النافذة واستيراد</button>
                 </div>
@@ -3849,11 +4033,48 @@
         container.appendChild(div);
     }
 
+    // --- دالة المسح الجذري للرسائل (شاشة + ذاكرة + سيرفر) ---
     function deleteMessage(msgId) {
-        if(confirm("هل أنت متأكد من مسح هذه الرسالة؟")) {
+        if(confirm("هل أنت متأكد من مسح هذه الرسالة بشكل نهائي؟")) {
+            
+            // حماية إضافية للتأكد من وجود طرف للمحادثة
+            if (!currentChatPartner) return; 
+            
             const roomId = getRoomId(currentUser, currentChatPartner);
-            db.ref('chats/' + roomId + '/' + msgId).remove();
-            // مسح الرسالة سيتفعل برمجياً لدى الطرفين بفضل مستمع child_removed
+            
+            // 1. المسح الفوري من الشاشة (DOM) لسرعة الاستجابة
+            const msgElement = document.getElementById('msg-' + msgId);
+            if (msgElement) msgElement.remove();
+
+            // 2. المسح الفوري من المصفوفة الحالية والذاكرة المؤقتة (Cache)
+            currentMessages = currentMessages.filter(m => m.id !== msgId);
+            saveChatToCache(roomId, currentMessages);
+
+            // مسح الرسالة من عداد الإشعارات إذا كانت غير مقروءة
+            if (unreadMessagesTracker.has(msgId)) {
+                unreadMessagesTracker.delete(msgId);
+                if (typeof updateGlobalBadgeAndToast === 'function') {
+                    updateGlobalBadgeAndToast();
+                }
+            }
+
+            // تحديث قائمة الملفات المشتركة إذا كانت مفتوحة
+            if(document.getElementById('sharedFilesModal').style.display === 'flex') {
+                if (typeof renderSharedFilesList === 'function') {
+                    renderSharedFilesList();
+                }
+            }
+
+            // 3. المسح النهائي من السيرفر (Firebase)
+            db.ref('chats/' + roomId + '/' + msgId).remove()
+            .then(() => {
+                console.log("✅ تم مسح الرسالة من السيرفر بشكل نهائي.");
+            })
+            .catch((error) => {
+                // تنبيه في حال كان الإنترنت مفصولاً لحظة الحذف
+                console.error("Delete Error:", error);
+                alert("⚠️ تم مسح الرسالة من جهازك، ولكن يبدو أن هناك مشكلة في الإنترنت تمنع مسحها من السيرفر الآن. سيتم مسحها بمجرد عودة الاتصال.");
+            });
         }
     }
 
@@ -3962,6 +4183,8 @@
 
     // --- دوال مشاركة الجلسات المتقدمة (محدثة ومحمية) ---
 
+    // --- دوال مشاركة الجلسات المتقدمة (محدثة ومحمية من التكرار) ---
+
     function openShareSessionMenu() {
         if (!currentChatPartner) {
             alert("الرجاء اختيار زميل للمراسلة أولاً.");
@@ -3980,10 +4203,16 @@
             sessionTitle = "جلسة الشراء الرئيسية";
         } else if (type === 'zn') {
             items = typeof zn_items !== 'undefined' && zn_items.length > 0 ? zn_items : loadFromStorage('znTempState', []);
-            sessionTitle = "احتياج صفر";
+            sessionTitle = "احتياج صفر (مواد)";
         } else if (type === 'an') {
             items = typeof an_items !== 'undefined' && an_items.length > 0 ? an_items : loadFromStorage('anTempState', []);
-            sessionTitle = "فوق الحاجة";
+            sessionTitle = "فوق الحاجة (مواد)";
+        } else if (type === 'znm') {
+            items = typeof znm_items !== 'undefined' && znm_items.length > 0 ? znm_items : loadFromStorage('znmTempState', []);
+            sessionTitle = "احتياج صفر (أدوية)";
+        } else if (type === 'anm') {
+            items = typeof anm_items !== 'undefined' && anm_items.length > 0 ? anm_items : loadFromStorage('anmTempState', []);
+            sessionTitle = "فوق الحاجة (أدوية)";
         } else if (type === 'eval') {
             const evalState = eval_scrapeCurrentState();
             items = evalState.items.filter(i => i.name && i.name.trim() !== ""); 
@@ -4007,7 +4236,7 @@
             return;
         }
 
-        if (confirm(`هل تريد إرسال مواد (${sessionTitle}) بعدد (${items.length} مادة) إلى ${currentChatPartner}؟`)) {
+        if (confirm(`هل تريد إرسال مواد (${sessionTitle}) بعدد (${items.length} مادة/دواء) إلى ${currentChatPartner}؟`)) {
              sendMessage('session', '', {
                  sessionData: items,
                  itemsCount: items.length,
@@ -4032,15 +4261,89 @@
         if (!data) return;
 
         let typeName = "القائمة الرئيسية للشراء";
-        if (sessionType === 'zn') typeName = "نافذة شراء احتياج صفر";
-        else if (sessionType === 'an') typeName = "نافذة شراء فوق الحاجة";
+        if (sessionType === 'zn') typeName = "نافذة شراء احتياج صفر (مواد)";
+        else if (sessionType === 'an') typeName = "نافذة شراء فوق الحاجة (مواد)";
+        else if (sessionType === 'znm') typeName = "نافذة شراء أدوية احتياج صفر";
+        else if (sessionType === 'anm') typeName = "نافذة شراء أدوية فوق الحاجة";
         else if (sessionType === 'eval') typeName = "نافذة نظام الفحص والتقييم";
 
-        if (!confirm(`سيتم فتح (${typeName}) واستبدال المواد الموجودة فيها حالياً ببيانات هذه الجلسة.\n\nهل أنت متأكد؟`)) {
+        if (!confirm(`سيتم فتح (${typeName}) واستبدال البيانات الموجودة فيها حالياً ببيانات هذه الجلسة.\n\nهل أنت متأكد؟`)) {
             return;
         }
 
         closeChatModal(); 
+
+        if (sessionType === 'main') {
+            document.getElementById("tableBody").innerHTML = "";
+            document.getElementById("emptyMsg").style.display = "block";
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    item.isFromSession = true; 
+                    selectItem(item);
+                });
+            }
+            saveTempSession();
+            alert("تم استيراد القائمة الرئيسية بنجاح ✅");
+        } 
+        else if (sessionType === 'zn') {
+            zn_items = Array.isArray(data) ? data : [];
+            zn_saveTempData(); 
+            openZeroNeedModal(); 
+            alert("تم استيراد جلسة احتياج صفر للمواد بنجاح ✅");
+        }
+        else if (sessionType === 'an') {
+            an_items = Array.isArray(data) ? data : [];
+            an_saveTempData();
+            openAboveNeedModal();
+            alert("تم استيراد جلسة فوق الحاجة للمواد بنجاح ✅");
+        }
+        else if (sessionType === 'znm') {
+            znm_items = Array.isArray(data) ? data : [];
+            znm_saveTempData(); 
+            openZeroNeedMedModal(); 
+            alert("تم استيراد جلسة أدوية احتياج صفر بنجاح ✅");
+        }
+        else if (sessionType === 'anm') {
+            anm_items = Array.isArray(data) ? data : [];
+            anm_saveTempData();
+            openAboveNeedMedModal();
+            alert("تم استيراد جلسة أدوية فوق الحاجة بنجاح ✅");
+        }
+        else if (sessionType === 'eval') {
+            localStorage.setItem('evalTempState_v2', JSON.stringify(data));
+            openEvaluationModal(); 
+            alert("تم استيراد جلسة الفحص والتقييم بنجاح ✅");
+        }
+    }
+
+    // دالة فك التشفير الآمنة (وسيطة لمنع الأخطاء)
+    function loadSessionFromChatBase64(base64Data, sessionType) {
+        try {
+            const jsonString = decodeURIComponent(escape(atob(base64Data)));
+            const data = JSON.parse(jsonString);
+            loadSessionFromChat(data, sessionType);
+        } catch(e) {
+            alert("حدث خطأ في قراءة بيانات الجلسة!");
+            console.error(e);
+        }
+    }
+
+    function loadSessionFromChat(data, sessionType = 'main') {
+        if (!data) return;
+
+        let typeName = "القائمة الرئيسية للشراء";
+        if (sessionType === 'zn') typeName = "نافذة شراء احتياج صفر (مواد)";
+        else if (sessionType === 'an') typeName = "نافذة شراء فوق الحاجة (مواد)";
+        else if (sessionType === 'znm') typeName = "نافذة شراء أدوية احتياج صفر";
+        else if (sessionType === 'anm') typeName = "نافذة شراء أدوية فوق الحاجة";
+        else if (sessionType === 'eval') typeName = "نافذة نظام الفحص والتقييم";
+
+        // التنبيه الذكي بفتح النافذة المخصصة
+        if (!confirm(`سيتم فتح (${typeName}) واستبدال البيانات الموجودة فيها حالياً ببيانات هذه الجلسة.\n\nهل أنت متأكد؟`)) {
+            return;
+        }
+
+        closeChatModal(); // إغلاق المحادثة فوراً للتركيز على النافذة المفتوحة
 
         if (sessionType === 'main') {
             document.getElementById("tableBody").innerHTML = "";
@@ -4058,13 +4361,25 @@
             zn_items = Array.isArray(data) ? data : [];
             zn_saveTempData(); 
             openZeroNeedModal(); 
-            alert("تم استيراد جلسة احتياج صفر وفتح النافذة بنجاح ✅");
+            alert("تم استيراد الجلسة وفتح نافذة احتياج صفر (مواد) بنجاح ✅");
         }
         else if (sessionType === 'an') {
             an_items = Array.isArray(data) ? data : [];
             an_saveTempData();
             openAboveNeedModal();
-            alert("تم استيراد جلسة فوق الحاجة وفتح النافذة بنجاح ✅");
+            alert("تم استيراد الجلسة وفتح نافذة فوق الحاجة (مواد) بنجاح ✅");
+        }
+        else if (sessionType === 'znm') {
+            znm_items = Array.isArray(data) ? data : [];
+            znm_saveTempData(); 
+            openZeroNeedMedModal(); // فتح نافذة الأدوية
+            alert("تم استيراد الجلسة وفتح نافذة أدوية احتياج صفر بنجاح ✅");
+        }
+        else if (sessionType === 'anm') {
+            anm_items = Array.isArray(data) ? data : [];
+            anm_saveTempData();
+            openAboveNeedMedModal(); // فتح نافذة الأدوية
+            alert("تم استيراد الجلسة وفتح نافذة أدوية فوق الحاجة بنجاح ✅");
         }
         else if (sessionType === 'eval') {
             localStorage.setItem('evalTempState_v2', JSON.stringify(data));
@@ -10844,18 +11159,80 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         if(sessions.length===0) { ul.innerHTML = '<li style="text-align:center;">لا توجد جلسات</li>'; return; }
         sessions.reverse().forEach(s => {
             const li = document.createElement("li"); li.className = "session-item";
-            li.innerHTML = `<div><strong>${s.name}</strong><br><small>${s.date} - (${s.items.length} دواء)</small></div>
-            <div style="display:flex; gap:5px;"><button class="btn-load-session" style="background:#8e44ad;" onclick="med_shareSession('${type}', ${s.id})">إرسال 💬</button><button class="btn-load-session" onclick="${type}_loadSession(${s.id})">تحميل 📥</button><button class="btn-delete-session" onclick="${type}_deleteSession(${s.id})">حذف 🗑️</button></div>`;
+            li.innerHTML = `
+                <div class="session-info"><strong>${s.name}</strong><br><small>${s.date} - (${s.items.length} دواء)</small></div>
+                <div class="session-actions" style="display:flex; gap:5px; flex-wrap:wrap; justify-content:flex-end;">
+                    <button class="btn-load-session" style="background:#2980b9;" onclick="med_exportToMainTable('${type}', ${s.id})" title="إرسال هذه الأدوية إلى الجدول الرئيسي">تصدير للرئيسية 📤</button>
+                    <button class="btn-load-session" style="background:#8e44ad;" onclick="med_shareSession('${type}', ${s.id})">إرسال 💬</button>
+                    <button class="btn-load-session" onclick="${type}_loadSession(${s.id})">تحميل 📥</button>
+                    <button class="btn-delete-session" onclick="${type}_deleteSession(${s.id})">حذف 🗑️</button>
+                </div>`;
             ul.appendChild(li);
         });
     }
+
+    // --- الدالة الجديدة المسؤولة عن نقل الأدوية للجدول الرئيسي ---
+    function med_exportToMainTable(type, sessionId) {
+        const isZN = type === 'znm';
+        const key = isZN ? ZNM_SESSIONS_KEY : ANM_SESSIONS_KEY;
+        let sessions = loadFromStorage(key, []);
+        const session = sessions.find(s => s.id === sessionId);
+
+        if (session) {
+            if (confirm(`هل تريد تصدير (${session.items.length}) دواء إلى القائمة الرئيسية؟\nسيتم ترك حقل الملاحظات فارغاً.`)) {
+                
+                // إغلاق النوافذ للتركيز على الجدول الرئيسي
+                if(isZN) {
+                    znm_closeSessionsModal();
+                    closeZeroNeedMedModal();
+                } else {
+                    anm_closeSessionsModal();
+                    closeAboveNeedMedModal();
+                }
+
+                let addedCount = 0;
+                let skippedCount = 0;
+
+                session.items.forEach(item => {
+                    const mainItemFormat = {
+                        name: item.name,
+                        code: item.code,
+                        unit: item.unit,
+                        qty_buy: item.buyQty,
+                        stock: 0,
+                        monthly_consumption: item.monthlyNeed,
+                        annual_need: 0,
+                        monthly_need: item.monthlyNeed,
+                        cost: 0,
+                        notes: "", 
+                        isFromSession: true
+                    };
+                    
+                    let isAdded = selectItem(mainItemFormat, true);
+                    if (isAdded) {
+                        addedCount++;
+                    } else {
+                        skippedCount++;
+                    }
+                });
+
+                let finalMessage = `✅ تمت عملية التصدير بنجاح.\nتمت إضافة: ${addedCount} دواء.`;
+                if (skippedCount > 0) {
+                    finalMessage += `\n⚠️ تم تخطي: ${skippedCount} دواء (موجود مسبقاً في الجدول الرئيسي).`;
+                }
+                alert(finalMessage);
+                
+                saveTempSession(); // حفظ الجدول الرئيسي
+            }
+        }
+    }
+
     function znm_renderSessions() { renderMedSessions('znm'); }
     function anm_renderSessions() { renderMedSessions('anm'); }
     function znm_loadSession(id) { let s=loadFromStorage(ZNM_SESSIONS_KEY,[]).find(x=>x.id===id); if(s&&confirm("استبدال؟")){ znm_items=JSON.parse(JSON.stringify(s.items)); znm_renderTable(); znm_saveTempData(); znm_closeSessionsModal(); } }
     function anm_loadSession(id) { let s=loadFromStorage(ANM_SESSIONS_KEY,[]).find(x=>x.id===id); if(s&&confirm("استبدال؟")){ anm_items=JSON.parse(JSON.stringify(s.items)); anm_renderTable(); anm_saveTempData(); anm_closeSessionsModal(); } }
     function znm_deleteSession(id) { if(confirm("حذف؟")){ let s=loadFromStorage(ZNM_SESSIONS_KEY,[]).filter(x=>x.id!==id); saveToStorage(ZNM_SESSIONS_KEY, s); znm_renderSessions(); } }
     function anm_deleteSession(id) { if(confirm("حذف؟")){ let s=loadFromStorage(ANM_SESSIONS_KEY,[]).filter(x=>x.id!==id); saveToStorage(ANM_SESSIONS_KEY, s); anm_renderSessions(); } }
-
     // --- مشاركة جلسات الأدوية ---
     let medSessionToShare = { type: null, id: null };
     function med_shareSession(type, id) {
@@ -11107,75 +11484,101 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
 <script>
 (function() {
+    // حفظ دالة النقر الأصلية لتجنب التكرار
     const originalClick = HTMLAnchorElement.prototype.click;
 
-    // --- نافذة اختيار صيغة المشاركة ---
-    async function promptShareFormat() {
+    // --- تصميم وإظهار القائمة الذكية للملفات ---
+    async function promptFileActions(fileName, fileUrl) {
         return new Promise((resolve) => {
             const overlay = document.createElement('div');
             overlay.className = 'modal-overlay';
             overlay.style.display = 'flex';
             overlay.style.zIndex = '9999';
+            overlay.style.alignItems = 'flex-end'; // لظهور القائمة من الأسفل في الموبايل
 
             const content = document.createElement('div');
             content.className = 'modal-content';
-            content.style.width = '350px';
+            content.style.width = '100%';
+            content.style.borderBottomLeftRadius = '0';
+            content.style.borderBottomRightRadius = '0';
+            content.style.padding = '20px';
+            content.style.animation = 'slideUpAttach 0.3s ease-out forwards';
+
+            // التحقق من نوع الملف لمعرفة ما إذا كان يدعم التحويل لصور/PDF
+            const isDoc = fileName.toLowerCase().endsWith('.doc');
+            const isImage = fileName.match(/\.(jpeg|jpg|gif|png)$/i);
+            const canConvertToVisual = isDoc || isImage;
+
+            let conversionButtons = '';
+            if (canConvertToVisual) {
+                conversionButtons = `
+                    <button id="btnShareImg" class="modal-menu-btn" style="background: #e8f0fe; border-color: #3498db; text-align: right; font-size: 16px;">
+                        <strong>🖼️ مشاركة كـ صورة</strong>
+                    </button>
+                    <button id="btnSharePdf" class="modal-menu-btn" style="background: #fdedec; border-color: #e74c3c; text-align: right; font-size: 16px;">
+                        <strong>📄 مشاركة كـ PDF</strong>
+                    </button>
+                `;
+            }
 
             content.innerHTML = `
-                <div class="modal-title">📤 خيارات المشاركة</div>
-                <div style="font-size: 14px; color: #555; margin-bottom: 20px;">كيف تفضل إرسال هذا الملف؟</div>
+                <div style="font-weight: bold; font-size: 16px; margin-bottom: 15px; color: #2c3e50; text-align:center; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                    خيارات الملف: <br><span style="color:#7f8c8d; font-size:13px;" dir="ltr">${fileName}</span>
+                </div>
                 
-                <button id="btnSharePdf" class="modal-menu-btn" style="background: #eafaf1; border-color: #27ae60;">
-                    <strong>📄 مشاركة كملف PDF</strong>
-                    <span>دمج جميع الصفحات في ملف واحد (مستحسن للطباعة)</span>
+                <button id="btnShareNative" class="modal-menu-btn" style="background: #eafaf1; border-color: #27ae60; text-align: right; font-size: 16px;">
+                    <strong>📤 مشاركة الملف مباشرة</strong>
                 </button>
                 
-                <button id="btnShareImg" class="modal-menu-btn" style="background: #e8f0fe; border-color: #3498db;">
-                    <strong>🖼️ مشاركة كصور</strong>
-                    <span>إرسال كل صفحة كصورة مستقلة في المحادثة</span>
+                <button id="btnDownloadOnly" class="modal-menu-btn" style="background: #f9f9f9; border-color: #ccc; text-align: right; font-size: 16px;">
+                    <strong>📥 تنزيل وحفظ في الجهاز</strong>
                 </button>
+                
+                ${conversionButtons}
                 
                 <div style="margin-top: 15px;">
-                    <button id="btnShareCancel" class="btn-cancel" style="width: 100%;">إلغاء الأمر</button>
+                    <button id="btnShareCancel" class="btn-cancel" style="width: 100%; font-size: 16px; padding: 12px;">إلغاء</button>
                 </div>
             `;
 
             overlay.appendChild(content);
             document.body.appendChild(overlay);
 
-            document.getElementById('btnSharePdf').onclick = () => { overlay.remove(); resolve('pdf'); };
-            document.getElementById('btnShareImg').onclick = () => { overlay.remove(); resolve('image'); };
+            // إضافة الأحداث للأزرار
+            document.getElementById('btnShareNative').onclick = () => { overlay.remove(); resolve('share_file'); };
+            document.getElementById('btnDownloadOnly').onclick = () => { overlay.remove(); resolve('download'); };
+            if(canConvertToVisual) {
+                document.getElementById('btnShareImg').onclick = () => { overlay.remove(); resolve('convert_image'); };
+                document.getElementById('btnSharePdf').onclick = () => { overlay.remove(); resolve('convert_pdf'); };
+            }
             document.getElementById('btnShareCancel').onclick = () => { overlay.remove(); resolve(null); };
+            
+            // إغلاق عند النقر خارج القائمة
+            overlay.onclick = (e) => {
+                if(e.target === overlay) { overlay.remove(); resolve(null); }
+            };
         });
     }
 
-    // --- المشاركة المتعددة عبر الهاتف ---
-    async function shareMultipleFiles(filesArray, title) {
+    // --- المشاركة المباشرة (Native Share) للموبايل ---
+    async function shareNativeFile(url, filename) {
         try {
-            if (navigator.share && navigator.canShare && navigator.canShare({ files: filesArray })) {
-                if(typeof showToast === 'function') showToast("⏳ جاري فتح نافذة المشاركة...");
-                await navigator.share({
-                    files: filesArray,
-                    title: title
-                });
-            } else {
-                filesArray.forEach(file => {
-                    const url = URL.createObjectURL(file);
-                    triggerDownloadFallback(url, file.name);
-                });
-            }
-        } catch (error) {
-            console.error("Share error:", error);
-        }
-    }
-
-    async function shareSingleUrl(url, filename) {
-        try {
+            if(typeof showToast === 'function') showToast("⏳ جاري تجهيز الملف للمشاركة...");
             const response = await fetch(url);
             const blob = await response.blob();
             const file = new File([blob], filename, { type: blob.type });
-            await shareMultipleFiles([file], filename);
+            
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({
+                    files: [file],
+                    title: filename
+                });
+            } else {
+                alert("جهازك أو متصفحك لا يدعم مشاركة هذا النوع من الملفات مباشرة. سيتم تنزيله بدلاً من ذلك.");
+                triggerDownloadFallback(url, filename);
+            }
         } catch (error) {
+            console.error("Share error:", error);
             triggerDownloadFallback(url, filename);
         }
     }
@@ -11184,53 +11587,99 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         const fallbackLink = document.createElement('a');
         fallbackLink.href = url;
         fallbackLink.download = filename;
-        fallbackLink.setAttribute('data-no-intercept', 'true');
+        fallbackLink.setAttribute('data-no-intercept', 'true'); // لمنع الدخول في حلقة مفرغة
         originalClick.call(fallbackLink);
     }
 
-    // --- اعتراض النقرات ---
+    // --- اعتراض النقرات على الروابط ---
     HTMLAnchorElement.prototype.click = async function() {
+        // إذا كان الرابط يمتلك هذا الوسم، نفذ النقر الافتراضي (للتنزيل الإجباري)
         if (this.getAttribute('data-no-intercept') === 'true') {
             return originalClick.call(this);
         }
 
         const isMobile = document.body.classList.contains('mobile-mode');
         
+        // إذا كنا في وضع الهاتف والروابط تحتوي على سمة download (ملفات)
         if (isMobile && this.download) {
-            const isDoc = this.download.endsWith('.doc');
+            const fileName = this.download;
+            const fileUrl = this.href;
+
+            // إظهار القائمة المنبثقة
+            const action = await promptFileActions(fileName, fileUrl);
             
-            if (isDoc) {
-                // إيقاف المعالجة وإظهار نافذة الخيارات للمستخدم
-                const format = await promptShareFormat();
-                if (!format) return; // تم النقر على "إلغاء"
+            if (!action) return; // تم النقر على إلغاء
 
-                const href = this.href;
-                const download = this.download;
+            if (action === 'download') {
+                triggerDownloadFallback(fileUrl, fileName);
+            } 
+            else if (action === 'share_file') {
+                shareNativeFile(fileUrl, fileName);
+            } 
+            else if (action === 'convert_image' || action === 'convert_pdf') {
+                const format = action === 'convert_image' ? 'image' : 'pdf';
+                
+                // إذا كان الملف صورة، نشاركها مباشرة كصورة أو نضعها في PDF
+                if(fileName.match(/\.(jpeg|jpg|gif|png)$/i)) {
+                     convertImageToFormat(fileUrl, fileName, format);
+                     return;
+                }
 
-                fetch(href)
+                // إذا كان الملف DOC (مولد كـ HTML من النظام)
+                fetch(fileUrl)
                     .then(res => res.text())
                     .then(text => {
-                        generateImageViaIframe(text, download, format);
+                        generateVisualViaIframe(text, fileName, format);
                     }).catch(err => {
-                        console.error(err);
-                        this.setAttribute('data-no-intercept', 'true');
-                        originalClick.call(this);
+                        alert("تعذر قراءة محتوى الملف للتحويل.");
+                        triggerDownloadFallback(fileUrl, fileName);
                     });
-                return; 
             }
-            
-            if (navigator.share) {
-                shareSingleUrl(this.href, this.download);
-                return; 
-            }
+            return; // إيقاف تنفيذ النقر الافتراضي
         }
         
+        // في الكمبيوتر أو روابط عادية، نفذ النقر الطبيعي
         originalClick.call(this);
     };
 
-    // --- محرك توليد الصور والـ PDF ---
-    async function generateImageViaIframe(htmlContent, originalFileName, format) {
-        if(typeof showToast === 'function') showToast("⏳ جاري التجهيز بأبعاد (A4)، يرجى الانتظار...");
+    // --- دالة مساعدة لتحويل الصور المباشرة لـ PDF أو مشاركتها ---
+    async function convertImageToFormat(url, filename, format) {
+        try {
+            if(typeof showToast === 'function') showToast("⏳ جاري التجهيز...");
+            const res = await fetch(url);
+            const blob = await res.blob();
+            
+            if(format === 'image') {
+                const file = new File([blob], filename, { type: blob.type });
+                if (navigator.share) await navigator.share({ files: [file] });
+                else triggerDownloadFallback(url, filename);
+            } else if (format === 'pdf') {
+                // تحويل الصورة لـ PDF
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF();
+                
+                // قراءة الصورة للحصول على أبعادها
+                const img = new Image();
+                img.src = URL.createObjectURL(blob);
+                img.onload = async () => {
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const pdfHeight = (img.height * pdfWidth) / img.width;
+                    pdf.addImage(img, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                    
+                    const pdfBlob = pdf.output('blob');
+                    const pdfFile = new File([pdfBlob], filename.replace(/\.[^/.]+$/, "") + ".pdf", { type: 'application/pdf' });
+                    if (navigator.share) await navigator.share({ files: [pdfFile] });
+                    else triggerDownloadFallback(URL.createObjectURL(pdfBlob), pdfFile.name);
+                };
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    }
+
+    // --- محرك توليد الصور والـ PDF للمستندات (HTML-Based DOC) ---
+    async function generateVisualViaIframe(htmlContent, originalFileName, format) {
+        if(typeof showToast === 'function') showToast("⏳ جاري التجهيز للتحويل، يرجى الانتظار...");
 
         let styleMatch = htmlContent.match(/<style[^>]*>([\s\S]*?)<\/style>/i);
         let originalStyle = styleMatch ? styleMatch[1] : '';
@@ -11241,7 +11690,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         bodyContent = bodyContent.replace(/<div class="?Section1"?[^>]*>/gi, '');
         bodyContent = bodyContent.replace(/<\/div>\s*$/i, '');
 
-        // معالجة الشعار
+        // معالجة الشعار ليعمل داخل الـ Canvas
         bodyContent = bodyContent.replace(/src=["']?OIP\.gif["']?/gi, 'src="https://i.ibb.co/6RS356SN/OIP.gif" crossorigin="anonymous"');
 
         const pages = bodyContent.split(/<br[^>]*class="?page-break"?[^>]*>|<br[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*>|<div[^>]*style="?[^"]*page-break-before:\s*always[^"]*"?[^>]*><\/div>/gi);
@@ -11254,10 +11703,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             let pageHtml = pages[i].trim();
             if (!pageHtml || pageHtml === '</div>') continue;
 
-            // تنظيف المسافات الضخمة
+            // تنظيف مسافات الطباعة ليناسب الموبايل
             pageHtml = pageHtml.replace(/margin-top:\s*[1-9]\d{2,}px/gi, 'margin-top: 30px');
             pageHtml = pageHtml.replace(/margin-bottom:\s*[1-9]\d{2,}px/gi, 'margin-bottom: 15px');
-            pageHtml = pageHtml.replace(/padding-top:\s*[1-9]\d{2,}px/gi, 'padding-top: 15px');
 
             const iframe = document.createElement('iframe');
             iframe.style.position = 'fixed';
@@ -11276,32 +11724,14 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <style>
                         ${originalStyle}
                         html, body { width: 794px !important; height: 1123px !important; margin: 0 !important; padding: 0 !important; background: white !important; overflow: hidden; }
-                        
-                        /* تم تقليل الـ padding الخارجي لإعطاء مساحة أكبر للمحتوى */
-                        .a4-page { width: 794px; height: 1123px; padding: 30px 40px; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: black; background: white; position: relative; }
-                        
+                        .a4-page { width: 794px; height: 1123px; padding: 30px 40px; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Arial, sans-serif; color: black; background: white; }
                         table { width: 100% !important; border-collapse: collapse !important; margin-bottom: 10px !important; }
                         th, td { padding: 6px 4px !important; color: black !important; }
-                        
                         table:not(.header-table):not(.signature-table):not(.table-footer-sigs) { border: 1px solid black !important; }
                         table:not(.header-table):not(.signature-table):not(.table-footer-sigs) td, table:not(.header-table):not(.signature-table):not(.table-footer-sigs) th { border: 1px solid black !important; }
-                        
                         .header-table, .header-table th, .header-table td, .signature-table, .signature-table th, .signature-table td, .table-footer-sigs, .table-footer-sigs th, .table-footer-sigs td, table[border="0"], table[border="0"] th, table[border="0"] td { border: none !important; }
-                        
-                        /* ========================================= */
-                        /* حل مشكلة المساحات الضخمة في استمارة الشراء */
-                        /* ========================================= */
                         .signature-table { margin-top: 15px !important; margin-bottom: 5px !important; }
                         p.MsoNormal { line-height: 1.1 !important; margin-bottom: 2px !important; }
-                        
-                        /* ضغط المسافات المبرمجة بـ pt */
-                        p[style*="margin-top:30.0pt"], p[style*="margin-top:37.5pt"] { margin-top: 15px !important; }
-                        p[style*="margin-top:11.25pt"] { margin-top: 5px !important; }
-                        div[style*="margin-top:15.0pt"], div[style*="margin-top:5.0pt"] { margin-top: 5px !important; margin-bottom: 5px !important; }
-                        td[style*="padding:7.5pt"] { padding: 2px !important; }
-                        hr { margin: 2px 0 !important; }
-                        /* ========================================= */
-
                         * { max-width: 100%; word-wrap: break-word; }
                         ::-webkit-scrollbar { display: none; } 
                     </style>
@@ -11314,24 +11744,22 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             doc.close();
 
             try {
+                // انتظار تحميل الصور (مثل الشعار)
                 const images = Array.from(doc.querySelectorAll('img'));
                 await Promise.all(images.map(img => {
                     if (img.complete) return Promise.resolve();
                     return new Promise((resolve) => { img.onload = resolve; img.onerror = resolve; });
                 }));
                 
-                await new Promise(r => setTimeout(r, 200)); 
+                await new Promise(r => setTimeout(r, 200)); // استقرار الـ DOM
 
                 const elementToCapture = doc.querySelector('.a4-page');
                 const canvas = await html2canvas(elementToCapture, { 
                     scale: 2, 
                     useCORS: true,       
-                    allowTaint: false,   
                     backgroundColor: "#ffffff",
                     width: 794,
-                    height: 1123,
-                    windowWidth: 794,
-                    windowHeight: 1123
+                    height: 1123
                 });
                 
                 const imgData = canvas.toDataURL('image/jpeg', 0.95);
@@ -11353,20 +11781,21 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             }
         }
 
-        // --- المعالجة النهائية حسب خيار المستخدم ---
+        // --- المعالجة النهائية بعد التحويل ---
         if (format === 'image' && generatedImagesAsFiles.length > 0) {
-            await shareMultipleFiles(generatedImagesAsFiles, baseName);
-            if(typeof showToast === 'function') showToast("✅ جاهز للمشاركة كصور!");
+            try {
+                if (navigator.share) await navigator.share({ files: generatedImagesAsFiles, title: baseName });
+                else {
+                    alert("المشاركة غير مدعومة، سيتم تنزيل الصور.");
+                    generatedImagesAsFiles.forEach(f => triggerDownloadFallback(URL.createObjectURL(f), f.name));
+                }
+            } catch (e) { console.log("تم إلغاء المشاركة"); }
             
         } else if (format === 'pdf' && generatedImagesAsBase64.length > 0) {
-            if(typeof showToast === 'function') showToast("⏳ جاري دمج الصور في ملف PDF...");
+            if(typeof showToast === 'function') showToast("⏳ جاري دمج الصفحات في ملف PDF...");
             
             const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
-            });
+            const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
 
             for (let i = 0; i < generatedImagesAsBase64.length; i++) {
                 if (i > 0) pdf.addPage();
@@ -11376,15 +11805,189 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             const pdfBlob = pdf.output('blob');
             const pdfFile = new File([pdfBlob], baseName + '.pdf', { type: 'application/pdf' });
             
-            await shareMultipleFiles([pdfFile], baseName);
-            if(typeof showToast === 'function') showToast("✅ جاهز للمشاركة كملف PDF!");
+            try {
+                if (navigator.share) await navigator.share({ files: [pdfFile], title: baseName });
+                else triggerDownloadFallback(URL.createObjectURL(pdfBlob), pdfFile.name);
+            } catch (e) { console.log("تم إلغاء المشاركة"); }
             
         } else {
-            alert("حدث خطأ، لم يتم توليد أي صفحات.");
+            alert("حدث خطأ أثناء معالجة المستند.");
         }
     }
 })();
 </script>
+<script>
+    // 1. الدالة الشاملة لاستقبال الرسائل وتحديد نوعها وأيقونتها بدقة
+    function renderMessage(msg) {
+        const container = document.getElementById('messagesContainer');
+        if(!container) return;
+        const div = document.createElement('div');
+        const isMe = msg.sender === currentUser;
+        
+        div.className = `message-bubble ${isMe ? 'msg-sent' : 'msg-received'}`;
+        div.id = `msg-${msg.id}`; 
+        
+        let contentHtml = '';
+        const deleteBtnHtml = `<button class="msg-delete-btn" title="مسح الرسالة" onclick="deleteMessage('${msg.id}')">✖</button>`;
+        
+        if (msg.type === 'text') {
+            contentHtml = `<div>${escapeHtml(msg.content)}</div>`;
+        } else if (msg.type === 'image') {
+            const fName = msg.fileName || `صورة_${Date.now()}`;
+            contentHtml = `
+                <div class="chat-special-content">
+                    <strong>🖼️ صورة مرفقة</strong><br>
+                    <small>${fName}</small><br>
+                    <a href="${msg.content}" download="${fName}" style="display:inline-block; margin-top:5px;"><img src="${msg.content}" class="chat-img-preview"></a>
+                </div>`;
+        } else if (msg.type === 'audio') {
+            contentHtml = `<audio controls src="${msg.content}" style="max-width:200px;"></audio>`;
+        } else if (msg.type === 'session') {
+            let sType = 'main';
+            let actualData = [];
+            let iCount = 0;
+
+            if (msg.sessionData && msg.sessionData.sessionType) {
+                sType = msg.sessionData.sessionType;
+                actualData = msg.sessionData.sessionData;
+                iCount = msg.sessionData.itemsCount || 0;
+            } else {
+                sType = msg.sessionType || 'main';
+                actualData = msg.sessionData || [];
+                iCount = msg.itemsCount || (Array.isArray(actualData) ? actualData.length : 0);
+            }
+
+            let typeName = "القائمة الرئيسية";
+            let typeIcon = "📑";
+            let btnColor = "#27ae60";
+
+            if (sType === 'zn') { typeName = "احتياج صفر (مواد)"; typeIcon = "🛒"; btnColor = "#3498db"; }
+            else if (sType === 'an') { typeName = "فوق الحاجة (مواد)"; typeIcon = "🛒"; btnColor = "#e67e22"; }
+            else if (sType === 'znm') { typeName = "احتياج صفر (أدوية)"; typeIcon = "💊"; btnColor = "#3498db"; }
+            else if (sType === 'anm') { typeName = "فوق الحاجة (أدوية)"; typeIcon = "💊"; btnColor = "#e67e22"; }
+            else if (sType === 'eval') { typeName = "الفحص والتقييم"; typeIcon = "📋"; btnColor = "#8e44ad"; }
+
+            let rawJson = "[]";
+            try { rawJson = JSON.stringify(actualData); } catch(e) {}
+            const safeData = btoa(unescape(encodeURIComponent(rawJson)));
+
+            contentHtml = `
+                <div class="chat-special-content">
+                    <strong>${typeIcon} جلسة عمل (${typeName})</strong><br>
+                    <small>العدد: ${iCount} مادة/دواء</small><br>
+                    <button style="margin-top:8px; background:${btnColor}; color:white; border:none; padding:6px 12px; border-radius:4px; font-weight:bold; cursor:pointer;" 
+                    onclick='loadSessionFromChatBase64("${safeData}", "${sType}")'>📥 فتح النافذة واستيراد</button>
+                </div>
+            `;
+        } else if (msg.type === 'db_file') { 
+            const fName = msg.fileName || `Database_${Date.now()}.xlsx`;
+             contentHtml = `
+                <div class="chat-special-content">
+                    <strong>🗄️ ملف قاعدة بيانات النظام</strong><br>
+                    <small>${fName}</small><br>
+                    <a href="${msg.content}" download="${fName}" style="display:inline-block; margin-top:5px; background:#8e44ad; color:white; text-decoration:none; padding:5px 10px; border-radius:3px;">📥 تحميل الملف</a>
+                </div>
+            `;
+        } else if (msg.type === 'file') {
+            const fName = msg.fileName || `ملف_${Date.now()}`;
+             contentHtml = `
+                <div class="chat-special-content">
+                    <strong style="word-break: break-all; color: #2c3e50;">📎 ${fName}</strong><br>
+                    <a href="${msg.content}" download="${fName}" style="color:#3498db; text-decoration:underline; display:inline-block; margin-top:8px;">📥</a>
+                </div>
+            `;
+        }
+
+        const time = new Date(msg.timestamp).toLocaleTimeString('ar-IQ', {hour:'2-digit', minute:'2-digit'});
+        let readTicksHtml = '';
+        if (isMe) {
+            const tickMark = msg.isRead ? '✓✓' : '✓';
+            const tickColor = msg.isRead ? '#3498db' : '#999'; 
+            readTicksHtml = `<span id="tick-${msg.id}" style="color:${tickColor}; font-weight:bold; margin-right:8px; font-size:11px;">${tickMark}</span>`;
+        }
+        
+        div.innerHTML = `
+            ${deleteBtnHtml}
+            ${contentHtml}
+            <div class="msg-meta" style="display: flex; align-items: center; justify-content: flex-end; gap: 5px;">
+                <span style="direction: ltr;">${time}</span>
+                ${readTicksHtml}
+            </div>
+        `;
+        container.appendChild(div);
+    }
+
+    // 2. الدالة المسؤولة عن فتح النافذة الصحيحة (النسخة النهائية)
+    function loadSessionFromChat(data, sessionType = 'main') {
+        if (!data) return;
+
+        let typeName = "القائمة الرئيسية للشراء";
+        if (sessionType === 'zn') typeName = "نافذة شراء احتياج صفر (مواد)";
+        else if (sessionType === 'an') typeName = "نافذة شراء فوق الحاجة (مواد)";
+        else if (sessionType === 'znm') typeName = "نافذة أدوية احتياج صفر";
+        else if (sessionType === 'anm') typeName = "نافذة أدوية فوق الحاجة";
+        else if (sessionType === 'eval') typeName = "نافذة نظام الفحص والتقييم";
+
+        if (!confirm(`سيتم فتح (${typeName}) واستبدال البيانات الموجودة فيها حالياً ببيانات هذه الجلسة.\n\nهل أنت متأكد؟`)) {
+            return;
+        }
+
+        closeChatModal(); 
+
+        if (sessionType === 'main') {
+            document.getElementById("tableBody").innerHTML = "";
+            document.getElementById("emptyMsg").style.display = "block";
+            if (Array.isArray(data)) {
+                data.forEach(item => {
+                    item.isFromSession = true; 
+                    selectItem(item);
+                });
+            }
+            saveTempSession();
+            alert("تم استيراد مواد القائمة الرئيسية بنجاح ✅");
+        } 
+        else if (sessionType === 'zn') {
+            zn_items = Array.isArray(data) ? data : [];
+            zn_saveTempData(); 
+            openZeroNeedModal(); 
+            alert("تم استيراد الجلسة وفتح نافذة احتياج صفر (مواد) بنجاح ✅");
+        }
+        else if (sessionType === 'an') {
+            an_items = Array.isArray(data) ? data : [];
+            an_saveTempData();
+            openAboveNeedModal();
+            alert("تم استيراد الجلسة وفتح نافذة فوق الحاجة (مواد) بنجاح ✅");
+        }
+        else if (sessionType === 'znm') {
+            znm_items = Array.isArray(data) ? data : [];
+            znm_saveTempData(); 
+            openZeroNeedMedModal(); // يفتح النافذة الصحيحة للأدوية
+            alert("تم استيراد الجلسة وفتح نافذة أدوية احتياج صفر بنجاح ✅");
+        }
+        else if (sessionType === 'anm') {
+            anm_items = Array.isArray(data) ? data : [];
+            anm_saveTempData();
+            openAboveNeedMedModal(); // يفتح النافذة الصحيحة للأدوية
+            alert("تم استيراد الجلسة وفتح نافذة أدوية فوق الحاجة بنجاح ✅");
+        }
+        else if (sessionType === 'eval') {
+            localStorage.setItem('evalTempState_v2', JSON.stringify(data));
+            openEvaluationModal(); 
+            alert("تم استيراد جلسة الفحص والتقييم وفتح النافذة بنجاح ✅");
+        }
+    }
+    
+    // 3. تأكيد استخدام فك التشفير للدالة النهائية
+    function loadSessionFromChatBase64(base64Data, sessionType) {
+        try {
+            const jsonString = decodeURIComponent(escape(atob(base64Data)));
+            const data = JSON.parse(jsonString);
+            loadSessionFromChat(data, sessionType);
+        } catch(e) {
+            alert("حدث خطأ في قراءة بيانات الجلسة!");
+            console.error(e);
+        }
+    }
 </script>
 </body>
 </html>
