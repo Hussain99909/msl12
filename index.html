@@ -1863,15 +1863,23 @@
         </button>
 
         <button class="modal-menu-btn" onclick="executeShareSession('zn')" style="background: #e8f0fe; border-color: #3498db;">
-            <strong>2- جلسة احتياج صفر</strong>
+            <strong>2- جلسة احتياج صفر (مستلزمات)</strong>
         </button>
 
         <button class="modal-menu-btn" onclick="executeShareSession('an')" style="background: #fdf2e9; border-color: #e67e22;">
-            <strong>3- جلسة فوق الحاجة</strong>
+            <strong>3- جلسة فوق الحاجة (مستلزمات)</strong>
+        </button>
+
+        <button class="modal-menu-btn" onclick="executeShareSession('znm')" style="background: #e0f7fa; border-color: #00bcd4;">
+            <strong>4- جلسة احتياج صفر (أدوية) 💊</strong>
+        </button>
+
+        <button class="modal-menu-btn" onclick="executeShareSession('anm')" style="background: #fff8e1; border-color: #ffb300;">
+            <strong>5- جلسة فوق الحاجة (أدوية) 💊</strong>
         </button>
 
         <button class="modal-menu-btn" onclick="executeShareSession('eval')" style="background: #eafaf1; border-color: #27ae60;">
-            <strong>4- جلسة الفحص والتقييم</strong>
+            <strong>6- جلسة الفحص والتقييم</strong>
         </button>
 
         <div style="margin-top:15px;">
@@ -2052,7 +2060,7 @@
             </div>
             <div style="border-top: 1px solid #eee; padding-top: 10px;">
                 <label style="font-size:14px; font-weight:bold; display:inline-block; margin-left: 10px;">حجم خط الجدول (pt):</label>
-                <input type="number" id="authFontSize" class="search-box show-arrows" value="10" min="6" max="24" style="width:70px; padding:5px; text-align:center; display:inline-block; font-weight:bold;">
+                <input type="number" id="authFontSize" class="search-box show-arrows" value="8" min="6" max="24" style="width:70px; padding:5px; text-align:center; display:inline-block; font-weight:bold;">
             </div>
         </div>
 
@@ -2639,12 +2647,50 @@
             <strong>الخطوة 6 (قائمة طلب الشراء)</strong>
             <span>تصدير القائمة المرسلة للمورد مع الملاحظات.</span>
         </button>
-        <button class="modal-menu-btn" onclick="alert('سيتم برمجتها قريباً بناءً على طلبك...')" style="background: #f9f9f9;">
-            <strong>الخطوة 7</strong>
+        <button class="modal-menu-btn" onclick="downloadStep7Directly()" style="background: #fdf2e9; border-color: #e67e22; position: relative; text-align: right;">
+            
+            <div onclick="event.stopPropagation(); openStep7Modal()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 24px; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 50%; display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" title="إدارة استمارة الخطوة 7">
+                ⚙️
+            </div>
+            
+            <strong style="padding-left: 60px; display: block;">الخطوة 7 (تنزيل الاستمارة 📥)</strong>
+            <span style="padding-left: 60px; display: block;">انقر هنا لتنزيل الملف مباشرة، أو انقر على الترس (⚙️) للإدارة.</span>
+        </button>  
+                
+        
+        <div style="margin-top:15px;">
+            <button class="btn-cancel" onclick="closePlatformExportModal()">إغلاق</button>
+        </div>
+    </div>
+</div>
+
+<div id="step7Modal" class="modal-overlay" style="z-index: 2900;">
+    <div class="modal-content" style="max-width: 400px;">
+        <div class="modal-title">☁️ الخطوة 7 - إدارة الاستمارة</div>
+        
+        <div id="step7Status" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; text-align: center;">
+            جاري الاتصال بالسحابة...
+        </div>
+
+        <input type="file" id="step7FileInput" accept=".doc, .docx" style="display:none;" onchange="handleStep7Upload(this)">
+        
+        <button class="modal-menu-btn" onclick="document.getElementById('step7FileInput').click()" style="background: #e8f5e9; border-color: #27ae60;">
+            <strong>📤 رفع نسخة ملف (Word)</strong>
+            <span>اختيار ملف من الحاسوب لرفعه إلى السحابة.</span>
+        </button>
+
+        <button id="btnDownloadStep7" class="modal-menu-btn" onclick="downloadStep7File()" style="background: #e3f2fd; border-color: #2980b9; display:none;">
+            <strong>📥 تنزيل استمارة خطوة 7</strong>
+            <span>تحميل النسخة المرفوعة مسبقاً.</span>
+        </button>
+
+        <button id="btnDeleteStep7" class="modal-menu-btn" onclick="deleteStep7File()" style="background: #fdedec; border-color: #c0392b; display:none;">
+            <strong>🗑️ حذف النسخة المرفوعة</strong>
+            <span>مسح الملف من السحابة نهائياً.</span>
         </button>
 
         <div style="margin-top:15px;">
-            <button class="btn-cancel" onclick="closePlatformExportModal()">إغلاق</button>
+            <button class="btn-cancel" onclick="closeStep7Modal()">إغلاق</button>
         </div>
     </div>
 </div>
@@ -7674,6 +7720,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             <button class="eval-btn eval-btn-clear" onclick="eval_clearTable()">🗑️ تفريغ القائمة</button>
             <button class="eval-btn eval-btn-session" onclick="eval_openSessionsModal()">📂 الجلسات المحفوظة</button>
             <button class="eval-btn eval-btn-session" onclick="eval_saveCurrentSession()" style="background:#2980b9;">💾 حفظ كجلسة</button>
+            <button class="eval-btn" style="background:#f39c12; color:white;" onclick="eval_importFromMainTable()">📥 استيراد من الرئيسية</button>
         </div>
 
         <div class="table-responsive">
@@ -7695,6 +7742,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
         <button class="eval-btn eval-btn-export" onclick="eval_exportToWord()">💾 تصدير محضر الفحص (Word)</button>
     </div>
+
 </div>
 
 <div id="eval_sessionsModal" class="modal-overlay" style="z-index: 2600;">
@@ -12118,6 +12166,200 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
         if(typeof closePlatformExportModal === 'function') closePlatformExportModal();
     }
+
+    // =========================================================
+    // === دالة استيراد المواد من القائمة الرئيسية إلى نظام الفحص ===
+    // =========================================================
+    function eval_importFromMainTable() {
+        // سحب البيانات من القائمة الرئيسية باستخدام الدالة الموجودة مسبقاً في نظامك
+        const mainItems = scrapeTableData();
+        
+        if (mainItems.length === 0) {
+            alert("القائمة الرئيسية فارغة! يرجى إضافة مواد إليها أولاً.");
+            return;
+        }
+
+        if (confirm(`هل تريد استيراد (${mainItems.length}) مادة من القائمة الرئيسية إلى جدول الفحص والتقييم؟`)) {
+            
+            const tbody = document.getElementById("eval_tableBody");
+            
+            // ترتيب جمالي: إذا كان الجدول يحتوي على صف واحد فارغ فقط (الذي يظهر افتراضياً)، قم بمسحه
+            if (tbody.children.length === 1) {
+                const firstRowName = tbody.querySelector('.item-name').value.trim();
+                const firstRowShape = tbody.querySelector('.item-shape').value.trim();
+                if (firstRowName === "" && firstRowShape === "") {
+                    tbody.innerHTML = ""; 
+                }
+            }
+
+            let importedCount = 0;
+
+            // المرور على مواد القائمة الرئيسية وإضافتها
+            mainItems.forEach(item => {
+                if (item.name.trim() !== "") {
+                    eval_addRow({
+                        name: item.name,
+                        shape: item.unit, // أخذ وحدة التعبئة كشكل للمادة
+                        expiryMonth: "",
+                        expiryYear: "",
+                        batch: "",
+                        match: "مطابق" // القيمة الافتراضية
+                    });
+                    importedCount++;
+                }
+            });
+
+            // حفظ الحالة الجديدة في الذاكرة المؤقتة للفحص والتقييم
+            eval_saveTempData();
+            
+            // تحديث أرقام التسلسل
+            eval_updateRowIndices();
+
+            alert(`✅ تم استيراد ${importedCount} مادة بنجاح.`);
+        }
+    }
+
+    // ============================================
+    // === نظام الخطوة 7 (السحابة) ===
+    // ============================================
+    let currentStep7FileData = null;
+
+    function openStep7Modal() {
+        closePlatformExportModal(); // إغلاق نافذة المنصة الرئيسية
+        document.getElementById('step7Modal').style.display = 'flex';
+        listenToStep7File(); // التحقق من وجود ملف مرفوع
+    }
+
+    function closeStep7Modal() {
+        document.getElementById('step7Modal').style.display = 'none';
+    }
+
+    // دالة الاستماع لحالة الملف على Firebase
+    function listenToStep7File() {
+        const statusDiv = document.getElementById('step7Status');
+        const btnDownload = document.getElementById('btnDownloadStep7');
+        const btnDelete = document.getElementById('btnDeleteStep7');
+
+        db.ref('platform_step7').on('value', (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.fileData) {
+                currentStep7FileData = data;
+                const dateStr = new Date(data.uploadTime).toLocaleString('ar-IQ');
+                statusDiv.innerHTML = `
+                    <div style="color: #27ae60; font-weight: bold; font-size: 16px;">✅ يوجد ملف مرفوع على السحابة</div>
+                    <div style="margin-top: 8px; font-size: 13px; color: #555; line-height: 1.6;">
+                        اسم الملف: <span dir="ltr" style="color: #2980b9; font-weight:bold;">${data.fileName}</span><br>
+                        الرفع بواسطة: <b>${data.uploadedBy}</b><br>
+                        وقت الرفع: ${dateStr}
+                    </div>
+                `;
+                btnDownload.style.display = 'block';
+                btnDelete.style.display = 'block';
+            } else {
+                currentStep7FileData = null;
+                statusDiv.innerHTML = `
+                    <div style="color: #e74c3c; font-weight: bold; font-size: 16px;">❌ لا يوجد ملف مرفوع حالياً</div>
+                    <div style="margin-top: 5px; font-size: 13px; color: #555;">يرجى رفع ملف الاستمارة من حاسوبك ليتمكن الزملاء من تنزيله.</div>
+                `;
+                btnDownload.style.display = 'none';
+                btnDelete.style.display = 'none';
+            }
+        });
+    }
+
+    // دالة رفع الملف
+    function handleStep7Upload(input) {
+        const file = input.files[0];
+        if (!file) return;
+
+        // تحديد الحد الأقصى بـ 5 ميجابايت لتجنب مشاكل الـ Base64
+        if (file.size > 5 * 1024 * 1024) { 
+            alert("حجم الملف كبير جداً! يرجى اختيار ملف بحجم أقل من 5 ميجابايت.");
+            input.value = '';
+            return;
+        }
+
+        const fileName = file.name;
+        const reader = new FileReader();
+        
+        document.getElementById('step7Status').innerHTML = '<div style="color: #2980b9; font-weight: bold; font-size: 15px;">⏳ جاري الرفع للسحابة، يرجى الانتظار...</div>';
+
+        reader.onload = function(e) {
+            const base64 = e.target.result;
+            db.ref('platform_step7').set({
+                fileData: base64,
+                fileName: fileName,
+                uploadedBy: currentUser || "مستخدم غير معروف",
+                uploadTime: firebase.database.ServerValue.TIMESTAMP
+            }).then(() => {
+                alert("✅ تم رفع الملف إلى السحابة بنجاح!");
+            }).catch((error) => {
+                alert("❌ حدث خطأ أثناء الرفع: " + error.message);
+            });
+        };
+        
+        reader.readAsDataURL(file);
+        input.value = ''; // تصفير الحقل ليتمكن من رفع ملف آخر بنفس الاسم لاحقاً
+    }
+
+    // دالة تنزيل الملف
+    function downloadStep7File() {
+        if (!currentStep7FileData || !currentStep7FileData.fileData) {
+            alert("لا يوجد ملف متاح للتنزيل.");
+            return;
+        }
+        
+        const link = document.createElement('a');
+        link.href = currentStep7FileData.fileData;
+        link.download = currentStep7FileData.fileName || 'استمارة_خطوة_7.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
+    // دالة حذف الملف
+    function deleteStep7File() {
+        if (confirm("⚠️ هل أنت متأكد من حذف استمارة الخطوة 7 المرفوعة على السحابة؟\nلا يمكن التراجع عن هذا الإجراء وسيتم حذفها عند جميع الزملاء.")) {
+            db.ref('platform_step7').remove().then(() => {
+                alert("🗑️ تم مسح الملف من السحابة بنجاح.");
+            }).catch((error) => {
+                alert("❌ حدث خطأ أثناء الحذف: " + error.message);
+            });
+        }
+    }
+
+    // دالة التنزيل المباشر للخطوة 7 (من خارج النافذة)
+    function downloadStep7Directly() {
+        const btn = document.querySelector('#platformExportModal .modal-menu-btn[onclick="downloadStep7Directly()"]');
+        const originalText = btn.innerHTML;
+        
+        // تغيير شكل الزر لحظياً لإشعار المستخدم بالتحميل
+        btn.innerHTML = '<strong style="text-align:center; display:block; padding: 10px;">⏳ جاري جلب الملف من السحابة...</strong>';
+
+        db.ref('platform_step7').once('value').then((snapshot) => {
+            const data = snapshot.val();
+            if (data && data.fileData) {
+                // إنشاء رابط التنزيل الوهمي
+                const link = document.createElement('a');
+                link.href = data.fileData;
+                link.download = data.fileName || 'استمارة_خطوة_7.doc';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                
+                // إعادة الزر لشكله الطبيعي
+                btn.innerHTML = originalText;
+                closePlatformExportModal(); // إغلاق قائمة المنصة بعد التنزيل
+            } else {
+                btn.innerHTML = originalText;
+                alert("❌ لا يوجد ملف مرفوع حالياً للخطوة 7.\nيرجى النقر على أيقونة الضبط (⚙️) لرفع الملف من حاسوبك أولاً.");
+            }
+        }).catch((error) => {
+            btn.innerHTML = originalText;
+            alert("❌ حدث خطأ أثناء الاتصال بالسحابة: " + error.message);
+        });
+    }
+    
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
