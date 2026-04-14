@@ -2694,6 +2694,19 @@
         </div>
     </div>
 </div>
+
+<div id="multiDownloadModal" class="modal-overlay" style="z-index: 3000;">
+    <div class="modal-content" style="width: 90%; max-width: 400px;">
+        <div class="modal-title">📥 تنزيل الملفات المتعددة</div>
+        <div style="margin-bottom: 15px; font-size: 14px; color: #e74c3c; font-weight: bold; background: #fdedec; padding: 10px; border-radius: 8px;">
+            بسبب قيود متصفحات الهاتف وحمايتها من التنزيل التلقائي، تم تقسيم استمارات المنصة. يرجى النقر على كل جزء لتنزيله يدوياً:
+        </div>
+        <div id="multiDownloadList" style="display: flex; flex-direction: column; gap: 10px; max-height: 50vh; overflow-y: auto; padding: 5px;"></div>
+        <div style="margin-top: 20px;">
+            <button class="btn-cancel" onclick="document.getElementById('multiDownloadModal').style.display='none'">إغلاق</button>
+        </div>
+    </div>
+</div>
 <script>
     // ============================================
     // === نظام تتبع حالة الاتصال (Presence System) ===
@@ -12886,6 +12899,121 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             alert("حدث خطأ في قراءة بيانات الجلسة!");
             console.error(e);
         }
+    }
+
+    async function exportPlatformStep6() {
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.querySelectorAll("tr");
+
+        if (rows.length === 0) {
+            alert("لا توجد مواد في القائمة لتصديرها.");
+            return;
+        }
+
+        const supplierPushPercent = 35; 
+
+        const css = `
+            <style>
+                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
+                div.Section1 { page: Section1; direction: rtl; }
+                body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
+                .header-info { font-weight: bold; font-size: 12pt; line-height: 1.6; margin-bottom: 10px; }
+                .main-title { text-align: center; font-weight: bold; font-size: 16pt; margin-bottom: 15px; text-decoration: underline; }
+                .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; }
+                .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } 
+                .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; }
+                .notes-section { font-weight: bold; font-size: 12pt; line-height: 1.8; text-align: right; margin-top: 20px; }
+                .page-break { page-break-before: always; clear: both; mso-break-type: section-break; }
+                .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }
+            </style>
+        `;
+
+        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 6</title>${css}</head><body dir='rtl'><div class='Section1'>`;
+        const postHtml = "</div></body></html>";
+
+        const itemsPerPage = 8; 
+        const totalRows = rows.length;
+        const totalFiles = Math.ceil(totalRows / itemsPerPage);
+        
+        let generatedFiles = [];
+
+        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
+            let content = '<div style="width:100%;">';
+
+            content += `
+                <br><br> 
+                <div class="header-info">
+                    رقم الاستمارة : <br>
+                    تاريخ طلب الشراء: <br>
+                    اسم الوزارة او التشكيل: <br>
+                    مكان التسليم بشكل دقيق: <br>
+                </div>
+                <br><br>
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: none; margin-top: 15px; margin-bottom: 15px;" dir="rtl">
+                    <tr>
+                        <td style="border: none; width: ${supplierPushPercent}%; padding: 0;"></td>
+                        <td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">الى المورد /</td>
+                    </tr>
+                </table>
+                <div class="main-title">قائمة طلب الشراء</div>
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">ت</th>
+                            <th style="width: 35%;">اسم المادة</th>
+                            <th style="width: 15%;">المواصفة</th>
+                            <th style="width: 15%;">الكمية</th>
+                            <th style="width: 30%;">الملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            const startIndex = fileIndex * itemsPerPage;
+            
+            for (let k = 0; k < 10; k++) {
+                const displaySeq = k + 1; 
+                const dataIndex = startIndex + k;
+                
+                if (k < itemsPerPage && dataIndex < totalRows) {
+                    const row = rows[dataIndex];
+                    const name = row.querySelector('.name-input').value;
+                    const shape = row.querySelector('.unit-input').value; 
+                    const qty = row.querySelector('.qty-input').value;
+                    const nationalCode = row.querySelector('.code-cell').value || "";
+
+                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${name}</td><td>${shape}</td><td>${qty}</td><td style="direction:ltr;">${nationalCode}</td></tr>`;
+                } else {
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
+                }
+            }
+
+            content += `
+                    </tbody>
+                </table>
+                <div style="text-align: left; font-weight: bold; font-size: 14pt; margin-top: 30px; margin-bottom: 30px; padding-left: 50px;">توقيع لجنة المشتريات</div>
+                <br><br>
+                <div class="notes-section">
+                    <u style="font-size: 14pt;">ملاحظة</u><br>
+                    - يرسل هذا الطلب الى ايميل التاجر موَقع من قبل رئيس لجنة المشتريات مثبت عليه رقم الاستمارة مع نسخه منه الى البريد الالكتروني الخاص بالمنصه ( <span dir="ltr">PO@ITP.IQ</span> )<br>
+                    - في حال تجاوز مبلغ المشتريات (50) مليون دينار سيتم ابرام عقد ويتحمل المتعاقد تسديد اجور ارشفة العقد عبر المنصة الالكترونية البالغ (250) الف دينار.<br>
+                    - يجب على المورد تحميل صورة هوية غرفة التجارة ان وجدت.<br>
+                    - على المورد بيان وجود خدمة توصيل لديه من عدمه.<br>
+                    - على المورد بيان وجود خدمة استبدال التالف لديه من عدمه.
+                </div>
+                <div class="footer-page">page 4 of 5</div>
+            </div>`;
+
+            const fullHtml = preHtml + content + postHtml;
+            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const fileName = totalFiles > 1 ? `استمارة_منصة_خطوة_6_جزء_${fileIndex + 1}.doc` : 'استمارة_منصة_خطوة_6.doc';
+            
+            generatedFiles.push({ url: url, name: fileName });
+        }
+        
+        closePlatformExportModal();
+        handleMultipleDownloads(generatedFiles);
     }
 </script>
 </body>
