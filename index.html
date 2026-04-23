@@ -3437,23 +3437,15 @@
     }
 
     function saveChatToCache(roomId, messages) {
-        try {
-            // نحتفظ بآخر 200 رسالة فقط لتجنب امتلاء ذاكرة المتصفح (QuotaExceededError)
-            const messagesToCache = messages.slice(-200);
-            localStorage.setItem(getChatCacheKey(roomId), JSON.stringify(messagesToCache));
-        } catch(e) { 
-            console.error("خطأ في حفظ المحادثة بالذاكرة:", e); 
-        }
+        // تم إيقاف الحفظ في المتصفح لتجنب مشكلة QuotaExceededError
+        // الاعتماد الآن كلياً على السيرفر
     }
 
     function loadChatFromCache(roomId) {
-        try {
-            const data = localStorage.getItem(getChatCacheKey(roomId));
-            return data ? JSON.parse(data) : [];
-        } catch(e) { 
-            return []; 
-        }
+        // إرجاع مصفوفة فارغة دائماً لنجبر النظام على التحميل من السيرفر
+        return [];
     }
+
     // ------------------------------------------
      
         // قاموس الأسماء للغة الإنجليزية (في حال لم يجد المتصفح لغة عربية)
@@ -3923,148 +3915,234 @@
         document.getElementById('btnRecord').style.display = 'flex';
         document.getElementById('btnSendText').style.display = 'none';
     }
+    
+    // 1. تعريف المتغيرات عالمياً لضمان عدم ضياعها
+    window.CHAT_PAGINATION_LIMIT = 10; 
+    window.oldestMsgTimestamp = null;
+    window.chatPageListenerRef = null;
 
-    // ============================================
-    // === دالة تحميل المحادثة (محدثة مع الكاش) ===
-    // ============================================
+    // 2. الدالة الرئيسية المعدلة والآمنة
     function loadChatWith(partnerName, element) {
-        document.querySelectorAll('.user-list-item').forEach(el => el.classList.remove('active'));
-        if(element) element.classList.add('active');
+        try {
+            // تظليل المستخدم الحالي في القائمة
+            document.querySelectorAll('.user-list-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
 
-        currentChatPartner = partnerName;
-        
-        // إضافة مؤشر "يكتب الآن..." بجانب اسم المستخدم في الشريط العلوي للمحادثة
-        document.getElementById('chatHeaderName').innerHTML = `مراسلة: ${partnerName} <span id="typingIndicator" class="typing-animation" style="display:none; color:#27ae60; font-size:12px; margin-right:15px; font-weight:normal;">✍️ يكتب الآن...</span>`;
-        
-        document.getElementById('chatInputArea').style.display = 'flex';
-        
-        const messagesContainer = document.getElementById('messagesContainer');
-        messagesContainer.innerHTML = ''; 
-        
-        const roomId = getRoomId(currentUser, partnerName);
-
-        // تحميل الرسائل من الكاش (الذاكرة المحلية) فوراً
-        // تحميل الرسائل من الكاش (الذاكرة المحلية) فوراً
-        currentMessages = loadChatFromCache(roomId);
-        let cacheUpdated = false; // متغير لتتبع إذا كان هناك تحديث للحالة
-
-        if (currentMessages.length > 0) {
-            currentMessages.forEach(msg => {
-                renderMessage(msg);
-                
-                // --- الحل: فحص الرسائل في الكاش وتأشيرها كمقروءة ---
-                if (msg.sender !== currentUser && !msg.isRead) {
-                    db.ref('chats/' + roomId + '/' + msg.id).update({ isRead: true });
-                    msg.isRead = true;
-                    cacheUpdated = true;
-                    
-                    // إزالة الرسالة من متتبع الرسائل غير المقروءة وتحديث العدادات
-                    if (unreadMessagesTracker.has(msg.id)) {
-                        unreadMessagesTracker.delete(msg.id);
-                    }
-                }
-            });
+            currentChatPartner = partnerName;
+            document.getElementById('chatHeaderName').innerHTML = `مراسلة: ${partnerName} <span id="typingIndicator" class="typing-animation" style="display:none; color:#27ae60; font-size:12px; margin-right:15px; font-weight:normal;">✍️ يكتب الآن...</span>`;
+            document.getElementById('chatInputArea').style.display = 'flex';
             
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            const messagesContainer = document.getElementById('messagesContainer');
             
-            // حفظ الكاش الجديد وتحديث الأيقونات إذا تم قراءة رسائل
-            if (cacheUpdated) {
-                saveChatToCache(roomId, currentMessages);
-                updateGlobalBadgeAndToast(); 
+            // عرض واجهة التحميل مباشرة
+            messagesContainer.innerHTML = `
+                <div id="loadingProgressContainer" style="text-align:center; margin-top:100px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+                    <div style="font-size: 18px; color: #2980b9; margin-bottom:10px; font-weight: bold;">يتم تحميل الرسائل من الخادم...</div>
+                    <div id="loadingPercent" style="font-size: 24px; color: #27ae60; font-weight: bold;">0%</div>
+                    <div style="width: 200px; height: 8px; background: #eee; border-radius: 10px; margin: 20px auto; overflow: hidden;">
+                        <div id="loadingBar" style="width: 0%; height: 100%; background: #3498db; transition: 0.3s;"></div>
+                    </div>
+                </div>
+                <div id="chatWrapper" style="display:none; flex-direction:column; gap:10px;"></div>
+            `;
+
+            const roomId = getRoomId(currentUser, partnerName);
+            currentMessages = [];
+            window.oldestMsgTimestamp = null;
+
+            if (window.chatPageQuery) {
+                window.chatPageQuery.off(); // نقوم بإيقاف الاستعلام نفسه
             }
             
-        } else {
-            messagesContainer.innerHTML = '<div id="loadingChatMsg" style="text-align:center; padding:20px;">لا توجد رسائل سابقة...</div>';
+
+            const chatRef = db.ref('chats/' + roomId);
+            chatListenerRef = chatRef; 
+
+            // محاكاة سريعة لنسبة التحميل
+            let percent = 0;
+            let progressInterval = setInterval(() => {
+                if (percent < 90) {
+                    percent += Math.floor(Math.random() * 15) + 5;
+                    if (percent > 90) percent = 90;
+                    
+                    const pElem = document.getElementById('loadingPercent');
+                    const bElem = document.getElementById('loadingBar');
+                    if (pElem) pElem.innerText = percent + "%";
+                    if (bElem) bElem.style.width = percent + "%";
+                }
+            }, 100);
+
+            // جلب البيانات من السيرفر
+            chatRef.orderByChild('timestamp').limitToLast(window.CHAT_PAGINATION_LIMIT).once('value').then((snapshot) => {
+                clearInterval(progressInterval);
+                
+                // رفع النسبة إلى 100% عند نجاح الاتصال
+                const pElem = document.getElementById('loadingPercent');
+                const bElem = document.getElementById('loadingBar');
+                if (pElem) pElem.innerText = "100%";
+                if (bElem) bElem.style.width = "100%";
+
+                // تأخير نصف ثانية لكي يرى المستخدم نسبة 100% براحة
+                setTimeout(() => {
+                    const loadingContainer = document.getElementById('loadingProgressContainer');
+                    const chatWrapper = document.getElementById('chatWrapper');
+                    
+                    if (loadingContainer) loadingContainer.remove();
+                    if (chatWrapper) chatWrapper.style.display = 'flex';
+
+                    let msgs = [];
+                    snapshot.forEach(child => {
+                        let msg = child.val();
+                        msg.id = child.key;
+                        msgs.push(msg);
+                    });
+
+                    if (msgs.length > 0) {
+                        window.oldestMsgTimestamp = msgs[0].timestamp;
+                        
+                        // إذا كان عدد الرسائل 10، نعرض زر "رسائل سابقة"
+                        if (msgs.length === window.CHAT_PAGINATION_LIMIT) {
+                            messagesContainer.insertAdjacentHTML('afterbegin', `
+                                <div id="loadMoreBtnContainer" style="text-align:center; padding:10px;">
+                                    <button id="btnLoadMore" onclick="loadPreviousMessages()" style="background:#e8f0fe; color:#3498db; border:1px solid #3498db; padding:8px 20px; border-radius:20px; cursor:pointer; font-size:13px; font-weight:bold;">عرض رسائل سابقة 🔄</button>
+                                </div>
+                            `);
+                        }
+
+                        msgs.forEach(msg => {
+                            currentMessages.push(msg);
+                            renderMessage(msg, false);
+                            if (msg.sender !== currentUser && !msg.isRead) {
+                                db.ref('chats/' + roomId + '/' + msg.id).update({ isRead: true });
+                                if (unreadMessagesTracker.has(msg.id)) unreadMessagesTracker.delete(msg.id);
+                            }
+                        });
+                        updateGlobalBadgeAndToast();
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    } else {
+                        if (chatWrapper) {
+                            chatWrapper.innerHTML = '<div id="loadingChatMsg" style="text-align:center; padding:20px; color:#aaa;">لا توجد رسائل سابقة...</div>';
+                        }
+                    }
+
+                    // الاستماع للرسائل الجديدة بعد انتهاء التحميل
+                    let lastTimestamp = msgs.length > 0 ? msgs[msgs.length - 1].timestamp : 0;
+                        // 1. نحفظ الاستعلام في متغير
+                        window.chatPageQuery = chatRef.orderByChild('timestamp').startAfter(lastTimestamp);
+
+                        // 2. نقوم بتشغيل الاستماع على هذا الاستعلام
+                        window.chatPageQuery.on('child_added', (newSnap) => {
+                        const loadingMsg = document.getElementById('loadingChatMsg');
+                        if(loadingMsg) loadingMsg.remove();
+                        const msg = newSnap.val();
+                        msg.id = newSnap.key; 
+                        if (!currentMessages.find(m => m.id === msg.id)) {
+                            if (msg.sender !== currentUser && !msg.isRead) {
+                                db.ref('chats/' + roomId + '/' + msg.id).update({ isRead: true });
+                            }
+                            currentMessages.push(msg);
+                            renderMessage(msg, false);
+                            messagesContainer.scrollTop = messagesContainer.scrollHeight; 
+                        }
+                    });
+
+                }, 400); 
+
+            }).catch(error => {
+                // في حال انقطاع الإنترنت أو فشل السيرفر
+                clearInterval(progressInterval);
+                document.getElementById('loadingProgressContainer').innerHTML = `<div style="color:#e74c3c; padding:20px; font-weight:bold;">❌ حدث خطأ في الاتصال بالخادم:<br>${error.message}</div>`;
+                console.error("Firebase Chat Load Error:", error);
+            });
+
+            // تفعيل حركة الموبايل الانزلاقية
+            if (document.body.classList.contains('mobile-mode')) {
+                document.getElementById('chatMainArea').classList.add('active-mobile-chat');
+            }
+
+        } catch (err) {
+            // اصطياد أي خطأ برمجي قد يوقف الكود
+            console.error("Error in loadChatWith:", err);
+            document.getElementById('messagesContainer').innerHTML = `<div style="color:#e74c3c; padding:20px; font-weight:bold;">❌ خطأ برمجي أوقف التحميل:<br>${err.message}</div>`;
         }
-
-        if (chatListenerRef) chatListenerRef.off();
-
-        const chatRef = db.ref('chats/' + roomId);
-        chatListenerRef = chatRef; 
-
-        let lastTimestamp = 0;
-        if (currentMessages.length > 0) {
-            lastTimestamp = currentMessages[currentMessages.length - 1].timestamp;
-        }
-
-        let newMessagesQuery = lastTimestamp > 0 
-            ? chatRef.orderByChild('timestamp').startAfter(lastTimestamp) 
-            : chatRef.limitToLast(50); 
-
-        newMessagesQuery.on('child_added', (snapshot) => {
+    }
+    // دالة مساعدة للاستماع للرسائل الجديدة
+    function setupNewMessageListener(chatRef, initialMsgs, roomId) {
+        let lastTimestamp = initialMsgs.length > 0 ? initialMsgs[initialMsgs.length - 1].timestamp : 0;
+        chatPageListenerRef = chatRef.orderByChild('timestamp').startAfter(lastTimestamp).on('child_added', (newSnap) => {
             const loadingMsg = document.getElementById('loadingChatMsg');
             if(loadingMsg) loadingMsg.remove();
-
-            const msg = snapshot.val();
-            msg.id = snapshot.key; 
-            
+            const msg = newSnap.val();
+            msg.id = newSnap.key; 
             if (!currentMessages.find(m => m.id === msg.id)) {
                 if (msg.sender !== currentUser && !msg.isRead) {
                     db.ref('chats/' + roomId + '/' + msg.id).update({ isRead: true });
                 }
-
                 currentMessages.push(msg);
-                renderMessage(msg);
-                saveChatToCache(roomId, currentMessages); 
-                messagesContainer.scrollTop = messagesContainer.scrollHeight; 
-                
-                if(document.getElementById('sharedFilesModal').style.display === 'flex') {
-                    renderSharedFilesList();
-                }
+                renderMessage(msg, false);
+                document.getElementById('messagesContainer').scrollTop = document.getElementById('messagesContainer').scrollHeight; 
             }
         });
-
-        chatRef.on('child_changed', (snapshot) => {
-            const updatedMsg = snapshot.val();
-            updatedMsg.id = snapshot.key;
-            
-            const index = currentMessages.findIndex(m => m.id === updatedMsg.id);
-            if (index !== -1) {
-                currentMessages[index] = updatedMsg;
-                saveChatToCache(roomId, currentMessages); 
-            }
-
-            const tickElement = document.getElementById(`tick-${updatedMsg.id}`);
-            if (tickElement && updatedMsg.sender === currentUser) {
-                if (updatedMsg.isRead) {
-                    tickElement.innerHTML = '✓✓';
-                    tickElement.style.color = '#3498db'; 
-                }
-            }
-        });
-
-        chatRef.on('child_removed', (snapshot) => {
-            const msgId = snapshot.key;
-            
-            currentMessages = currentMessages.filter(m => m.id !== msgId);
-            saveChatToCache(roomId, currentMessages); 
-
-            const msgElement = document.getElementById('msg-' + msgId);
-            if (msgElement) msgElement.remove();
-            
-            if(document.getElementById('sharedFilesModal').style.display === 'flex') {
-                renderSharedFilesList();
-            }
-        });
-
-        // الاستماع المباشر لحالة "يكتب الآن" الخاصة بالطرف الآخر
-        if (window.typingListenerRef) window.typingListenerRef.off();
-        window.typingListenerRef = db.ref(`typing_status/${roomId}/${partnerName}`);
-        window.typingListenerRef.on('value', (snapshot) => {
-            const indicator = document.getElementById('typingIndicator');
-            if (indicator) {
-                // إظهار أو إخفاء المؤشر بناءً على القيمة القادمة من فايربيس
-                indicator.style.display = snapshot.val() ? 'inline-block' : 'none';
-            }
-        });
-
-        if (document.body.classList.contains('mobile-mode')) {
-            document.getElementById('chatMainArea').classList.add('active-mobile-chat');
-        }
     }
 
-    function renderMessage(msg) {
-        const container = document.getElementById('messagesContainer');
+    function loadPreviousMessages() {
+        if (!currentChatPartner || !oldestMsgTimestamp) return;
+        
+        const roomId = getRoomId(currentUser, currentChatPartner);
+        const chatRef = db.ref('chats/' + roomId);
+        const btn = document.getElementById('btnLoadMore');
+        const messagesContainer = document.getElementById('messagesContainer');
+        
+        // حفظ ارتفاع التمرير الحالي لكي لا تقفز الشاشة للأعلى فجأة
+        const previousScrollHeight = messagesContainer.scrollHeight;
+
+        btn.innerText = 'جاري التحميل... ⏳';
+        btn.disabled = true;
+
+        // نجلب 10 رسائل تسبق أقدم رسالة لدينا (نطرح 1 من التوقيت لنتجنب التكرار)
+        chatRef.orderByChild('timestamp').endAt(oldestMsgTimestamp - 1).limitToLast(CHAT_PAGINATION_LIMIT).once('value').then(snapshot => {
+            let msgs = [];
+            snapshot.forEach(child => {
+                let msg = child.val();
+                msg.id = child.key;
+                msgs.push(msg);
+            });
+
+            if (msgs.length > 0) {
+                oldestMsgTimestamp = msgs[0].timestamp; // تحديث أقدم نقطة
+                
+                // نعكس الترتيب لأننا نضيفها للأعلى
+                msgs.reverse().forEach(msg => {
+                    currentMessages.unshift(msg);
+                    renderMessage(msg, true); // true = وضع الرسالة في أعلى القائمة
+                });
+
+                // إخفاء الزر إذا لم تعد هناك رسائل أقدم
+                if (msgs.length < CHAT_PAGINATION_LIMIT) {
+                    document.getElementById('loadMoreBtnContainer').style.display = 'none';
+                }
+                
+                // ضبط سكرول الشاشة ليبقى المستخدم في نفس موقعه
+                messagesContainer.scrollTop = messagesContainer.scrollHeight - previousScrollHeight;
+
+            } else {
+                document.getElementById('loadMoreBtnContainer').style.display = 'none';
+            }
+            
+            btn.innerText = 'عرض رسائل سابقة 🔄';
+            btn.disabled = false;
+        }).catch(err => {
+            console.error("خطأ:", err);
+            btn.innerText = 'عرض رسائل سابقة 🔄';
+            btn.disabled = false;
+        });
+    }
+
+    function renderMessage(msg, prepend = false) {
+        // التعديل هنا: نستخدم chatWrapper وإذا لم يجده يستخدم messagesContainer
+        const container = document.getElementById('chatWrapper') || document.getElementById('messagesContainer');
+        if(!container) return;
+
         const div = document.createElement('div');
         const isMe = msg.sender === currentUser;
         
@@ -4087,7 +4165,6 @@
         } else if (msg.type === 'audio') {
             contentHtml = `<audio controls src="${msg.content}" style="max-width:200px;"></audio>`;
         } else if (msg.type === 'session') {
-            // معالجة ذكية لاستخراج نوع الجلسة
             let sType = 'main';
             let actualData = [];
             let iCount = 0;
@@ -4102,7 +4179,6 @@
                 iCount = msg.itemsCount || (Array.isArray(actualData) ? actualData.length : 0);
             }
 
-            // تحديد المسميات والألوان حسب نوع الجلسة
             let typeName = "القائمة الرئيسية";
             let typeIcon = "📑";
             let btnColor = "#27ae60";
@@ -4127,7 +4203,7 @@
             `;
         } else if (msg.type === 'db_file') { 
             const fName = msg.fileName || `Database_${Date.now()}.xlsx`;
-             contentHtml = `
+            contentHtml = `
                 <div class="chat-special-content">
                     <strong>🗄️ ملف قاعدة بيانات النظام</strong><br>
                     <small>${fName}</small><br>
@@ -4136,7 +4212,7 @@
             `;
         } else if (msg.type === 'file') {
             const fName = msg.fileName || `ملف_${Date.now()}`;
-             contentHtml = `
+            contentHtml = `
                 <div class="chat-special-content">
                     <strong style="word-break: break-all; color: #2c3e50;">📎 ${fName}</strong><br>
                     <a href="${msg.content}" download="${fName}" style="color:#3498db; text-decoration:underline; display:inline-block; margin-top:8px;">📥</a>
@@ -4145,7 +4221,6 @@
         }
 
         const time = new Date(msg.timestamp).toLocaleTimeString('ar-IQ', {hour:'2-digit', minute:'2-digit'});
-        
         let readTicksHtml = '';
         if (isMe) {
             const tickMark = msg.isRead ? '✓✓' : '✓';
@@ -4162,7 +4237,12 @@
             </div>
         `;
         
-        container.appendChild(div);
+        // التعديل هنا: وضع الرسائل القديمة بالأعلى والجديدة بالأسفل
+        if (prepend) {
+            container.prepend(div);
+        } else {
+            container.appendChild(div);
+        }
     }
 
     // --- دالة المسح الجذري للرسائل (شاشة + ذاكرة + سيرفر) ---
