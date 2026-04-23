@@ -200,6 +200,67 @@
         }
         
 
+        /* === تنسيقات مؤشر حالة الاتصال (Firebase) === */
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #eafaf1;
+            border: 1px solid #2ecc71;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #27ae60;
+            transition: 0.3s;
+            height: 38px;
+            box-sizing: border-box;
+        }
+
+        /* حالة انقطاع الاتصال */
+        .connection-status.offline {
+            background: #fdedec;
+            border-color: #e74c3c;
+            color: #c0392b;
+        }
+
+        /* النقطة النبضية */
+        .pulse-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #2ecc71;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7);
+            animation: pulse-green 1.5s infinite;
+        }
+
+        .connection-status.offline .pulse-dot {
+            background-color: #e74c3c;
+            box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7);
+            animation: pulse-red 1.5s infinite;
+        }
+
+        /* حركات النبض (Animation) */
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(46, 204, 113, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(46, 204, 113, 0); }
+        }
+
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(231, 76, 60, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+        }
+
+        /* توافق الوضع الليلي */
+        body.dark-mode .connection-status { background: #1e3a29; border-color: #27ae60; color: #2ecc71; }
+        body.dark-mode .connection-status.offline { background: #3b1d1d; border-color: #c0392b; color: #e74c3c; }
+
+        /* إخفاء النص في الموبايل لتوفير المساحة وإبقاء النقطة فقط */
+        body.mobile-mode .hide-on-mobile { display: none; }
+        body.mobile-mode .connection-status { padding: 5px 8px; }
+
         /* --- تنسيق الحاوية (الشبكة) --- */
         .icons-wrapper {
             display: grid;
@@ -1650,6 +1711,11 @@
         </div>
         
         <div class="top-bar-actions">
+
+            <div id="firebaseConnectionStatus" class="connection-status" title="جاري الاتصال بالسحابة...">
+                <span class="pulse-dot"></span>
+                <span class="status-text hide-on-mobile">متصل بالسحابة</span>
+            </div>
             <button class="top-action-btn" onclick="openChatModal()" title="المراسلة">
                 💬
                 <div id="globalUnreadBadge" class="chat-badge">0</div>
@@ -1966,6 +2032,11 @@
             <span>تصفير ومسح جميع المواد المخزنة في قاعدة البيانات نهائياً.</span>
         </button>
 
+        <button class="modal-menu-btn" onclick="openStorageManager()" style="background: #fdf2e9; border-color: #e67e22;">
+            <strong style="color: #d35400;">11- تفاصيل استهلاك الذاكرة وتنظيف الكاش 🧹</strong>
+            <span>عرض استهلاك السحابة لجميع المستخدمين، وتنظيف ذاكرة المتصفح لتسريع البرنامج.</span>
+        </button>
+
         <div style="margin-top:15px;">
             <button class="btn-cancel" onclick="closeSystemMenu()">إغلاق</button>
         </div>
@@ -2151,25 +2222,28 @@
 </div>
 
 <div id="sessionsModal" class="modal-overlay">
-    <div class="modal-content">
-        <div class="modal-title">📂 إدارة الجلسات المحفوظة</div>
-        <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 15px; text-align: center;">
+    <div class="modal-content" style="overflow: hidden; display: flex; flex-direction: column; max-height: 90vh;">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px; flex-shrink: 0;">
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50;">📂 إدارة الجلسات المحفوظة</div>
+            <button onclick="closeSessionsModal()" style="background:none; border:none; font-size:24px; cursor:pointer; color:#e74c3c; margin-right: 10px;" title="إغلاق النافذة">❌</button>
+        </div>
+
+        <div style="border-bottom: 1px solid #eee; padding-bottom: 15px; margin-bottom: 10px; text-align: center; flex-shrink: 0;">
             <div style="margin-bottom:10px; color:#555; font-size:14px;">سيتم حفظ الجلسة تلقائياً باسم أول مادة في القائمة</div>
             <button class="btn-save-session" onclick="saveCurrentSession()">💾 حفظ العمل الحالي وتحديث الأسعار</button>
         </div>
         
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; flex-shrink: 0;">
             <div style="font-weight: bold; font-size: 14px;">الجلسات السابقة:</div>
             <button style="background: #c0392b; color: white; padding: 2px 8px; font-size: 11px; border:none; border-radius: 3px; cursor: pointer;" onclick="deleteAllSessions()">حذف الكل</button>
         </div>
 
-        <ul id="sessionsListUl" class="sessions-list">
+        <ul id="sessionsListUl" class="sessions-list" style="overflow-y: auto; flex-grow: 1; max-height: none; padding-right: 5px; margin: 0;">
             <li style="padding:10px; text-align:center; color:#999;">لا توجد جلسات محفوظة</li>
         </ul>
-        <div style="margin-top:15px;">
-            <button class="btn-cancel" onclick="closeSessionsModal()">إغلاق</button>
+
         </div>
-    </div>
 </div>
 
 <div id="ptModal" class="modal-overlay">
@@ -2747,36 +2821,96 @@
     </div>
 </div>
 
+<div id="storageManagerModal" class="modal-overlay" style="z-index: 5000;">
+    <div class="modal-content" style="width: 500px; text-align: right;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #eee; padding-bottom: 10px; margin-bottom: 15px;">
+            <div style="font-size: 18px; font-weight: bold; color: #2c3e50;">📊 إدارة الذاكرة واستهلاك البيانات</div>
+            <button onclick="document.getElementById('storageManagerModal').style.display='none'" style="background:none; border:none; font-size:24px; cursor:pointer; color:#e74c3c;">❌</button>
+        </div>
+        
+        <div id="storageLoader" style="padding: 30px; text-align: center; color: #3498db; font-weight: bold; font-size: 16px;">
+            جاري فحص الذاكرة المحلية والسحابية... ⏳<br>
+            <small style="color:#7f8c8d; font-size:12px;">قد يستغرق هذا بضع ثوانٍ حسب حجم البيانات</small>
+        </div>
+        
+        <div id="storageContent" style="display: none;">
+            <div style="background: #e8f0fe; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3498db;">
+                <h3 style="margin-top: 0; color: #2980b9; font-size: 16px;">☁️ استهلاك السحابة (لجميع المستخدمين)</h3>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 14px;">
+                    <li>💬 الدردشات والملفات المرفقة: <strong id="cloudChatsSize" style="color:#2c3e50;">0</strong> MB</li>
+                    <li>📂 الجلسات المحفوظة: <strong id="cloudSessionsSize" style="color:#2c3e50;">0</strong> MB</li>
+                    <li>📦 النسخ الاحتياطية (المخازن): <strong id="cloudBackupsSize" style="color:#2c3e50;">0</strong> MB</li>
+                    <hr style="border: 0; border-top: 1px solid #bdc3c7; margin: 8px 0;">
+                    <li style="color: #c0392b; font-size: 16px; font-weight:bold;">📊 المجموع الكلي للسحابة: <strong id="cloudTotalSize">0</strong> MB</li>
+                </ul>
+            </div>
+
+            <div style="background: #fdf2e9; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e67e22;">
+                <h3 style="margin-top: 0; color: #d35400; font-size: 16px;">📱 ذاكرة المتصفح المحلية لديك (الكاش)</h3>
+                <ul style="list-style: none; padding: 0; margin: 0; line-height: 1.8; font-size: 14px;">
+                    <li>📝 كاش المحادثات السابقة: <strong id="localChatCache" style="color:#2c3e50;">0</strong> MB</li>
+                    <li>⏳ الجلسات المؤقتة والمسودات: <strong id="localTempCache" style="color:#2c3e50;">0</strong> MB</li>
+                    <hr style="border: 0; border-top: 1px solid #bdc3c7; margin: 8px 0;">
+                    <li style="color: #c0392b; font-size: 16px; font-weight:bold;">📊 مجموع كاش المتصفح: <strong id="localTotalSize">0</strong> MB</li>
+                </ul>
+                
+                <button onclick="cleanLocalCache()" style="width: 100%; background: #e74c3c; color: white; border: none; padding: 12px; border-radius: 5px; font-weight: bold; cursor: pointer; margin-top: 15px; font-size: 15px; transition: 0.3s;">
+                    🧹 تنظيف الكاش (تفريغ الذاكرة المؤقتة)
+                </button>
+                <div style="font-size: 11px; color: #7f8c8d; margin-top: 8px; text-align: center; font-weight:bold;">
+                    * إجراء آمن: سيفرغ مساحة المتصفح فقط ولن يحذف أي بيانات من السحابة.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script>
+    // ============================================
+    // === نظام تتبع حالة الاتصال (Presence System) ===
+    // ============================================
     // ============================================
     // === نظام تتبع حالة الاتصال (Presence System) ===
     // ============================================
     function initPresence() {
         if (!currentUser) return;
         
-        // مسار حالة المستخدم الحالي في قاعدة البيانات
         const myStatusRef = db.ref('users_status/' + currentUser);
-        // مرجع خاص من فايربيس لمعرفة حالة الاتصال بالخادم
         const connectedRef = db.ref('.info/connected');
+        
+        // عناصر مؤشر الواجهة
+        const statusBadge = document.getElementById('firebaseConnectionStatus');
+        const statusText = statusBadge ? statusBadge.querySelector('.status-text') : null;
 
         connectedRef.on('value', (snap) => {
             if (snap.val() === true) {
-                // عند الاتصال: أخبر السيرفر أنه في حال انقطاع الاتصال، اجعل الحالة "غير متصل" وسجل الوقت
+                // حالة: متصل
+                if (statusBadge) {
+                    statusBadge.classList.remove('offline');
+                    statusText.innerText = "متصل بـ Firebase";
+                    statusBadge.title = "الاتصال ممتاز بقاعدة البيانات";
+                }
+
                 myStatusRef.onDisconnect().set({
                     state: 'offline',
                     last_changed: firebase.database.ServerValue.TIMESTAMP
                 }).then(() => {
-                    // بعد ضبط أمر الانقطاع، قم بتغيير الحالة الآن إلى "متصل"
                     myStatusRef.set({
                         state: 'online',
                         last_changed: firebase.database.ServerValue.TIMESTAMP
                     });
                 });
+            } else {
+                // حالة: غير متصل (مقطوع)
+                if (statusBadge) {
+                    statusBadge.classList.add('offline');
+                    statusText.innerText = "الإنترنت مقطوع";
+                    statusBadge.title = "جاري محاولة إعادة الاتصال...";
+                }
             }
         });
     }
-
-
 
     // --- تهيئة Firebase ---
     const firebaseConfig = {
@@ -5525,10 +5659,7 @@
             
             if ((item.code && String(item.code).trim() === existingCode.trim()) || 
                 (item.name.trim() === existingName.trim())) {
-                
-                if (!silent) {
-                    alert("تنبيه: هذه المادة مضافة سابقاً، لا يمكن إضافتها مرة أخرى.");
-                }
+                if (!silent) alert("تنبيه: هذه المادة مضافة سابقاً.");
                 return false; 
             }
         }
@@ -5539,22 +5670,21 @@
         const rowCount = tbody.rows.length + 1;
         const row = document.createElement("tr");
         
-        const unit = item.unit || ""; 
+        // سحب القيم المحفوظة
         let qty_buy = item.qty_buy || ""; 
+        const unit = item.unit || ""; 
         const stock = item.stock || "0";    
         let consumption = item.monthly_consumption || "0"; 
-        
         let annual_need = item.annual_need || "0";
         let monthly_need = item.monthly_need || "0";
 
-        if (monthly_need > 0 && annual_need == 0) {
-            annual_need = monthly_need * 12;
-        }
-        else if (annual_need > 0) {
+        // حساب الاحتياج الشهري للعرض فقط
+        if (monthly_need == 0 && annual_need > 0) {
             monthly_need = Math.round(annual_need / 12);
         }
         
-        if (!item.isFromSession) { 
+        // إذا كانت مادة جديدة (ليست من جلسة) والمصروف والكمية أصفار، نضع الاحتياج كقيمة مبدئية
+        if (!item.isFromSession && (qty_buy === "" || qty_buy == 0) && (consumption === "0" || consumption === "")) {
             if(monthly_need > 0) {
                 qty_buy = monthly_need; 
                 consumption = monthly_need; 
@@ -5562,44 +5692,44 @@
         }
 
         const cost = item.cost || "0"; 
-        
-        let initialTotal = "";
-        if(qty_buy && cost) {
-            initialTotal = parseFloat(qty_buy) * parseFloat(cost);
-        }
-        
+        let initialTotal = (qty_buy && cost) ? parseFloat(qty_buy) * parseFloat(cost) : "";
         const notes = item.notes || ""; 
 
         row.innerHTML = `
             <td class="num-cell">
                 <input type="number" class="seq-input" value="${rowCount}" 
-                    onkeydown="handleReorderKey(event, this)" 
-                    onchange="handleReorderChange(this)" 
-                    onclick="this.select()" 
-                    onfocus="this.select()" 
-                    style="width: 100%; text-align: center; font-weight: bold; background: transparent; border: none; outline: none; font-size: 14px; -moz-appearance: textfield; cursor: pointer;">
+                    onclick="this.select()" onfocus="this.select()"
+                    onkeydown="handleReorderKey(event, this)" onchange="handleReorderChange(this)" 
+                    style="width: 100%; text-align: center; font-weight: bold; background: transparent; border: none; outline: none;">
             </td>
-            <td><input type="text" class="editable text-cell name-input" value="${item.name}" title="${item.name}" readonly style="background: #f9f9f9; font-weight:bold;" onclick="this.select()" onfocus="this.select()"></td>
-            <td><input type="text" class="editable code-cell" value="${item.code || ''}" readonly style="background: #f9f9f9;" onclick="this.select()" onfocus="this.select()"></td>
-            <td><input type="text" class="editable num-cell unit-input" value="${unit}" onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell qty-input" value="${qty_buy}" placeholder="0" oninput="validity.valid||(value=''); calculateRow(this)" onfocus="this.select()"></td> 
-            <td><input type="number" min="0" class="editable num-cell stock-input" value="${stock}" oninput="validity.valid||(value='');" onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell cons-input" value="${consumption}" oninput="validity.valid||(value='');" onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell annual-need-input" value="${annual_need}" oninput="validity.valid||(value=''); calculateMonthlyNeed(this)" onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell monthly-need-input calculated-field" value="${monthly_need}" readonly onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell cost-input" value="${cost}" oninput="validity.valid||(value=''); calculateRow(this)" onfocus="this.select()"></td>
-            <td><input type="number" min="0" class="editable num-cell total total-input" value="${initialTotal}" readonly onfocus="this.select()"></td>
-            <td><input type="text" class="editable text-cell notes-input" value="${notes}" style="text-align: right; direction: rtl;" onfocus="this.select()"></td> 
-            <td class="num-cell"><button style="background:none; border:none; color:red; cursor:pointer; font-weight:bold;" onclick="deleteRow(this)">X</button></td>
+            <td><input type="text" class="editable text-cell name-input" value="${item.name}" 
+                onclick="this.select()" onfocus="this.select()" readonly style="background: #f9f9f9; font-weight:bold;"></td>
+            <td><input type="text" class="editable code-cell" value="${item.code || ''}" 
+                onclick="this.select()" onfocus="this.select()" readonly style="background: #f9f9f9;"></td>
+            <td><input type="text" class="editable num-cell unit-input" value="${unit}"
+                onclick="this.select()" onfocus="this.select()"></td>
+            <td><input type="number" min="0" class="editable num-cell qty-input" value="${qty_buy}" 
+                onclick="this.select()" onfocus="this.select()" placeholder="0" oninput="calculateRow(this)"></td> 
+            <td><input type="number" min="0" class="editable num-cell stock-input" value="${stock}"
+                onclick="this.select()" onfocus="this.select()"></td>
+            <td><input type="number" min="0" class="editable num-cell cons-input" value="${consumption}"
+                onclick="this.select()" onfocus="this.select()"></td>
+            <td><input type="number" min="0" class="editable num-cell annual-need-input calculated-field" value="${annual_need}" 
+                readonly title="قيمة ثابتة من قاعدة البيانات"></td>
+            <td><input type="number" min="0" class="editable num-cell monthly-need-input calculated-field" value="${monthly_need}" 
+                readonly></td>
+            <td><input type="number" min="0" class="editable num-cell cost-input" value="${cost}" 
+                onclick="this.select()" onfocus="this.select()" oninput="calculateRow(this)"></td>
+            <td><input type="number" min="0" class="editable num-cell total total-input" value="${initialTotal}" 
+                readonly></td>
+            <td><input type="text" class="editable text-cell notes-input" value="${notes}" 
+                onclick="this.select()" onfocus="this.select()" style="text-align: right; direction: rtl;"></td> 
+            <td class="num-cell"><button style="background:none; border:none; color:red; cursor:pointer;" onclick="deleteRow(this)">X</button></td>
         `;
 
         tbody.appendChild(row);
-        searchInput.value = "";
-        suggestionsBox.style.display = "none";
-        
-        if(!item.isFromSession) row.querySelector('.qty-input').focus();
         saveTempSession();
-        updateMainTableGrandTotal(); // <-- السطر الجديد
+        updateMainTableGrandTotal();
         return true;
     }
 
@@ -5739,15 +5869,12 @@
 
         let sessionItems = scrapeTableData();
         
+        // تحديد اسم افتراضي للجلسة
         let defaultName = "جلسة غير معنونة";
         if (sessionItems.length > 0 && sessionItems[0].name) {
             let firstItemName = sessionItems[0].name.trim();
             let words = firstItemName.split(/\s+/);
-            if (words.length > 4) {
-                defaultName = words.slice(0, 4).join(" ");
-            } else {
-                defaultName = firstItemName;
-            }
+            defaultName = words.length > 4 ? words.slice(0, 4).join(" ") : firstItemName;
         }
 
         let userInput = prompt("أدخل اسماً لهذه الجلسة (أو اضغط موافق لاستخدام اسم أول مادة):", defaultName);
@@ -5758,6 +5885,7 @@
         
         sessionItems.forEach(sItem => {
             let targetItem = null;
+            // البحث عن المادة في قاعدة البيانات الأصلية
             if (sItem.code && String(sItem.code).trim() !== "") {
                 targetItem = inventoryDB.find(db => String(db.code).trim() == String(sItem.code).trim());
             }
@@ -5766,24 +5894,37 @@
             }
 
             if (targetItem) {
+                // تحديث السعر
                 const newCost = parseFloat(sItem.cost);
-                const oldCost = parseFloat(targetItem.cost);
-                if (!isNaN(newCost) && newCost >= 0 && newCost !== oldCost) {
+                if (!isNaN(newCost) && newCost >= 0 && newCost !== parseFloat(targetItem.cost)) {
                     targetItem.cost = newCost; 
                     dbUpdated = true;
                 }
 
+                // تحديث الملاحظات
                 const newNotes = sItem.notes ? sItem.notes.trim() : "";
-                const oldNotes = targetItem.notes ? targetItem.notes.trim() : "";
-                if (newNotes !== oldNotes) {
+                if (newNotes !== (targetItem.notes || "").trim()) {
                     targetItem.notes = newNotes;
+                    dbUpdated = true;
+                }
+
+                // تحديث الكمية المراد شراؤها
+                if (sItem.qty_buy !== targetItem.qty_buy) {
+                    targetItem.qty_buy = sItem.qty_buy;
+                    dbUpdated = true;
+                }
+
+                // التعديل الأهم: تحديث المصروف الشهري وحفظه نهائياً
+                if (sItem.monthly_consumption !== targetItem.monthly_consumption) {
+                    targetItem.monthly_consumption = sItem.monthly_consumption;
                     dbUpdated = true;
                 }
             }
         });
 
+        // حفظ التغييرات في ذاكرة المتصفح الدائمة (المخزن الرئيسي)
         if(dbUpdated) {
-            saveDataToLocal();
+            saveDataToLocal(); 
         }
 
         const newSession = {
@@ -5791,42 +5932,25 @@
             name: sessionName,
             date: new Date().toLocaleString('ar-EG'),
             items: sessionItems,
-            cloudSynced: true // 🌟 تم إضافة هذه القيمة لتأكيد الرفع
+            cloudSynced: true 
         };
 
-        // 1. الحفظ في ذاكرة الجهاز (Local Storage)
+        // حفظ الجلسة في قائمة الجلسات
         let savedSessions = loadFromStorage('inventorySessions', []);
         savedSessions.push(newSession);
         saveToStorage('inventorySessions', savedSessions);
 
-        // 2. الرفع التلقائي والمباشر للسحابة (Firebase) 🌟
+        // الرفع للسحابة (Firebase)
         const cloudPath = `user_sessions/${currentUser}/${newSession.id}`;
-        
-        // إظهار إشعار صغير يخبرك أن الرفع جاري
-        const loaderItem = document.createElement('div');
-        loaderItem.style.cssText = 'position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #f39c12; color: white; padding: 10px 20px; border-radius: 8px; z-index: 9999; font-weight: bold;';
-        loaderItem.innerText = 'جاري الحفظ والرفع للسحابة... ☁️⏳';
-        document.body.appendChild(loaderItem);
-
         db.ref(cloudPath).set(newSession)
             .then(() => {
-                loaderItem.style.background = '#27ae60';
-                loaderItem.innerText = 'تم الحفظ والرفع بنجاح ☁️✔️';
-                setTimeout(() => loaderItem.remove(), 2000);
                 renderSessionsList();
+                alert("✅ تم الحفظ وتحديث المصروف والكميات في قاعدة البيانات والسحابة.");
             })
             .catch(err => {
-                loaderItem.style.background = '#e74c3c';
-                loaderItem.innerText = 'حفظت في الجهاز، لكن فشل الرفع للسحابة ❌';
-                setTimeout(() => loaderItem.remove(), 3000);
-                
-                // في حال فشل الإنترنت، نعدل الحالة لتظهر بدون علامة الصح
-                savedSessions[savedSessions.length - 1].cloudSynced = false;
-                saveToStorage('inventorySessions', savedSessions);
-                renderSessionsList();
+                alert("⚠️ حُفظ محلياً فقط، تعذر الرفع للسحابة.");
             });
-    }
-
+    } 
     // عرض قائمة جلسات القائمة الرئيسية فقط
     function renderSessionsList() {
         const listUl = document.getElementById("sessionsListUl");
@@ -6019,14 +6143,13 @@
         let items = [];
         rows.forEach(row => {
             const nameInput = row.querySelector('.name-input');
-            // هنا نقوم بسحب الاسم الأصلي المخفي حتى لو كان عربي ظاهرياً
             const actualName = nameInput.getAttribute('data-original-name') || nameInput.value; 
 
             items.push({
                 name: actualName,
                 code: row.querySelector('.code-cell').value,
                 unit: row.querySelector('.unit-input').value,
-                qty_buy: row.querySelector('.qty-input').value,
+                qty_buy: row.querySelector('.qty-input').value, // سحب الكمية المعدلة يدوياً
                 stock: row.querySelector('.stock-input').value,
                 monthly_consumption: row.querySelector('.cons-input').value,
                 annual_need: row.querySelector('.annual-need-input').value,
@@ -13337,6 +13460,107 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             console.error(error);
         }
     }
+
+    // ============================================
+    // === نظام إدارة الذاكرة وتنظيف الكاش الشامل ===
+    // ============================================
+
+    async function openStorageManager() {
+        if(typeof closeSystemMenu === 'function') closeSystemMenu();
+        
+        const modal = document.getElementById('storageManagerModal');
+        const loader = document.getElementById('storageLoader');
+        const content = document.getElementById('storageContent');
+        
+        modal.style.display = 'flex';
+        loader.style.display = 'block';
+        content.style.display = 'none';
+
+        // 1. حساب الذاكرة المحلية (الكاش) في متصفح المستخدم
+        let localChatSize = 0;
+        let localTempSize = 0;
+        let localTotal = 0;
+
+        for(let i=0; i<localStorage.length; i++) {
+            let key = localStorage.key(i);
+            let val = localStorage.getItem(key) || '';
+            // حساب حجم النص برمجياً (حرف UTF-16 يأخذ 2 بايت)
+            let bytes = (key.length + val.length) * 2; 
+            localTotal += bytes;
+            
+            if(key.startsWith('msl_chat_')) {
+                localChatSize += bytes;
+            } else if (key.toLowerCase().includes('temp')) {
+                localTempSize += bytes;
+            }
+        }
+
+        document.getElementById('localChatCache').innerText = (localChatSize / (1024 * 1024)).toFixed(2);
+        document.getElementById('localTempCache').innerText = (localTempSize / (1024 * 1024)).toFixed(2);
+        document.getElementById('localTotalSize').innerText = (localTotal / (1024 * 1024)).toFixed(2);
+
+        // 2. حساب مساحة السحابة (Firebase) لجميع المستخدمين
+        try {
+            // جلب جميع البيانات من السيرفر دفعة واحدة للحساب
+            const snapshot = await db.ref('/').once('value');
+            const data = snapshot.val() || {};
+            
+            // دالة مساعدة لتحويل الـ JSON إلى ميجابايت تقريبي
+            const getSizeMB = (obj) => {
+                if(!obj) return "0.00";
+                const str = JSON.stringify(obj);
+                const bytes = encodeURIComponent(str).replace(/%[0-9A-F]{2}/g, 'U').length;
+                return (bytes / (1024 * 1024)).toFixed(2);
+            };
+
+            const chatsSize = getSizeMB(data.chats);
+            const sessionsSize = getSizeMB(data.user_sessions);
+            
+            // تجميع مساحات النسخ الاحتياطية (backups) لكل المستخدمين
+            let backupsObj = {};
+            Object.keys(data).forEach(k => {
+                if(k.startsWith('backups_')) backupsObj[k] = data[k];
+            });
+            const backupsSize = getSizeMB(backupsObj);
+            
+            const totalCloudSize = getSizeMB(data);
+
+            document.getElementById('cloudChatsSize').innerText = chatsSize;
+            document.getElementById('cloudSessionsSize').innerText = sessionsSize;
+            document.getElementById('cloudBackupsSize').innerText = backupsSize;
+            document.getElementById('cloudTotalSize').innerText = totalCloudSize;
+
+        } catch (error) {
+            console.error("Storage Calculation Error:", error);
+            alert("⚠️ حدث خطأ أثناء فحص السحابة. تأكد من جودة اتصالك بالإنترنت.");
+        }
+
+        loader.style.display = 'none';
+        content.style.display = 'block';
+    }
+
+    function cleanLocalCache() {
+        if(!confirm("هل أنت متأكد من تنظيف الكاش؟\n\nسيؤدي هذا إلى تفريغ ذاكرة الدردشات المخبأة في متصفحك لتسريعه ولتجنب امتلاء الذاكرة.\n(لن يتم مسح أي رسالة من السيرفر، وسيقوم النظام بجلبها مجدداً عند فتح أي محادثة).")) return;
+
+        let keysToRemove = [];
+        
+        // البحث عن كل ما يخص الدردشات المؤقتة المخزنة في المتصفح
+        for(let i=0; i<localStorage.length; i++) {
+            let key = localStorage.key(i);
+            if(key.startsWith('msl_chat_')) {
+                keysToRemove.push(key);
+            }
+        }
+        
+        // تنفيذ الحذف
+        keysToRemove.forEach(k => localStorage.removeItem(k));
+        
+        alert("✅ تم تنظيف الكاش وتوفير مساحة في متصفحك بنجاح!");
+        
+        // إعادة فحص الذاكرة وتحديث الأرقام
+        openStorageManager();
+    }
+
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13864,6 +14088,18 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             console.error(e);
         }
     }
+
+    // هذا الكود يراقب أي نقرة داخل الجدول الرئيسي ويجبر الحقل على تحديد النص بالكامل
+    document.getElementById('tableBody').addEventListener('focusin', function(e) {
+        if (e.target.tagName === 'INPUT') {
+            // تأخير بسيط جداً لضمان استقرار التركيز قبل التحديد
+            setTimeout(() => {
+                e.target.select();
+            }, 50);
+        }
+    });
+    
+
 </script>
 </body>
 </html>
