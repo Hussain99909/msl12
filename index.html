@@ -2952,6 +2952,16 @@
     };
 
     let currentUser = null; 
+    
+    // ============================================
+    // === منع تغير الأرقام عند التمرير بالماوس ===
+    // ============================================
+    document.addEventListener('wheel', function(event) {
+        // إذا كان العنصر الذي نقف عليه هو حقل أرقام، قم بإلغاء التركيز عنه
+        if (document.activeElement.type === 'number') {
+            document.activeElement.blur();
+        }
+    }, { passive: true });
 
     function initAuth() {
         const storedUser = localStorage.getItem('msl_currentUser');
@@ -5974,7 +5984,10 @@
             li.className = "session-item";
             li.innerHTML = `
                 <div class="session-info">
-                    <strong>${session.name}</strong> ${cloudIcon}
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <strong>${session.name}</strong> ${cloudIcon}
+                        <button onclick="renameSession(${session.id}, '${session.name.replace(/'/g, "\\'")}')" style="background:none; border:none; cursor:pointer; font-size:14px; padding:0; outline:none;" title="إعادة تسمية الجلسة">✏️</button>
+                    </div>
                     <span class="session-date">${session.date} - (${session.items.length} مادة)</span>
                 </div>
                 <div class="session-actions" style="display:flex; gap:5px;">
@@ -5984,6 +5997,7 @@
                     <button class="btn-delete-session" onclick="deleteSession(${session.id})">حذف</button>
                 </div>
             `;
+            
             listUl.appendChild(li);
         });
     }
@@ -6037,9 +6051,18 @@
         // البحث عن الجلسة المطلوبة وتحديث اسمها
         const sessionIndex = savedSessions.findIndex(s => s.id === sessionId);
         if (sessionIndex !== -1) {
+            // تحديث الاسم محلياً
             savedSessions[sessionIndex].name = newName.trim();
-            saveToStorage('inventorySessions', savedSessions); // حفظ التعديل
+            saveToStorage('inventorySessions', savedSessions); // حفظ التعديل محلياً
             renderSessionsList(); // إعادة رسم القائمة لإظهار الاسم الجديد
+
+            // التعديل الجديد: تحديث الاسم في السحابة (Firebase) لتتزامن عند الزملاء
+            if (savedSessions[sessionIndex].cloudSynced) {
+                const cloudPath = 'user_sessions/' + currentUser + '/' + sessionId;
+                db.ref(cloudPath).update({
+                    name: newName.trim()
+                }).catch(e => console.log("خطأ في تحديث الاسم سحابياً:", e));
+            }
         }
     }
     
@@ -14088,17 +14111,6 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             console.error(e);
         }
     }
-
-    // هذا الكود يراقب أي نقرة داخل الجدول الرئيسي ويجبر الحقل على تحديد النص بالكامل
-    document.getElementById('tableBody').addEventListener('focusin', function(e) {
-        if (e.target.tagName === 'INPUT') {
-            // تأخير بسيط جداً لضمان استقرار التركيز قبل التحديد
-            setTimeout(() => {
-                e.target.select();
-            }, 50);
-        }
-    });
-    
 
 </script>
 </body>
