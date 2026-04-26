@@ -1811,7 +1811,7 @@
         <div class="icon-box" style="background: linear-gradient(135deg, #606c88, #3f4c6b); font-size:12px;" onclick="openPriceModModal()">
             قرار لجنة<br>اعتدال الاسعار
         </div>
-        <div class="icon-box" style="background: linear-gradient(135deg, #16a085, #f39c12); color: #fff;" onclick="exportAllPlatformStepsToZip()">
+        <div class="icon-box" style="background: linear-gradient(135deg, #16a085, #f39c12); color: #fff;" onclick="openMainPlatformModal()">
             تصدير استمارة<br>منصة
         </div>
     </div>
@@ -2748,6 +2748,26 @@
     <div class="modal-content"><div class="modal-title">📂 جلسات أدوية فوق الحاجة</div>
         <ul id="anm_sessionsListUl" class="sessions-list" style="max-height: 250px; overflow-y: auto; text-align: right; padding: 0;"></ul>
         <div style="margin-top:15px;"><button class="btn-cancel" onclick="anm_closeSessionsModal()">إغلاق</button></div>
+    </div>
+</div>
+<div id="mainPlatformModal" class="modal-overlay" style="z-index: 2800;">
+    <div class="modal-content">
+        <div class="modal-title">📄 خيارات تصدير استمارة منصة</div>
+        <div style="margin-bottom: 20px; font-size: 14px; color: #555;">اختر طريقة التصدير المناسبة:</div>
+
+        <button class="modal-menu-btn" onclick="exportAllPlatformStepsToZip(); closeMainPlatformModal();" style="background: #eafaf1; border-color: #27ae60;">
+            <strong>📦 تنزيل معاملة كاملة (ملف ZIP)</strong>
+            <span>تجميع كافة خطوات المنصة في ملف مضغوط واحد.</span>
+        </button>
+
+        <button class="modal-menu-btn" onclick="closeMainPlatformModal(); openPlatformExportModal();" style="background: #e8f0fe; border-color: #3498db;">
+            <strong>📑 تنزيل جزئي للخطوات</strong>
+            <span>عرض خيارات تنزيل كل خطوة على حدة (من 1 إلى 7).</span>
+        </button>
+        
+        <div style="margin-top:15px;">
+            <button class="btn-cancel" onclick="closeMainPlatformModal()">إغلاق</button>
+        </div>
     </div>
 </div>
 <div id="platformExportModal" class="modal-overlay" style="z-index: 2800;">
@@ -6783,15 +6803,16 @@
         let content = headerContent;
         content += `
             <br>
-            <div style="font-weight: bold; font-size: 16pt;">الى / دائرة صحة البصرة – قسم الصيدلة –وحدة لجان الصيدلة والعلاج</div><br>
-            <div class="pt-title">م / اجتماع لجنة الصيدلة والعلاج لشهر (${ptMonth})</div><br>
+            <div style="font-weight: bold;text-align: center; font-size: 16pt;">الى / دائرة صحة البصرة </div>
+            <div style="font-weight: bold;text-align: center; font-size: 16pt;">  قسم الصيدلة والمستلزمات الطبية –وحدة لجان الصيدلة والعلاج</div>
+            <div class="pt-title">م / محضر اجتماع لجنة الصيدلة والعلاج </div><br>
             <div style="text-align: right; font-size: 14pt; margin-bottom: 10px;">تحية طبية....</div>
-            <div class="pt-text-normal pt-indent">نرفق لكم ربطاً محضر اجتماع لجنة الصيدلة والعلاج المنعقد في مستشفانا لشهر (( ${ptMonth} ))</div>
-            <div class="pt-text-normal pt-indent">للتفضل بالاستلام  مع التقدير ......</div>
+            <div class="pt-text-normal pt-indent">نرفق لكم ربطاً محضر اجتماع لجان الصيدلة والعلاج المنعقد في مستشفانا بتاريخ  (( ${ptMonth} ))</div>
+            <div class="pt-text-normal pt-indent">للتفضل بالاطلاع مع الاحترام ......</div>
 
             <table class="signature-table" dir="rtl" style="width:100%; margin-top: 260px;">
                 <tr>
-                    <td style="width: 45%; text-align: center;"> الصيدلاني<br><br>مصطفى مهدي ناصر<br>مدير وحدة الصيدلة</td>
+                    <td style="width: 45%; font-size: 10pt; text-align: right;"> :المرفقات<br><br>-الامر الاداري ذي العدد ٤٧ في ٤-١-٢٠٢٦ <br>-محضر اجتماع لجان الصيدلة والعلاج</td>
                     <td style="width: 10%;"> &nbsp; </td>
                     <td style="width: 45%; text-align: center;"> الصيدلاني<br><br>محمد عصام عبدالخالق<br>مدير مستشفى أم قصر العام</td>
                 </tr>
@@ -12678,7 +12699,14 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
     // ============================================
     // === نظام تصدير استمارات المنصة (الخطوات) ===
     // ============================================
+    // دوال نافذة خيارات المنصة الرئيسية
+    function openMainPlatformModal() {
+        document.getElementById('mainPlatformModal').style.display = 'flex';
+    }
 
+    function closeMainPlatformModal() {
+        document.getElementById('mainPlatformModal').style.display = 'none';
+    }
     function openPlatformExportModal() {
         document.getElementById('platformExportModal').style.display = 'flex';
     }
@@ -12730,14 +12758,18 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <tbody>`;
 
             const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 10; k++) {
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
+
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const shape = row.querySelector('.unit-input').value || ""; 
                     const code = row.querySelector('.code-cell').value || "";
-                    content += `<tr><td>${k+1}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
-                } else { content += `<tr><td>${k+1}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; }
+                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
+                } else { 
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
+                }
             }
 
             content += `</tbody></table>
@@ -12757,7 +12789,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         }
         closePlatformExportModal();
     }
-
+    
     async function exportPlatformStep3() {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
@@ -12841,10 +12873,10 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
             const startIndex = fileIndex * itemsPerPage;
             
-            // رسم 10 صفوف للحفاظ على الأبعاد الثابتة للاستمارة
-            for (let k = 0; k < 10; k++) {
-                const displaySeq = k + 1; 
+            // رسم 8 صفوف للحفاظ على الأبعاد الثابتة للاستمارة
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
                 
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
@@ -12962,6 +12994,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             alert(`تم تجهيز وتنزيل ${totalFiles} استمارات (الخطوة 3) بنجاح!\n(يرجى السماح بالتنزيلات المتعددة في حال طلب المتصفح ذلك).`);
         }
     }
+
     async function exportPlatformStep6() {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
@@ -12971,12 +13004,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             return;
         }
 
-        // ========================================================
-        // --- رقم التحكم المضمون 100% (باستخدام الجداول المخفية) ---
-        // استخدم النسبة المئوية (%) لدفع الكلمة من اليمين باتجاه اليسار.
-        // 0 = يمين ، 35 = قريبة للمنتصف ، 50 = في المنتصف تماماً
         const supplierPushPercent = 35; 
-        // ========================================================
 
         const css = `
             <style>
@@ -13054,9 +13082,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
             const startIndex = fileIndex * itemsPerPage;
             
-            for (let k = 0; k < 10; k++) {
-                const displaySeq = k + 1; 
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
                 
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
@@ -13127,8 +13155,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         closePlatformExportModal();
     }
     
-
-   async function exportPlatformStep4_5_6() {
+    async function exportPlatformStep4_5_6() {
         const tableBody = document.getElementById("tableBody");
         if (tableBody.querySelectorAll("tr").length === 0) {
             alert("لا توجد مواد في القائمة لتصديرها.");
@@ -13679,14 +13706,18 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             content += `<br><br><div style="font-weight: bold; font-size: 10pt; line-height: 1.8; margin-bottom: 15px;">رقم الاستمارة :<br>تاريخ طلب الشراء :<br></div><div style="font-weight: bold; font-size: 14pt; margin-top: 20px; text-decoration: underline;">الخطوة الاولى</div><div class="header-title">استمارة طلب شراء مواد</div><table class="form-info" dir="rtl"><tr><td style="width:33%;">اسم الدائرة :</td><td style="width:33%;">اسم المستشفى :</td><td style="width:34%;">القسم :</td></tr></table><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 45%;">اسم المادة</th><th style="width: 15%;">الكمية</th><th style="width: 35%;">الملاحظات</th></tr></thead><tbody>`;
 
             const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 10; k++) {
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // التسلسل الصحيح
+
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const shape = row.querySelector('.unit-input').value || ""; 
                     const code = row.querySelector('.code-cell').value || "";
-                    content += `<tr><td>${k+1}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
-                } else { content += `<tr><td>${k+1}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; }
+                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
+                } else { 
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
+                }
             }
             content += `</tbody></table><table class="signature-table" dir="rtl"><tr><td style="width: 33%;">مقدم الطلب</td><td style="width: 33%;">رئيس القسم</td><td style="width: 33%;">مصادقة مدير الدائرة</td></tr></table><div style="font-weight: bold; font-size: 14pt; margin-top: 40px; text-decoration: underline;">الخطوة الثانية</div><table class="step2-box-table" dir="rtl"><tr><td class="box-content"><u>تأييد المخزن -</u><br>نؤيد المواد المشار اليها في طلب الشراء اعلاه في المخزن .<br><br><br><br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع امين المخزن</div></td></tr></table><div class="footer-page">page 1 of 5</div></div>`;
             const fullHtml = preHtml1_2 + content + postHtml;
@@ -13706,9 +13737,10 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             content += `<br><br><div class="step-title">الخطوة الثالثة</div><div class="header-title">استمارة تحديد الكلف التخمينية وتحديد المواصفات للمشتريات الحكومية</div><div class="doc-text">بموجب استمارة الشراء المؤرخة في &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ 202 اجتمعت لجنة تحديد الكلف والمواصفات لبيان الاسعار التخمينية والمواصفات الفنية للمواد المشار اليها في طلب الشراء اعلاه.</div><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 30%;">اسم المادة</th><th style="width: 10%;">الكمية</th><th style="width: 20%;">المواصفات الفنية</th><th style="width: 15%;">الكلفة التخمينية للمفرد/ بالدينار</th><th style="width: 20%;">الكلفة التخمينية للمجموع</th></tr></thead><tbody>`;
 
             const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 10; k++) {
-                const displaySeq = k + 1; 
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // التسلسل الصحيح
+                
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const name = row.querySelector('.name-input').value;
@@ -13719,7 +13751,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     pageTotal += totalVal;
                     const displayTotal = totalVal > 0 ? totalVal.toLocaleString('en-US') : "";
                     content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${name}</td><td>${qty}</td><td style="direction:ltr;">${specs}</td><td>${cost}</td><td>${displayTotal}</td></tr>`;
-                } else { content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; }
+                } else { 
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
+                }
             }
             content += `<tr style="background-color: #f9f9f9; font-weight: bold;"><td colspan="5">المجموع الكلي</td><td>${pageTotal > 0 ? pageTotal.toLocaleString('en-US') : ""}</td></tr></tbody></table><table style="width: 100%; border: none; margin-top: 30px;" dir="rtl"><tr><td style="width: 48%; vertical-align: top; border: none; padding: 0;"><div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div><div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة تحديد المواصفات وكلف التخمينية</div><table class="signature-box-table" style="width: 100%;"><thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table><div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة المواصفات والكلف</div></td><td style="width: 4%; border: none;"></td><td style="width: 48%; vertical-align: top; border: none; padding: 0;"><div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div><div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة اعتدال الاسعار</div><table class="signature-box-table" style="width: 100%;"><thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table><div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة اعتدال الاسعار</div></td></tr></table><div class="footer-page">page 2 of 5</div></div>`;
             const fullHtml = preHtml3 + content + postHtml;
@@ -13748,9 +13782,10 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             content += `<br><br><div class="header-info">رقم الاستمارة : <br>تاريخ طلب الشراء: <br>اسم الوزارة او التشكيل: <br>مكان التسليم بشكل دقيق: <br></div><br><br><table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: none; margin-top: 15px; margin-bottom: 15px;" dir="rtl"><tr><td style="border: none; width: ${supplierPushPercent}%; padding: 0;"></td><td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">الى المورد /</td></tr></table><div class="main-title">قائمة طلب الشراء</div><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 35%;">اسم المادة</th><th style="width: 15%;">المواصفة</th><th style="width: 15%;">الكمية</th><th style="width: 30%;">الملاحظات</th></tr></thead><tbody>`;
 
             const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 10; k++) {
-                const displaySeq = k + 1; 
+            for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; // التسلسل الصحيح
+
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const name = row.querySelector('.name-input').value;
@@ -13758,7 +13793,9 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     const qty = row.querySelector('.qty-input').value;
                     const nationalCode = row.querySelector('.code-cell').value || "";
                     content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${name}</td><td>${shape}</td><td>${qty}</td><td style="direction:ltr;">${nationalCode}</td></tr>`;
-                } else { content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; }
+                } else { 
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
+                }
             }
             content += `</tbody></table><div style="text-align: left; font-weight: bold; font-size: 14pt; margin-top: 30px; margin-bottom: 30px; padding-left: 50px;">توقيع لجنة المشتريات</div><br><br><div class="notes-section"><u style="font-size: 14pt;">ملاحظة</u><br>- يرسل هذا الطلب الى ايميل التاجر موَقع من قبل رئيس لجنة المشتريات مثبت عليه رقم الاستمارة مع نسخه منه الى البريد الالكتروني الخاص بالمنصه ( <span dir="ltr">PO@ITP.IQ</span> )<br>- في حال تجاوز مبلغ المشتريات (50) مليون دينار سيتم ابرام عقد ويتحمل المتعاقد تسديد اجور ارشفة العقد عبر المنصة الالكترونية البالغ (250) الف دينار.<br>- يجب على المورد تحميل صورة هوية غرفة التجارة ان وجدت.<br>- على المورد بيان وجود خدمة توصيل لديه من عدمه.<br>- على المورد بيان وجود خدمة استبدال التالف لديه من عدمه.</div><div class="footer-page">page 4 of 5</div></div>`;
             const fullHtml = preHtml6 + content + postHtml;
@@ -13797,7 +13834,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             }
         });
     }
-
+    
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
