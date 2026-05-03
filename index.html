@@ -2755,9 +2755,9 @@
         <div class="modal-title">📄 خيارات تصدير استمارة منصة</div>
         <div style="margin-bottom: 20px; font-size: 14px; color: #555;">اختر طريقة التصدير المناسبة:</div>
 
-        <button class="modal-menu-btn" onclick="exportAllPlatformStepsToZip(); closeMainPlatformModal();" style="background: #eafaf1; border-color: #27ae60;">
-            <strong>📦 تنزيل معاملة كاملة (ملف ZIP)</strong>
-            <span>تجميع كافة خطوات المنصة في ملف مضغوط واحد.</span>
+        <button class="modal-menu-btn" onclick="exportAllPlatformStepsToWord()" style="background: #eafaf1; border-color: #27ae60;">
+            <strong>📦 تصدير المعاملة كاملة (ملف Word)</strong>
+            <span>تجميع كافة خطوات المنصة في ملف Word واحد مع تسلسل صفحات مترابط.</span>
         </button>
 
         <button class="modal-menu-btn" onclick="closeMainPlatformModal(); openPlatformExportModal();" style="background: #e8f0fe; border-color: #3498db;">
@@ -2791,17 +2791,12 @@
         <button class="modal-menu-btn" onclick="exportPlatformStep6()" style="background: #e8f0fe; border-color: #3498db;">
             <strong>الخطوة 6 (قائمة طلب الشراء)</strong>
             <span>تصدير القائمة المرسلة للمورد مع الملاحظات.</span>
-        </button>
-        <button class="modal-menu-btn" onclick="downloadStep7Directly()" style="background: #fdf2e9; border-color: #e67e22; position: relative; text-align: right;">
-            
-            <div onclick="event.stopPropagation(); openStep7Modal()" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 24px; cursor: pointer; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 50%; display: flex; justify-content: center; align-items: center; width: 35px; height: 35px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);" title="إدارة استمارة الخطوة 7">
-                ⚙️
-            </div>
-            
-            <strong style="padding-left: 60px; display: block;">الخطوة 7 (تنزيل الاستمارة 📥)</strong>
-            <span style="padding-left: 60px; display: block;">انقر هنا لتنزيل الملف مباشرة، أو انقر على الترس (⚙️) للإدارة.</span>
         </button>  
-                
+
+        <button class="modal-menu-btn" onclick="exportPlatformStep7()" style="background: #eafaf1; border-color: #27ae60;">
+            <strong>الخطوة 7 (تأييد قسم العقود)</strong>
+            <span>تصدير استمارة تأييد قسم العقود والموردين.</span>
+        </button>
         
         <div style="margin-top:15px;">
             <button class="btn-cancel" onclick="closePlatformExportModal()">إغلاق</button>
@@ -2809,36 +2804,7 @@
     </div>
 </div>
 
-<div id="step7Modal" class="modal-overlay" style="z-index: 2900;">
-    <div class="modal-content" style="max-width: 400px;">
-        <div class="modal-title">☁️ الخطوة 7 - إدارة الاستمارة</div>
-        
-        <div id="step7Status" style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px; border: 1px solid #ddd; text-align: center;">
-            جاري الاتصال بالسحابة...
-        </div>
 
-        <input type="file" id="step7FileInput" accept=".doc, .docx" style="display:none;" onchange="handleStep7Upload(this)">
-        
-        <button class="modal-menu-btn" onclick="document.getElementById('step7FileInput').click()" style="background: #e8f5e9; border-color: #27ae60;">
-            <strong>📤 رفع نسخة ملف (Word)</strong>
-            <span>اختيار ملف من الحاسوب لرفعه إلى السحابة.</span>
-        </button>
-
-        <button id="btnDownloadStep7" class="modal-menu-btn" onclick="downloadStep7File()" style="background: #e3f2fd; border-color: #2980b9; display:none;">
-            <strong>📥 تنزيل استمارة خطوة 7</strong>
-            <span>تحميل النسخة المرفوعة مسبقاً.</span>
-        </button>
-
-        <button id="btnDeleteStep7" class="modal-menu-btn" onclick="deleteStep7File()" style="background: #fdedec; border-color: #c0392b; display:none;">
-            <strong>🗑️ حذف النسخة المرفوعة</strong>
-            <span>مسح الملف من السحابة نهائياً.</span>
-        </button>
-
-        <div style="margin-top:15px;">
-            <button class="btn-cancel" onclick="closeStep7Modal()">إغلاق</button>
-        </div>
-    </div>
-</div>
 
 <div id="firebaseStatsModal" class="modal-overlay" style="z-index: 5000;">
     <div class="modal-content" style="width: 450px; text-align: center;">
@@ -6808,11 +6774,11 @@
             <div class="pt-title">م / محضر اجتماع لجنة الصيدلة والعلاج </div><br>
             <div style="text-align: right; font-size: 14pt; margin-bottom: 10px;">تحية طبية....</div>
             <div class="pt-text-normal pt-indent">نرفق لكم ربطاً محضر اجتماع لجان الصيدلة والعلاج المنعقد في مستشفانا بتاريخ  (( ${ptMonth} ))</div>
-            <div class="pt-text-normal pt-indent">للتفضل بالاطلاع مع الاحترام ......</div>
+            <div style="text-align: center; class="pt-text-normal pt-indent">للتفضل بالاطلاع مع الاحترام ......</div>
 
             <table class="signature-table" dir="rtl" style="width:100%; margin-top: 260px;">
                 <tr>
-                    <td style="width: 45%; font-size: 10pt; text-align: right;"> :المرفقات<br><br>-الامر الاداري ذي العدد ٤٧ في ٤-١-٢٠٢٦ <br>-محضر اجتماع لجان الصيدلة والعلاج</td>
+                    <td style="width: 45%; font-size: 10pt; text-align: right;"> :المرفقات<br><br>-الامر الاداري ذي العدد ٤٧ في ٤-١-٢٠٢٦ .<br>-محضر اجتماع لجان الصيدلة والعلاج.</td>
                     <td style="width: 10%;"> &nbsp; </td>
                     <td style="width: 45%; text-align: center;"> الصيدلاني<br><br>محمد عصام عبدالخالق<br>مدير مستشفى أم قصر العام</td>
                 </tr>
@@ -12714,15 +12680,29 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
     function closePlatformExportModal() {
         document.getElementById('platformExportModal').style.display = 'none';
     }
-
-    async function exportPlatformStep1And2() {
+    
+async function exportPlatformStep1And2() {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
         if (rows.length === 0) { alert("لا توجد مواد في القائمة لتصديرها."); return; }
 
+        const itemsPerPage = 8; 
+        const totalRows = rows.length;
+        const listPages = Math.ceil(totalRows / itemsPerPage);
+        const totalOverallPages = (listPages * 3) + 2; // حساب إجمالي صفحات المعاملة كلها
+
         const css = `
             <style>
-                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
+                /* إجبار Word على استخدام مقاس A4 بالنقاط الدقيقة وتوحيد المقطع */
+                @page { 
+                    size: 595.3pt 841.9pt; 
+                    margin: 1.5cm; 
+                }
+                @page Section1 { 
+                    size: 595.3pt 841.9pt; 
+                    mso-page-orientation: portrait; 
+                    margin: 1.5cm; 
+                }
                 div.Section1 { page: Section1; direction: rtl; }
                 body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
                 .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-decoration: underline; }
@@ -12735,20 +12715,26 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 .step2-box-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
                 .step2-box-table td.box-content { border: 2px solid #000 !important; padding: 20px; font-size: 12pt; font-weight: bold; line-height: 1.8; text-align: right; }
                 .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }
+                .page-break { page-break-before: always; clear: both; mso-special-character: line-break; }
             </style>
         `;
 
         const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 1 و 2</title>${css}</head><body dir='rtl'><div class='Section1'>`;
         const postHtml = "</div></body></html>";
 
-        const itemsPerPage = 8; 
-        const totalRows = rows.length;
-        const totalFiles = Math.ceil(totalRows / itemsPerPage);
+        let content = '<div style="width:100%;">';
 
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            
+            if (pageIndex > 0) {
+                content += '<br class="page-break" />';
+            }
+
+            let topSpacing = (pageIndex === 0) ? '<br><br>' : '';
+            const currentPage = pageIndex + 1; // الترقيم يبدأ من 1
+
             content += `
-                <br><br>
+                ${topSpacing}
                 <div style="font-weight: bold; font-size: 10pt; line-height: 1.8; margin-bottom: 15px;">رقم الاستمارة :<br>تاريخ طلب الشراء :<br></div>
                 <div style="font-weight: bold; font-size: 14pt; margin-top: 20px; text-decoration: underline;">الخطوة الاولى</div>
                 <div class="header-title">استمارة طلب شراء مواد</div>
@@ -12757,10 +12743,10 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <thead><tr><th style="width: 5%;">ت</th><th style="width: 45%;">اسم المادة</th><th style="width: 15%;">الكمية</th><th style="width: 35%;">الملاحظات</th></tr></thead>
                     <tbody>`;
 
-            const startIndex = fileIndex * itemsPerPage;
+            const startIndex = pageIndex * itemsPerPage;
             for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
+                const displaySeq = dataIndex + 1; 
 
                 if (k < itemsPerPage && dataIndex < totalRows) {
                     const row = rows[dataIndex];
@@ -12775,21 +12761,24 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             content += `</tbody></table>
                 <table class="signature-table" dir="rtl"><tr><td style="width: 33%;">مقدم الطلب</td><td style="width: 33%;">رئيس القسم</td><td style="width: 33%;">مصادقة مدير الدائرة</td></tr></table>
                 <div style="font-weight: bold; font-size: 14pt; margin-top: 40px; text-decoration: underline;">الخطوة الثانية</div>
-                <table class="step2-box-table" dir="rtl"><tr><td class="box-content"><u>تأييد المخزن -</u><br>نؤيد المواد المشار اليها في طلب الشراء اعلاه في المخزن .<br><br><br><br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع امين المخزن</div></td></tr></table>
-                <div class="footer-page">page 1 of 5</div>
-            </div>`;
-
-            const fullHtml = preHtml + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = totalFiles > 1 ? `استمارة_منصة_خطوة_1_2_جزء_${fileIndex+1}.doc` : 'استمارة_منصة_خطوة_1_2.doc';
-            document.body.appendChild(link); link.click(); document.body.removeChild(link);
-            if (fileIndex < totalFiles - 1) await new Promise(r => setTimeout(r, 800));
+                <table class="step2-box-table" dir="rtl"><tr><td class="box-content"><u>تأييد المخزن -</u><br>نؤيد ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) المواد المشار اليها في طلب الشراء اعلاه في المخزن .<br><br><br><br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع امين المخزن</div></td></tr></table>
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>`;
         }
+
+        content += '</div>';
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'استمارة_منصة_خطوة_1_2.doc'; 
+        document.body.appendChild(link); 
+        link.click(); 
+        document.body.removeChild(link);
+
         closePlatformExportModal();
     }
-    
+
     async function exportPlatformStep3() {
         const tableBody = document.getElementById("tableBody");
         const rows = tableBody.querySelectorAll("tr");
@@ -12799,60 +12788,49 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             return;
         }
 
+        const itemsPerPage = 8; 
+        const totalRows = rows.length;
+        const listPages = Math.ceil(totalRows / itemsPerPage);
+        const totalOverallPages = (listPages * 3) + 2;
+
         const css = `
             <style>
+                @page { size: 595.3pt 841.9pt; margin: 1.5cm; }
                 @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
                 div.Section1 { page: Section1; direction: rtl; }
                 body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
-                
                 .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-decoration: underline; }
                 .doc-text { font-size: 12pt; line-height: 1.8; text-align: justify; margin-bottom: 20px; }
-                
                 .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; }
                 .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } 
-                
-                .doc-table td { 
-                    border: 1px solid #000; 
-                    padding: 2px 4px; 
-                    text-align: center; 
-                    font-size: 8pt; 
-                    height: 30px; 
-                    vertical-align: middle; 
-                    line-height: 1.2; 
-                    margin: 0 !important; 
-                    mso-para-margin: 0 !important; 
-                    mso-para-margin-bottom: .0001pt !important;
-                }
-                .doc-table p, .doc-table div, .doc-table span {
-                    margin: 0 !important; padding: 0 !important; mso-para-margin: 0 !important; mso-para-margin-bottom: .0001pt !important;
-                }
-                
+                .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; }
                 .signature-box-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                 .signature-box-table th { border: 1px solid #000; background-color: #f0f0f0; padding: 5px; font-weight: bold; font-size: 10pt; text-align: center;}
                 .signature-box-table td { border: 1px solid #000; padding: 5px; height: 30px; text-align: center; font-size: 10pt;}
-                
                 .step-title { font-weight: bold; font-size: 14pt; margin-top: 20px; margin-bottom: 10px; text-decoration: underline; }
                 .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }
+                .page-break { page-break-before: always; clear: both; mso-special-character: line-break; }
             </style>
         `;
 
         const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 3</title>${css}</head><body dir='rtl'><div class='Section1'>`;
         const postHtml = "</div></body></html>";
 
-        const itemsPerPage = 8; 
-        const totalRows = rows.length;
-        const totalFiles = Math.ceil(totalRows / itemsPerPage);
+        let content = '<div style="width:100%;">';
 
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
-            let pageTotal = 0; // متغير لحساب مجموع الصفحة
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            let pageTotal = 0;
+
+            if (pageIndex > 0) {
+                content += '<br class="page-break" />';
+            }
+
+            const currentPage = listPages + pageIndex + 1; // الترقيم التراكمي يكمل بعد الخطوة 1 و 2
 
             content += `
                 <br><br>
                 <div class="step-title">الخطوة الثالثة</div>
-                
                 <div class="header-title">استمارة تحديد الكلف التخمينية وتحديد المواصفات للمشتريات الحكومية</div>
-                
                 <div class="doc-text">
                     بموجب استمارة الشراء المؤرخة في &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ 202 اجتمعت لجنة تحديد الكلف والمواصفات لبيان الاسعار التخمينية والمواصفات الفنية للمواد المشار اليها في طلب الشراء اعلاه.
                 </div>
@@ -12871,14 +12849,12 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <tbody>
             `;
 
-            const startIndex = fileIndex * itemsPerPage;
-            
-            // رسم 8 صفوف للحفاظ على الأبعاد الثابتة للاستمارة
+            const startIndex = pageIndex * itemsPerPage;
             for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
+                const displaySeq = dataIndex + 1;
                 
-                if (k < itemsPerPage && dataIndex < totalRows) {
+                if (dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const name = row.querySelector('.name-input').value;
                     const qty = row.querySelector('.qty-input').value;
@@ -12886,7 +12862,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     const cost = row.querySelector('.cost-input').value || ""; 
                     const totalVal = parseFloat(row.querySelector('.total-input').value) || 0; 
                     
-                    pageTotal += totalVal; // جمع السعر الكلي
+                    pageTotal += totalVal;
                     const displayTotal = totalVal > 0 ? totalVal.toLocaleString('en-US') : "";
 
                     content += `<tr>
@@ -12898,18 +12874,10 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                         <td>${displayTotal}</td>
                     </tr>`;
                 } else {
-                    content += `<tr>
-                        <td>${displaySeq}</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>`;
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
                 }
             }
 
-            // إضافة صف المجموع
             content += `
                         <tr style="background-color: #f9f9f9; font-weight: bold;">
                             <td colspan="5">المجموع الكلي</td>
@@ -12920,79 +12888,125 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
 
                 <table style="width: 100%; border: none; margin-top: 30px;" dir="rtl">
                     <tr>
-                        <td style="width: 48%; vertical-align: top; border: none; padding: 0;">
+                        <td style="width: 48%; vertical-align: top; border: none;">
                             <div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div>
-                            <div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة تحديد المواصفات وكلف التخمينية</div>
-                            <table class="signature-box-table" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 60%;">اسم العضو</th>
-                                        <th style="width: 40%;">توقيع</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td></td><td></td></tr>
-                                    <tr><td></td><td></td></tr>
-                                </tbody>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">لجنة تحديد المواصفات وكلف التخمينية</div>
+                            <table class="signature-box-table">
+                                <thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead>
+                                <tbody><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody>
                             </table>
-                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">
-                                توقيع رئيس لجنة المواصفات والكلف
-                            </div>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة المواصفات والكلف</div>
                         </td>
-
                         <td style="width: 4%; border: none;"></td>
-
-                        <td style="width: 48%; vertical-align: top; border: none; padding: 0;">
+                        <td style="width: 48%; vertical-align: top; border: none;">
                             <div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div>
-                            <div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة اعتدال الاسعار</div>
-                            <table class="signature-box-table" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th style="width: 60%;">اسم العضو</th>
-                                        <th style="width: 40%;">توقيع</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td></td><td></td></tr>
-                                    <tr><td></td><td></td></tr>
-                                </tbody>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">لجنة اعتدال الاسعار</div>
+                            <table class="signature-box-table">
+                                <thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead>
+                                <tbody><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody>
                             </table>
-                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">
-                                توقيع رئيس لجنة اعتدال الاسعار
-                            </div>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة اعتدال الاسعار</div>
                         </td>
                     </tr>
                 </table>
 
-                <div class="footer-page">page 2 of 5</div>
-            </div>`;
-
-            const fullHtml = preHtml + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            
-            if (totalFiles > 1) {
-                link.download = `استمارة_منصة_خطوة_3_جزء_${fileIndex + 1}.doc`;
-            } else {
-                link.download = 'استمارة_منصة_خطوة_3.doc';
-            }
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            if (fileIndex < totalFiles - 1) {
-                await new Promise(resolve => setTimeout(resolve, 800));
-            }
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>
+            `;
         }
-        
+
+        content += '</div>';
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'استمارة_منصة_خطوة_3.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
         closePlatformExportModal();
+    }
 
-        if (totalFiles > 1) {
-            alert(`تم تجهيز وتنزيل ${totalFiles} استمارات (الخطوة 3) بنجاح!\n(يرجى السماح بالتنزيلات المتعددة في حال طلب المتصفح ذلك).`);
+    async function exportPlatformStep4_5_6() {
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody.querySelectorAll("tr");
+        if (rows.length === 0) {
+            alert("لا توجد مواد في القائمة لتصديرها.");
+            return;
         }
+
+        const listPages = Math.ceil(rows.length / 8);
+        const totalOverallPages = (listPages * 3) + 2;
+        const currentPage = (listPages * 2) + 1; // الترقيم التراكمي يكمل بعد الخطوة 3
+
+        const css = `
+            <style>
+                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
+                div.Section1 { page: Section1; direction: rtl; }
+                body { font-family: 'Arial', sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
+                .step-title { font-weight: bold; font-size: 14pt; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; }
+                .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 15px; text-decoration: underline; }
+                .box-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                .box-table td.box-content { border: 1.5pt solid black !important; padding: 15pt; font-size: 13pt; font-weight: bold; line-height: 1.6; text-align: right; }
+                .dashed-line { margin-top: 20px; font-weight: bold; font-size: 14pt; letter-spacing: 1px; word-break: break-all; }
+                .footer-page { text-align: center; font-size: 10pt; margin-top: 40px; direction: ltr; }
+            </style>
+        `;
+
+        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - صفحة 3</title>${css}</head><body dir='rtl'><div class='Section1'>`;
+        const postHtml = "</div></body></html>";
+
+        let content = '<div style="width:100%;">';
+
+        content += `
+            <br><br>
+            <div class="step-title">الخطوة الرابعة</div>
+            <table class="box-table" dir="rtl">
+                <tr>
+                    <td class="box-content">
+                        <u>تأييد توفير التخصيص المالي:</u>
+                        <br><br>
+                        نؤيد ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) التخصيص المالي لشراء المواد المدرجة أعلاه.
+                        <br><br><br>
+                        <div style="text-align:left; padding-left: 50px;">اسم وتوقيع المحاسب</div>
+                    </td>
+                </tr>
+            </table>
+
+            <br><br><br><br><br><br>
+            <div class="step-title" style="margin-top: 30px;">الخطوة الخامسة</div>
+            <div class="header-title">موافقة الأمر بالصرف وحسب الصلاحية</div>
+            
+            <div align="center">
+                <table class="box-table" dir="rtl" style="width: 55%;">
+                    <tr>
+                        <td class="box-content" style="height: 60pt;"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <br><br><br><br><br><br>
+            <div class="step-title" style="margin-top: 40px;">الخطوة السادسة</div>
+            <div style="font-weight: bold; font-size: 14pt;">تاييد تشكيل الرقابة والتدقيق الداخلي على صحة الاجراءات للخطوات السابقة :</div>
+            <div class="dashed-line">
+                ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+            </div>
+            
+            <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>
+        </div>`;
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'استمارة_منصة_خطوة_4_5.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        if(typeof closePlatformExportModal === 'function') closePlatformExportModal();
     }
 
     async function exportPlatformStep6() {
@@ -13004,47 +13018,42 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
             return;
         }
 
+        const itemsPerPage = 8; 
+        const totalRows = rows.length;
+        const listPages = Math.ceil(totalRows / itemsPerPage);
+        const totalOverallPages = (listPages * 3) + 2;
+
         const supplierPushPercent = 35; 
 
         const css = `
             <style>
+                @page { size: 595.3pt 841.9pt; margin: 1.5cm; }
                 @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
                 div.Section1 { page: Section1; direction: rtl; }
                 body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
-                
                 .header-info { font-weight: bold; font-size: 12pt; line-height: 1.6; margin-bottom: 10px; }
-                
                 .main-title { text-align: center; font-weight: bold; font-size: 16pt; margin-bottom: 15px; text-decoration: underline; }
-                
                 .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; }
                 .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } 
-                
-                .doc-table td { 
-                    border: 1px solid #000; 
-                    padding: 2px 4px; 
-                    text-align: center; 
-                    font-size: 8pt; 
-                    height: 30px; 
-                    vertical-align: middle; 
-                    line-height: 1.2; 
-                    margin: 0 !important; 
-                }
-                
+                .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; }
                 .notes-section { font-weight: bold; font-size: 12pt; line-height: 1.8; text-align: right; margin-top: 20px; }
-                .page-break { page-break-before: always; clear: both; mso-break-type: section-break; }
                 .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }
+                .page-break { page-break-before: always; clear: both; mso-special-character: line-break; }
             </style>
         `;
 
         const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 6</title>${css}</head><body dir='rtl'><div class='Section1'>`;
         const postHtml = "</div></body></html>";
 
-        const itemsPerPage = 8; 
-        const totalRows = rows.length;
-        const totalFiles = Math.ceil(totalRows / itemsPerPage);
+        let content = '<div style="width:100%;">';
 
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            
+            if (pageIndex > 0) {
+                content += '<br class="page-break" />';
+            }
+
+            const currentPage = (listPages * 2) + 1 + pageIndex + 1; // الترقيم التراكمي يكمل بعد الخطوة 4،5،6
 
             content += `
                 <br><br> 
@@ -13059,9 +13068,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: none; margin-top: 15px; margin-bottom: 15px;" dir="rtl">
                     <tr>
                         <td style="border: none; width: ${supplierPushPercent}%; padding: 0;"></td>
-                        <td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">
-                            الى المورد /
-                        </td>
+                        <td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">الى المورد /</td>
                     </tr>
                 </table>
 
@@ -13080,13 +13087,12 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     <tbody>
             `;
 
-            const startIndex = fileIndex * itemsPerPage;
-            
+            const startIndex = pageIndex * itemsPerPage;
             for (let k = 0; k < 8; k++) {
                 const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // <-- التعديل هنا لضمان التسلسل المستمر
+                const displaySeq = dataIndex + 1;
                 
-                if (k < itemsPerPage && dataIndex < totalRows) {
+                if (dataIndex < totalRows) {
                     const row = rows[dataIndex];
                     const name = row.querySelector('.name-input').value;
                     const shape = row.querySelector('.unit-input').value; 
@@ -13101,13 +13107,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                         <td style="direction:ltr;">${nationalCode}</td>
                     </tr>`;
                 } else {
-                    content += `<tr>
-                        <td>${displaySeq}</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                        <td>&nbsp;</td>
-                    </tr>`;
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
                 }
             }
 
@@ -13128,63 +13128,343 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     - على المورد بيان وجود خدمة توصيل لديه من عدمه.<br>
                     - على المورد بيان وجود خدمة استبدال التالف لديه من عدمه.
                 </div>
-                <div class="footer-page">page 4 of 5</div>
-            </div>`;
-
-            const fullHtml = preHtml + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            
-            if (totalFiles > 1) {
-                link.download = `استمارة_منصة_خطوة_6_جزء_${fileIndex + 1}.doc`;
-            } else {
-                link.download = 'استمارة_منصة_خطوة_6.doc';
-            }
-            
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            if (fileIndex < totalFiles - 1) {
-                await new Promise(resolve => setTimeout(resolve, 800));
-            }
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>
+            `;
         }
-        
+
+        content += '</div>';
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'استمارة_منصة_خطوة_6.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
         closePlatformExportModal();
     }
-    
-    async function exportPlatformStep4_5_6() {
+
+   async function exportPlatformStep7() {
         const tableBody = document.getElementById("tableBody");
-        if (tableBody.querySelectorAll("tr").length === 0) {
+        const rows = tableBody ? tableBody.querySelectorAll("tr") : [];
+        if (rows.length === 0) {
             alert("لا توجد مواد في القائمة لتصديرها.");
             return;
         }
 
+        const listPages = Math.ceil(rows.length / 8);
+        const totalOverallPages = (listPages * 3) + 2;
+        const currentPage = (listPages * 3) + 2; // الصفحة الأخيرة دائمًا في المعاملة
+
         const css = `
             <style>
-                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
+                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.0in; }
                 div.Section1 { page: Section1; direction: rtl; }
-                body { font-family: 'Arial', sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
-                
-                .step-title { font-weight: bold; font-size: 14pt; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; }
-                .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 15px; text-decoration: underline; }
-                
-                .box-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-                .box-table td.box-content { border: 1.5pt solid black !important; padding: 15pt; font-size: 13pt; font-weight: bold; line-height: 1.6; text-align: right; }
-                
-                .dashed-line { margin-top: 20px; font-weight: bold; font-size: 14pt; letter-spacing: 1px; word-break: break-all; }
-                .footer-page { text-align: center; font-size: 10pt; margin-top: 40px; direction: ltr; }
+                body { font-family: 'Arial', 'Calibri', sans-serif; font-size: 12pt; direction: rtl; text-align: right; }
+                .outer-box { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                .outer-box td.outer-cell { border: 2px solid black; padding: 25px; vertical-align: top; }
+                .inner-rules { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px; }
+                .inner-rules td { padding: 2px; font-weight: bold; font-size: 8pt; vertical-align: middle; }
+                .supplier-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; text-align: center; }
+                .supplier-table th { border: 1px solid black; padding: 5px; font-size: 10pt; font-weight: bold; }
+                .supplier-table td { border: 1px solid black; padding: 2px; height: 25px; font-size: 10pt; }
+                .signature-line { text-align: left; padding-left: 50px; font-weight: bold; font-size: 13pt; margin-top: 40px; margin-bottom: 10px; }
+                .page-number { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; font-family: 'Arial', sans-serif; }
             </style>
         `;
 
-        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - صفحة 3</title>${css}</head><body dir='rtl'><div class='Section1'>`;
+        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 7</title>${css}</head><body dir='rtl'><div class='Section1'>`;
+        const postHtml = "</div></body></html>";
+
+        let content = `
+            <table class="outer-box">
+                <tr>
+                    <td class="outer-cell">
+                        <div style="font-weight: bold; font-size: 14pt; margin-bottom: 10px;">تأييد قسم العقود :</div>
+                        <table class="inner-rules">
+                            <tr>
+                                <td style="width: 50%; border: none;">أ- عدم توفر الموردين في المنصة الالكترونية للمواد المراد شراؤها</td>
+                                <td style="width: 50%; border: 1px solid black; text-align: center;">في حال عدم توفر الموردين يتم تطبيق الاحكام الواردة في الضوابط (22)</td>
+                            </tr>
+                            <tr>
+                               <td style="width: 50%; border: none;">ب- توفر الموردين في المنصة الالكترونية</td>
+                                <td style="width: 50%; border: 1px solid black; text-align: center;">في حال وجودهم في المنصة يتم ملئ الجدول ادناه</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table class="supplier-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">ت</th>
+                                    <th style="width: 30%;">اسم المورد/شركة/تاجر</th>
+                                    <th style="width: 25%;">الايميل</th>
+                                    <th style="width: 20%;">رقم الهاتف</th>
+                                    <th style="width: 20%;">الملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="font-weight: bold;">1</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">2</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">3</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">4</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">5</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">6</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">7</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">8</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">9</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">10</td><td></td><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="signature-line">التوقيع : قسم العقود</div>
+                    </td>
+                </tr>
+            </table>
+            
+            <br><br><br>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border: 2px solid black; mso-border-alt: solid black 1.5pt;" dir="rtl">
+                <tr>
+                    <td style="border: 2px solid black; padding: 15px; text-align: right; font-weight: bold; font-size: 10pt; mso-border-alt: solid black 1.5pt;">
+                        <br>
+                        تأييد لجنة المشتريات على اختيار اسم المورد او الموردين وتفاصيلهم من القائمة اعلاه وارسالها الى قسم العقود 
+                        <br>&nbsp;
+                    </td>
+                </tr>
+            </table>
+            
+            <br><br>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border: 2px solid black; mso-border-alt: solid black 1.5pt;" dir="rtl">
+                <tr>
+                    <td style="border: 2px solid black; padding: 15px; text-align: right; font-weight: bold; font-size: 10pt; mso-border-alt: solid black 1.5pt;">
+                        <br>
+                        قيام قسم العقود بارسال ايميل الى المورد ونسخه منه الى اداره المنصة عبر البريد الالكتروني (PO@ITP.IQ) مع قائمة بطلبات المشتريات المطلوب شراؤها وانتظار اجابة التاجر الكترونياً 
+                        <br>&nbsp;
+                    </td>
+                </tr>
+            </table>
+            <div class="page-number">page ${currentPage} of ${totalOverallPages}</div>
+        `;
+
+        const fullHtml = preHtml + content + postHtml;
+        const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'استمارة_منصة_خطوة_7.doc';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        if(typeof closePlatformExportModal === 'function') closePlatformExportModal();
+    }
+     
+    async function exportAllPlatformStepsToWord() {
+        const tableBody = document.getElementById("tableBody");
+        const rows = tableBody ? tableBody.querySelectorAll("tr") : [];
+        
+        if (rows.length === 0) {
+            alert("لا توجد مواد في القائمة لتصديرها.");
+            return;
+        }
+
+        const itemsPerPage = 8; 
+        const totalRows = rows.length;
+        const listPages = Math.ceil(totalRows / itemsPerPage);
+        const totalOverallPages = (listPages * 3) + 2; // إجمالي صفحات المعاملة
+        const supplierPushPercent = 35; // نسبة مسافة إزاحة المورد للخطوة 6
+
+        // دمج جميع التنسيقات (CSS) الخاصة بجميع الخطوات في نمط واحد
+        const css = `
+            <style>
+                @page { size: 595.3pt 841.9pt; margin: 1.5cm; }
+                @page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; }
+                div.Section1 { page: Section1; direction: rtl; }
+                body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; }
+                
+                /* العناوين والنصوص المشتركة */
+                .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-decoration: underline; }
+                .step-title { font-weight: bold; font-size: 14pt; margin-top: 20px; margin-bottom: 10px; text-decoration: underline; }
+                .main-title { text-align: center; font-weight: bold; font-size: 16pt; margin-bottom: 15px; text-decoration: underline; }
+                .doc-text { font-size: 12pt; line-height: 1.8; text-align: justify; margin-bottom: 20px; }
+                .header-info { font-weight: bold; font-size: 12pt; line-height: 1.6; margin-bottom: 10px; }
+                .form-info { width: 100%; border: none; margin-bottom: 20px; font-weight: bold; font-size: 10pt; } 
+                .notes-section { font-weight: bold; font-size: 12pt; line-height: 1.8; text-align: right; margin-top: 20px; }
+                
+                /* الجداول الأساسية */
+                .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; }
+                .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } 
+                .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; }
+                
+                /* جداول التواقيع والصناديق */
+                .signature-table { width: 100%; border: none; margin-top: 40px; }
+                .signature-table td { border: none; text-align: center; font-weight: bold; font-size: 12pt; vertical-align: top; }
+                .step2-box-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                .step2-box-table td.box-content { border: 2px solid #000 !important; padding: 20px; font-size: 12pt; font-weight: bold; line-height: 1.8; text-align: right; }
+                .signature-box-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+                .signature-box-table th { border: 1px solid #000; background-color: #f0f0f0; padding: 5px; font-weight: bold; font-size: 10pt; text-align: center;}
+                .signature-box-table td { border: 1px solid #000; padding: 5px; height: 30px; text-align: center; font-size: 10pt;}
+                .box-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                .box-table td.box-content { border: 1.5pt solid black !important; padding: 15pt; font-size: 13pt; font-weight: bold; line-height: 1.6; text-align: right; }
+                
+                /* تنسيقات الخطوة 7 */
+                .outer-box { width: 100%; border-collapse: collapse; margin-top: 10px; }
+                .outer-box td.outer-cell { border: 2px solid black; padding: 25px; vertical-align: top; }
+                .inner-rules { width: 100%; border-collapse: collapse; margin-top: 8px; margin-bottom: 8px; }
+                .inner-rules td { padding: 2px; font-weight: bold; font-size: 8pt; vertical-align: middle; }
+                .supplier-table { width: 100%; border-collapse: collapse; margin-bottom: 8px; text-align: center; }
+                .supplier-table th { border: 1px solid black; padding: 5px; font-size: 10pt; font-weight: bold; }
+                .supplier-table td { border: 1px solid black; padding: 2px; height: 25px; font-size: 10pt; }
+                .signature-line { text-align: left; padding-left: 50px; font-weight: bold; font-size: 13pt; margin-top: 40px; margin-bottom: 10px; }
+                
+                /* متفرقات */
+                .dashed-line { margin-top: 20px; font-weight: bold; font-size: 14pt; letter-spacing: 1px; word-break: break-all; }
+                .footer-page, .page-number { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; font-family: 'Arial', sans-serif; }
+                .page-break { page-break-before: always; clear: both; mso-special-character: line-break; }
+            </style>
+        `;
+
+        const preHtml = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>تصدير المعاملة كاملة</title>${css}</head><body dir='rtl'><div class='Section1'>`;
         const postHtml = "</div></body></html>";
 
         let content = '<div style="width:100%;">';
 
-        // --- الخطوة الرابعة (تأييد التخصيص المالي) ---
+        // ==========================================
+        // الخطوة 1 و 2 (استمارة طلب الشراء وتأييد المخزن)
+        // ==========================================
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            if (pageIndex > 0) content += '<br clear="all" style="page-break-before:always" />';
+            const currentPage = pageIndex + 1;
+            let topSpacing = (pageIndex === 0) ? '<br><br>' : '';
+
+            content += `
+                ${topSpacing}
+                <div style="font-weight: bold; font-size: 10pt; line-height: 1.8; margin-bottom: 15px;">رقم الاستمارة :<br>تاريخ طلب الشراء :<br></div>
+                <div style="font-weight: bold; font-size: 14pt; margin-top: 20px; text-decoration: underline;">الخطوة الاولى</div>
+                <div class="header-title">استمارة طلب شراء مواد</div>
+                <table class="form-info" dir="rtl"><tr><td style="width:33%;">اسم الدائرة :</td><td style="width:33%;">اسم المستشفى :</td><td style="width:34%;">القسم :</td></tr></table>
+                <table class="doc-table">
+                    <thead><tr><th style="width: 5%;">ت</th><th style="width: 45%;">اسم المادة</th><th style="width: 15%;">الكمية</th><th style="width: 35%;">الملاحظات</th></tr></thead>
+                    <tbody>`;
+
+            const startIndex = pageIndex * itemsPerPage;
+            for (let k = 0; k < 8; k++) {
+                const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1; 
+                if (k < itemsPerPage && dataIndex < totalRows) {
+                    const row = rows[dataIndex];
+                    const shape = row.querySelector('.unit-input').value || ""; 
+                    const code = row.querySelector('.code-cell').value || "";
+                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
+                } else { 
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
+                }
+            }
+
+            content += `</tbody></table>
+                <table class="signature-table" dir="rtl"><tr><td style="width: 33%;">مقدم الطلب</td><td style="width: 33%;">رئيس القسم</td><td style="width: 33%;">مصادقة مدير الدائرة</td></tr></table>
+                <div style="font-weight: bold; font-size: 14pt; margin-top: 40px; text-decoration: underline;">الخطوة الثانية</div>
+                <table class="step2-box-table" dir="rtl"><tr><td class="box-content"><u>تأييد المخزن -</u><br>نؤيد ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) المواد المشار اليها في طلب الشراء اعلاه في المخزن .<br><br><br><br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع امين المخزن</div></td></tr></table>
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>`;
+        }
+
+        // ==========================================
+        // الخطوة 3 (الكلف التخمينية والمواصفات)
+        // ==========================================
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            content += '<br clear="all" style="page-break-before:always" />'; 
+            const currentPage = listPages + pageIndex + 1;
+            let pageTotal = 0;
+
+            content += `
+                <br><br>
+                <div class="step-title">الخطوة الثالثة</div>
+                <div class="header-title">استمارة تحديد الكلف التخمينية وتحديد المواصفات للمشتريات الحكومية</div>
+                <div class="doc-text">
+                    بموجب استمارة الشراء المؤرخة في &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ 202 اجتمعت لجنة تحديد الكلف والمواصفات لبيان الاسعار التخمينية والمواصفات الفنية للمواد المشار اليها في طلب الشراء اعلاه.
+                </div>
+
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">ت</th>
+                            <th style="width: 30%;">اسم المادة</th>
+                            <th style="width: 10%;">الكمية</th>
+                            <th style="width: 20%;">المواصفات الفنية</th>
+                            <th style="width: 15%;">الكلفة التخمينية للمفرد/ بالدينار</th>
+                            <th style="width: 20%;">الكلفة التخمينية للمجموع</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            const startIndex = pageIndex * itemsPerPage;
+            for (let k = 0; k < 8; k++) {
+                const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1;
+                
+                if (dataIndex < totalRows) {
+                    const row = rows[dataIndex];
+                    const name = row.querySelector('.name-input').value;
+                    const qty = row.querySelector('.qty-input').value;
+                    const specs = row.querySelector('.unit-input').value || ""; 
+                    const cost = row.querySelector('.cost-input').value || ""; 
+                    const totalVal = parseFloat(row.querySelector('.total-input').value) || 0; 
+                    
+                    pageTotal += totalVal;
+                    const displayTotal = totalVal > 0 ? totalVal.toLocaleString('en-US') : "";
+
+                    content += `<tr>
+                        <td>${displaySeq}</td>
+                        <td style="direction:ltr; text-align:left;">${name}</td>
+                        <td>${qty}</td>
+                        <td style="direction:ltr;">${specs}</td>
+                        <td>${cost}</td>
+                        <td>${displayTotal}</td>
+                    </tr>`;
+                } else {
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
+                }
+            }
+
+            content += `
+                        <tr style="background-color: #f9f9f9; font-weight: bold;">
+                            <td colspan="5">المجموع الكلي</td>
+                            <td>${pageTotal > 0 ? pageTotal.toLocaleString('en-US') : ""}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <table style="width: 100%; border: none; margin-top: 30px;" dir="rtl">
+                    <tr>
+                        <td style="width: 48%; vertical-align: top; border: none;">
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">لجنة تحديد المواصفات وكلف التخمينية</div>
+                            <table class="signature-box-table">
+                                <thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead>
+                                <tbody><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody>
+                            </table>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة المواصفات والكلف</div>
+                        </td>
+                        <td style="width: 4%; border: none;"></td>
+                        <td style="width: 48%; vertical-align: top; border: none;">
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: right;">لجنة اعتدال الاسعار</div>
+                            <table class="signature-box-table">
+                                <thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead>
+                                <tbody><tr><td>&nbsp;</td><td>&nbsp;</td></tr><tr><td>&nbsp;</td><td>&nbsp;</td></tr></tbody>
+                            </table>
+                            <div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة اعتدال الاسعار</div>
+                        </td>
+                    </tr>
+                </table>
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>
+            `;
+        }
+
+        // ==========================================
+        // الخطوة 4، 5 و 6 (المالية، الصرف، والتدقيق)
+        // ==========================================
+        content += '<br clear="all" style="page-break-before:always" />';
+        const step456Page = (listPages * 2) + 1;
         content += `
             <br><br>
             <div class="step-title">الخطوة الرابعة</div>
@@ -13199,10 +13479,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     </td>
                 </tr>
             </table>
-        `;
 
-        // --- الخطوة الخامسة (موافقة الصرف) ---
-        content += `
             <br><br><br><br><br><br>
             <div class="step-title" style="margin-top: 30px;">الخطوة الخامسة</div>
             <div class="header-title">موافقة الأمر بالصرف وحسب الصلاحية</div>
@@ -13214,36 +13491,190 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
                     </tr>
                 </table>
             </div>
-        `;
 
-        // --- الخطوة السادسة (الرقابة والتدقيق) ---
-        content += `
             <br><br><br><br><br><br>
             <div class="step-title" style="margin-top: 40px;">الخطوة السادسة</div>
             <div style="font-weight: bold; font-size: 14pt;">تاييد تشكيل الرقابة والتدقيق الداخلي على صحة الاجراءات للخطوات السابقة :</div>
             <div class="dashed-line">
                 ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
             </div>
+            
+            <div class="footer-page">page ${step456Page} of ${totalOverallPages}</div>
         `;
 
-        // --- الفوتر الثابت المطلوب ---
-        content += `
-            <div class="footer-page">page 3 of 5</div>
-        </div>`;
+        // ==========================================
+        // الخطوة 6 (قائمة طلب الشراء الموجهة للمورد)
+        // ==========================================
+        for (let pageIndex = 0; pageIndex < listPages; pageIndex++) {
+            content += '<br clear="all" style="page-break-before:always" />';
+            const currentPage = (listPages * 2) + 1 + pageIndex + 1; 
 
+            content += `
+                <br><br> 
+                <div class="header-info">
+                    رقم الاستمارة : <br>
+                    تاريخ طلب الشراء: <br>
+                    اسم الوزارة او التشكيل: <br>
+                    مكان التسليم بشكل دقيق: <br>
+                </div>
+                
+                <br><br>
+                <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: none; margin-top: 15px; margin-bottom: 15px;" dir="rtl">
+                    <tr>
+                        <td style="border: none; width: ${supplierPushPercent}%; padding: 0;"></td>
+                        <td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">الى المورد /</td>
+                    </tr>
+                </table>
+
+                <div class="main-title">قائمة طلب الشراء</div>
+
+                <table class="doc-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 5%;">ت</th>
+                            <th style="width: 35%;">اسم المادة</th>
+                            <th style="width: 15%;">المواصفة</th>
+                            <th style="width: 15%;">الكمية</th>
+                            <th style="width: 30%;">الملاحظات</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
+
+            const startIndex = pageIndex * itemsPerPage;
+            for (let k = 0; k < 8; k++) {
+                const dataIndex = startIndex + k;
+                const displaySeq = dataIndex + 1;
+                
+                if (dataIndex < totalRows) {
+                    const row = rows[dataIndex];
+                    const name = row.querySelector('.name-input').value;
+                    const shape = row.querySelector('.unit-input').value; 
+                    const qty = row.querySelector('.qty-input').value;
+                    const nationalCode = row.querySelector('.code-cell').value || "";
+
+                    content += `<tr>
+                        <td>${displaySeq}</td>
+                        <td style="direction:ltr; text-align:left;">${name}</td>
+                        <td>${shape}</td>
+                        <td>${qty}</td>
+                        <td style="direction:ltr;">${nationalCode}</td>
+                    </tr>`;
+                } else {
+                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`;
+                }
+            }
+
+            content += `
+                    </tbody>
+                </table>
+
+                <div style="text-align: left; font-weight: bold; font-size: 14pt; margin-top: 30px; margin-bottom: 30px; padding-left: 50px;">
+                    توقيع لجنة المشتريات
+                </div>
+                
+                <br><br>
+                <div class="notes-section">
+                    <u style="font-size: 14pt;">ملاحظة</u><br>
+                    - يرسل هذا الطلب الى ايميل التاجر موَقع من قبل رئيس لجنة المشتريات مثبت عليه رقم الاستمارة مع نسخه منه الى البريد الالكتروني الخاص بالمنصه ( <span dir="ltr">PO@ITP.IQ</span> )<br>
+                    - في حال تجاوز مبلغ المشتريات (50) مليون دينار سيتم ابرام عقد ويتحمل المتعاقد تسديد اجور ارشفة العقد عبر المنصة الالكترونية البالغ (250) الف دينار.<br>
+                    - يجب على المورد تحميل صورة هوية غرفة التجارة ان وجدت.<br>
+                    - على المورد بيان وجود خدمة توصيل لديه من عدمه.<br>
+                    - على المورد بيان وجود خدمة استبدال التالف لديه من عدمه.
+                </div>
+                <div class="footer-page">page ${currentPage} of ${totalOverallPages}</div>
+            `;
+        }
+
+        // ==========================================
+        // الخطوة 7 (تأييد قسم العقود) - تم حل مشكلة التداخل هنا
+        // ==========================================
+        content += '<br clear="all" style="page-break-before:always; mso-special-character:line-break;" />\n&nbsp;';
+        
+        const step7Page = (listPages * 3) + 2;
+        content += `
+            <table class="outer-box">
+                <tr>
+                    <td class="outer-cell">
+                        <div style="font-weight: bold; font-size: 14pt; margin-bottom: 10px;">تأييد قسم العقود :</div>
+                        <table class="inner-rules">
+                            <tr>
+                                <td style="width: 50%; border: none;">أ- عدم توفر الموردين في المنصة الالكترونية للمواد المراد شراؤها</td>
+                                <td style="width: 50%; border: 1px solid black; text-align: center;">في حال عدم توفر الموردين يتم تطبيق الاحكام الواردة في الضوابط (22)</td>
+                            </tr>
+                            <tr>
+                               <td style="width: 50%; border: none;">ب- توفر الموردين في المنصة الالكترونية</td>
+                                <td style="width: 50%; border: 1px solid black; text-align: center;">في حال وجودهم في المنصة يتم ملئ الجدول ادناه</td>
+                            </tr>
+                        </table>
+                        <br>
+                        <table class="supplier-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">ت</th>
+                                    <th style="width: 30%;">اسم المورد/شركة/تاجر</th>
+                                    <th style="width: 25%;">الايميل</th>
+                                    <th style="width: 20%;">رقم الهاتف</th>
+                                    <th style="width: 20%;">الملاحظات</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr><td style="font-weight: bold;">1</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">2</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">3</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">4</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">5</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">6</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">7</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">8</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">9</td><td></td><td></td><td></td><td></td></tr>
+                                <tr><td style="font-weight: bold;">10</td><td></td><td></td><td></td><td></td></tr>
+                            </tbody>
+                        </table>
+                        <div class="signature-line">التوقيع : قسم العقود</div>
+                    </td>
+                </tr>
+            </table>
+            
+            <br><br><br>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border: 2px solid black; mso-border-alt: solid black 1.5pt;" dir="rtl">
+                <tr>
+                    <td style="border: 2px solid black; padding: 15px; text-align: right; font-weight: bold; font-size: 10pt; mso-border-alt: solid black 1.5pt;">
+                        <br>
+                        تأييد لجنة المشتريات على اختيار اسم المورد او الموردين وتفاصيلهم من القائمة اعلاه وارسالها الى قسم العقود 
+                        <br>&nbsp;
+                    </td>
+                </tr>
+            </table>
+            
+            <br><br>
+            <table width="100%" border="1" cellspacing="0" cellpadding="0" style="width: 100%; border-collapse: collapse; border: 2px solid black; mso-border-alt: solid black 1.5pt;" dir="rtl">
+                <tr>
+                    <td style="border: 2px solid black; padding: 15px; text-align: right; font-weight: bold; font-size: 10pt; mso-border-alt: solid black 1.5pt;">
+                        <br>
+                        قيام قسم العقود بارسال ايميل الى المورد ونسخه منه الى اداره المنصة عبر البريد الالكتروني (<span dir="ltr">PO@ITP.IQ</span>) مع قائمة بطلبات المشتريات المطلوب شراؤها وانتظار اجابة التاجر الكترونياً 
+                        <br>&nbsp;
+                    </td>
+                </tr>
+            </table>
+            <div class="page-number">page ${step7Page} of ${totalOverallPages}</div>
+        `;
+
+        content += '</div>';
+
+        // ==========================================
+        // التصدير النهائي كملف Word واحد
+        // ==========================================
         const fullHtml = preHtml + content + postHtml;
         const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-        const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = url;
-        link.download = 'استمارة_منصة_صفحة_3.doc';
+        link.href = URL.createObjectURL(blob);
+        link.download = 'تصدير_المعاملة_كاملة.doc';
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        if(typeof closePlatformExportModal === 'function') closePlatformExportModal();
+        if(typeof closeMainPlatformModal === 'function') closeMainPlatformModal();
     }
-
     // =========================================================
     // === دالة استيراد المواد من القائمة الرئيسية إلى نظام الفحص ===
     // =========================================================
@@ -13296,147 +13727,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         }
     }
 
-    // ============================================
-    // === نظام الخطوة 7 (السحابة) ===
-    // ============================================
-    let currentStep7FileData = null;
-
-    function openStep7Modal() {
-        closePlatformExportModal(); // إغلاق نافذة المنصة الرئيسية
-        document.getElementById('step7Modal').style.display = 'flex';
-        listenToStep7File(); // التحقق من وجود ملف مرفوع
-    }
-
-    function closeStep7Modal() {
-        document.getElementById('step7Modal').style.display = 'none';
-    }
-
-    // دالة الاستماع لحالة الملف على Firebase
-    function listenToStep7File() {
-        const statusDiv = document.getElementById('step7Status');
-        const btnDownload = document.getElementById('btnDownloadStep7');
-        const btnDelete = document.getElementById('btnDeleteStep7');
-
-        db.ref('platform_step7').on('value', (snapshot) => {
-            const data = snapshot.val();
-            if (data && data.fileData) {
-                currentStep7FileData = data;
-                const dateStr = new Date(data.uploadTime).toLocaleString('ar-IQ');
-                statusDiv.innerHTML = `
-                    <div style="color: #27ae60; font-weight: bold; font-size: 16px;">✅ يوجد ملف مرفوع على السحابة</div>
-                    <div style="margin-top: 8px; font-size: 13px; color: #555; line-height: 1.6;">
-                        اسم الملف: <span dir="ltr" style="color: #2980b9; font-weight:bold;">${data.fileName}</span><br>
-                        الرفع بواسطة: <b>${data.uploadedBy}</b><br>
-                        وقت الرفع: ${dateStr}
-                    </div>
-                `;
-                btnDownload.style.display = 'block';
-                btnDelete.style.display = 'block';
-            } else {
-                currentStep7FileData = null;
-                statusDiv.innerHTML = `
-                    <div style="color: #e74c3c; font-weight: bold; font-size: 16px;">❌ لا يوجد ملف مرفوع حالياً</div>
-                    <div style="margin-top: 5px; font-size: 13px; color: #555;">يرجى رفع ملف الاستمارة من حاسوبك ليتمكن الزملاء من تنزيله.</div>
-                `;
-                btnDownload.style.display = 'none';
-                btnDelete.style.display = 'none';
-            }
-        });
-    }
-
-    // دالة رفع الملف
-    function handleStep7Upload(input) {
-        const file = input.files[0];
-        if (!file) return;
-
-        // تحديد الحد الأقصى بـ 5 ميجابايت لتجنب مشاكل الـ Base64
-        if (file.size > 5 * 1024 * 1024) { 
-            alert("حجم الملف كبير جداً! يرجى اختيار ملف بحجم أقل من 5 ميجابايت.");
-            input.value = '';
-            return;
-        }
-
-        const fileName = file.name;
-        const reader = new FileReader();
-        
-        document.getElementById('step7Status').innerHTML = '<div style="color: #2980b9; font-weight: bold; font-size: 15px;">⏳ جاري الرفع للسحابة، يرجى الانتظار...</div>';
-
-        reader.onload = function(e) {
-            const base64 = e.target.result;
-            db.ref('platform_step7').set({
-                fileData: base64,
-                fileName: fileName,
-                uploadedBy: currentUser || "مستخدم غير معروف",
-                uploadTime: firebase.database.ServerValue.TIMESTAMP
-            }).then(() => {
-                alert("✅ تم رفع الملف إلى السحابة بنجاح!");
-            }).catch((error) => {
-                alert("❌ حدث خطأ أثناء الرفع: " + error.message);
-            });
-        };
-        
-        reader.readAsDataURL(file);
-        input.value = ''; // تصفير الحقل ليتمكن من رفع ملف آخر بنفس الاسم لاحقاً
-    }
-
-    // دالة تنزيل الملف
-    function downloadStep7File() {
-        if (!currentStep7FileData || !currentStep7FileData.fileData) {
-            alert("لا يوجد ملف متاح للتنزيل.");
-            return;
-        }
-        
-        const link = document.createElement('a');
-        link.href = currentStep7FileData.fileData;
-        link.download = currentStep7FileData.fileName || 'استمارة_خطوة_7.doc';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-    }
-
-    // دالة حذف الملف
-    function deleteStep7File() {
-        if (confirm("⚠️ هل أنت متأكد من حذف استمارة الخطوة 7 المرفوعة على السحابة؟\nلا يمكن التراجع عن هذا الإجراء وسيتم حذفها عند جميع الزملاء.")) {
-            db.ref('platform_step7').remove().then(() => {
-                alert("🗑️ تم مسح الملف من السحابة بنجاح.");
-            }).catch((error) => {
-                alert("❌ حدث خطأ أثناء الحذف: " + error.message);
-            });
-        }
-    }
-
-    // دالة التنزيل المباشر للخطوة 7 (من خارج النافذة)
-    function downloadStep7Directly() {
-        const btn = document.querySelector('#platformExportModal .modal-menu-btn[onclick="downloadStep7Directly()"]');
-        const originalText = btn.innerHTML;
-        
-        // تغيير شكل الزر لحظياً لإشعار المستخدم بالتحميل
-        btn.innerHTML = '<strong style="text-align:center; display:block; padding: 10px;">⏳ جاري جلب الملف من السحابة...</strong>';
-
-        db.ref('platform_step7').once('value').then((snapshot) => {
-            const data = snapshot.val();
-            if (data && data.fileData) {
-                // إنشاء رابط التنزيل الوهمي
-                const link = document.createElement('a');
-                link.href = data.fileData;
-                link.download = data.fileName || 'استمارة_خطوة_7.doc';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                
-                // إعادة الزر لشكله الطبيعي
-                btn.innerHTML = originalText;
-                closePlatformExportModal(); // إغلاق قائمة المنصة بعد التنزيل
-            } else {
-                btn.innerHTML = originalText;
-                alert("❌ لا يوجد ملف مرفوع حالياً للخطوة 7.\nيرجى النقر على أيقونة الضبط (⚙️) لرفع الملف من حاسوبك أولاً.");
-            }
-        }).catch((error) => {
-            btn.innerHTML = originalText;
-            alert("❌ حدث خطأ أثناء الاتصال بالسحابة: " + error.message);
-        });
-    }
-    
+ 
     // ============================================
     // === دالة تصفير قاعدة بيانات النظام بالكامل ===
     // ============================================
@@ -13667,174 +13958,7 @@ function exportPurchaseForm(useShort, wordCount, fontSize) {
         openStorageManager();
     }
 
-    async function exportAllPlatformStepsToZip() {
-        const tableBody = document.getElementById("tableBody");
-        const rows = tableBody.querySelectorAll("tr");
-        if (rows.length === 0) {
-            alert("لا توجد مواد في القائمة لتصديرها.");
-            return;
-        }
 
-        // إظهار تنبيه للمستخدم
-        if(typeof showToast === 'function') {
-            showToast("⏳ جاري تجميع كافة الاستمارات في ملف ZIP، يرجى الانتظار...");
-        }
-
-        const zip = new JSZip();
-        const itemsPerPage = 8;
-        const totalRows = rows.length;
-        const totalFiles = Math.ceil(totalRows / itemsPerPage);
-
-        // تجهيز اسم الملف
-        let firstName = rows[0].querySelector('.name-input').value.trim();
-        if(firstName.length > 20) firstName = firstName.substring(0, 20); // تقصير الاسم الطويل
-        const dateStr = new Date().toLocaleDateString('en-GB').replace(/\//g, '-');
-        const zipFileName = `معاملة منصة - ${firstName} - ${dateStr}.zip`;
-
-        // دوال مساعدة لإنشاء المحتوى المشترك
-        const postHtml = "</div></body></html>";
-        const supplierPushPercent = 35; // لخطوة 6
-
-        // ==========================================
-        // 1. توليد الخطوة 1 و 2
-        // ==========================================
-        const css1_2 = `<style>@page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; } div.Section1 { page: Section1; direction: rtl; } body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; } .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-decoration: underline; } .form-info { width: 100%; border: none; margin-bottom: 20px; font-weight: bold; font-size: 10pt; } .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; } .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; } .signature-table { width: 100%; border: none; margin-top: 40px; } .signature-table td { border: none; text-align: center; font-weight: bold; font-size: 12pt; vertical-align: top; } .step2-box-table { width: 100%; border-collapse: collapse; margin-top: 10px; } .step2-box-table td.box-content { border: 2px solid #000 !important; padding: 20px; font-size: 12pt; font-weight: bold; line-height: 1.8; text-align: right; } .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }</style>`;
-        const preHtml1_2 = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 1 و 2</title>${css1_2}</head><body dir='rtl'><div class='Section1'>`;
-
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
-            content += `<br><br><div style="font-weight: bold; font-size: 10pt; line-height: 1.8; margin-bottom: 15px;">رقم الاستمارة :<br>تاريخ طلب الشراء :<br></div><div style="font-weight: bold; font-size: 14pt; margin-top: 20px; text-decoration: underline;">الخطوة الاولى</div><div class="header-title">استمارة طلب شراء مواد</div><table class="form-info" dir="rtl"><tr><td style="width:33%;">اسم الدائرة :</td><td style="width:33%;">اسم المستشفى :</td><td style="width:34%;">القسم :</td></tr></table><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 45%;">اسم المادة</th><th style="width: 15%;">الكمية</th><th style="width: 35%;">الملاحظات</th></tr></thead><tbody>`;
-
-            const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 8; k++) {
-                const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // التسلسل الصحيح
-
-                if (k < itemsPerPage && dataIndex < totalRows) {
-                    const row = rows[dataIndex];
-                    const shape = row.querySelector('.unit-input').value || ""; 
-                    const code = row.querySelector('.code-cell').value || "";
-                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${row.querySelector('.name-input').value}</td><td>${row.querySelector('.qty-input').value}</td><td style="direction:ltr;">${shape} ${code ? '- '+code : ''}</td></tr>`;
-                } else { 
-                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
-                }
-            }
-            content += `</tbody></table><table class="signature-table" dir="rtl"><tr><td style="width: 33%;">مقدم الطلب</td><td style="width: 33%;">رئيس القسم</td><td style="width: 33%;">مصادقة مدير الدائرة</td></tr></table><div style="font-weight: bold; font-size: 14pt; margin-top: 40px; text-decoration: underline;">الخطوة الثانية</div><table class="step2-box-table" dir="rtl"><tr><td class="box-content"><u>تأييد المخزن -</u><br>نؤيد المواد المشار اليها في طلب الشراء اعلاه في المخزن .<br><br><br><br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع امين المخزن</div></td></tr></table><div class="footer-page">page 1 of 5</div></div>`;
-            const fullHtml = preHtml1_2 + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            zip.file(totalFiles > 1 ? `خطوة_1_و_2_جزء_${fileIndex+1}.doc` : 'خطوة_1_و_2.doc', blob);
-        }
-
-        // ==========================================
-        // 2. توليد الخطوة 3
-        // ==========================================
-        const css3 = `<style>@page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; } div.Section1 { page: Section1; direction: rtl; } body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; } .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 20px; text-decoration: underline; } .doc-text { font-size: 12pt; line-height: 1.8; text-align: justify; margin-bottom: 20px; } .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; } .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; } .signature-box-table { width: 100%; border-collapse: collapse; margin-top: 20px; } .signature-box-table th { border: 1px solid #000; background-color: #f0f0f0; padding: 5px; font-weight: bold; font-size: 10pt; text-align: center;} .signature-box-table td { border: 1px solid #000; padding: 5px; height: 30px; text-align: center; font-size: 10pt;} .step-title { font-weight: bold; font-size: 14pt; margin-top: 20px; margin-bottom: 10px; text-decoration: underline; } .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }</style>`;
-        const preHtml3 = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 3</title>${css3}</head><body dir='rtl'><div class='Section1'>`;
-
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
-            let pageTotal = 0;
-            content += `<br><br><div class="step-title">الخطوة الثالثة</div><div class="header-title">استمارة تحديد الكلف التخمينية وتحديد المواصفات للمشتريات الحكومية</div><div class="doc-text">بموجب استمارة الشراء المؤرخة في &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;/ 202 اجتمعت لجنة تحديد الكلف والمواصفات لبيان الاسعار التخمينية والمواصفات الفنية للمواد المشار اليها في طلب الشراء اعلاه.</div><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 30%;">اسم المادة</th><th style="width: 10%;">الكمية</th><th style="width: 20%;">المواصفات الفنية</th><th style="width: 15%;">الكلفة التخمينية للمفرد/ بالدينار</th><th style="width: 20%;">الكلفة التخمينية للمجموع</th></tr></thead><tbody>`;
-
-            const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 8; k++) {
-                const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // التسلسل الصحيح
-                
-                if (k < itemsPerPage && dataIndex < totalRows) {
-                    const row = rows[dataIndex];
-                    const name = row.querySelector('.name-input').value;
-                    const qty = row.querySelector('.qty-input').value;
-                    const specs = row.querySelector('.unit-input').value || ""; 
-                    const cost = row.querySelector('.cost-input').value || ""; 
-                    const totalVal = parseFloat(row.querySelector('.total-input').value) || 0; 
-                    pageTotal += totalVal;
-                    const displayTotal = totalVal > 0 ? totalVal.toLocaleString('en-US') : "";
-                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${name}</td><td>${qty}</td><td style="direction:ltr;">${specs}</td><td>${cost}</td><td>${displayTotal}</td></tr>`;
-                } else { 
-                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
-                }
-            }
-            content += `<tr style="background-color: #f9f9f9; font-weight: bold;"><td colspan="5">المجموع الكلي</td><td>${pageTotal > 0 ? pageTotal.toLocaleString('en-US') : ""}</td></tr></tbody></table><table style="width: 100%; border: none; margin-top: 30px;" dir="rtl"><tr><td style="width: 48%; vertical-align: top; border: none; padding: 0;"><div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div><div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة تحديد المواصفات وكلف التخمينية</div><table class="signature-box-table" style="width: 100%;"><thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table><div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة المواصفات والكلف</div></td><td style="width: 4%; border: none;"></td><td style="width: 48%; vertical-align: top; border: none; padding: 0;"><div style="font-weight: bold; font-size: 14pt; text-align: right;">تأييد</div><div style="font-weight: bold; font-size: 14pt; text-align: right; margin-bottom: 5px;">لجنة اعتدال الاسعار</div><table class="signature-box-table" style="width: 100%;"><thead><tr><th style="width: 60%;">اسم العضو</th><th style="width: 40%;">توقيع</th></tr></thead><tbody><tr><td></td><td></td></tr><tr><td></td><td></td></tr></tbody></table><div style="font-weight: bold; font-size: 14pt; text-align: center; margin-top: 15px;">توقيع رئيس لجنة اعتدال الاسعار</div></td></tr></table><div class="footer-page">page 2 of 5</div></div>`;
-            const fullHtml = preHtml3 + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            zip.file(totalFiles > 1 ? `خطوة_3_جزء_${fileIndex+1}.doc` : 'خطوة_3.doc', blob);
-        }
-
-        // ==========================================
-        // 3. توليد الخطوة 4، 5، 6 (الصفحة الثالثة)
-        // ==========================================
-        const css456 = `<style>@page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; } div.Section1 { page: Section1; direction: rtl; } body { font-family: 'Arial', sans-serif; font-size: 14pt; direction: rtl; text-align: right; } .step-title { font-weight: bold; font-size: 14pt; margin-top: 25px; margin-bottom: 10px; text-decoration: underline; } .header-title { text-align: center; font-weight: bold; font-size: 14pt; margin-bottom: 15px; text-decoration: underline; } .box-table { width: 100%; border-collapse: collapse; margin-top: 10px; } .box-table td.box-content { border: 1.5pt solid black !important; padding: 15pt; font-size: 13pt; font-weight: bold; line-height: 1.6; text-align: right; } .dashed-line { margin-top: 20px; font-weight: bold; font-size: 14pt; letter-spacing: 1px; word-break: break-all; } .footer-page { text-align: center; font-size: 10pt; margin-top: 40px; direction: ltr; }</style>`;
-        const preHtml456 = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - صفحة 3</title>${css456}</head><body dir='rtl'><div class='Section1'>`;
-        let content456 = `<div style="width:100%;"><br><br><div class="step-title">الخطوة الرابعة</div><table class="box-table" dir="rtl"><tr><td class="box-content"><u>تأييد توفير التخصيص المالي:</u><br><br>نؤيد ( &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ) التخصيص المالي لشراء المواد المدرجة أعلاه.<br><br><br><div style="text-align:left; padding-left: 50px;">اسم وتوقيع المحاسب</div></td></tr></table><br><br><br><br><br><br><div class="step-title" style="margin-top: 30px;">الخطوة الخامسة</div><div class="header-title">موافقة الأمر بالصرف وحسب الصلاحية</div><div align="center"><table class="box-table" dir="rtl" style="width: 55%;"><tr><td class="box-content" style="height: 60pt;"></td></tr></table></div><br><br><br><br><br><br><div class="step-title" style="margin-top: 40px;">الخطوة السادسة</div><div style="font-weight: bold; font-size: 14pt;">تاييد تشكيل الرقابة والتدقيق الداخلي على صحة الاجراءات للخطوات السابقة :</div><div class="dashed-line">------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------</div><div class="footer-page">page 3 of 5</div></div>`;
-        const fullHtml456 = preHtml456 + content456 + postHtml;
-        const blob456 = new Blob(['\ufeff', fullHtml456], { type: 'application/msword' });
-        zip.file('خطوة_4_5_6.doc', blob456);
-
-        // ==========================================
-        // 4. توليد الخطوة 6 (قائمة المورد)
-        // ==========================================
-        const css6 = `<style>@page Section1 { size: 595.3pt 841.9pt; mso-page-orientation: portrait; margin: 1.5cm; } div.Section1 { page: Section1; direction: rtl; } body { font-family: 'Arial', 'Segoe UI', Tahoma, sans-serif; font-size: 14pt; direction: rtl; text-align: right; } .header-info { font-weight: bold; font-size: 12pt; line-height: 1.6; margin-bottom: 10px; } .main-title { text-align: center; font-weight: bold; font-size: 16pt; margin-bottom: 15px; text-decoration: underline; } .doc-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; direction: rtl; } .doc-table th { background-color: #f0f0f0; border: 1px solid #000; padding: 2px 4px; font-weight: bold; text-align: center; font-size: 8pt; } .doc-table td { border: 1px solid #000; padding: 2px 4px; text-align: center; font-size: 8pt; height: 30px; vertical-align: middle; line-height: 1.2; margin: 0 !important; } .notes-section { font-weight: bold; font-size: 12pt; line-height: 1.8; text-align: right; margin-top: 20px; } .page-break { page-break-before: always; clear: both; mso-break-type: section-break; } .footer-page { text-align: center; font-size: 10pt; margin-top: 30px; direction: ltr; }</style>`;
-        const preHtml6 = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40' dir='rtl'><head><meta charset='utf-8'><title>استمارة منصة - الخطوة 6</title>${css6}</head><body dir='rtl'><div class='Section1'>`;
-
-        for (let fileIndex = 0; fileIndex < totalFiles; fileIndex++) {
-            let content = '<div style="width:100%;">';
-            content += `<br><br><div class="header-info">رقم الاستمارة : <br>تاريخ طلب الشراء: <br>اسم الوزارة او التشكيل: <br>مكان التسليم بشكل دقيق: <br></div><br><br><table border="0" cellpadding="0" cellspacing="0" style="width: 100%; border: none; margin-top: 15px; margin-bottom: 15px;" dir="rtl"><tr><td style="border: none; width: ${supplierPushPercent}%; padding: 0;"></td><td style="border: none; text-align: right; font-weight: bold; font-size: 16pt; padding: 0;">الى المورد /</td></tr></table><div class="main-title">قائمة طلب الشراء</div><table class="doc-table"><thead><tr><th style="width: 5%;">ت</th><th style="width: 35%;">اسم المادة</th><th style="width: 15%;">المواصفة</th><th style="width: 15%;">الكمية</th><th style="width: 30%;">الملاحظات</th></tr></thead><tbody>`;
-
-            const startIndex = fileIndex * itemsPerPage;
-            for (let k = 0; k < 8; k++) {
-                const dataIndex = startIndex + k;
-                const displaySeq = dataIndex + 1; // التسلسل الصحيح
-
-                if (k < itemsPerPage && dataIndex < totalRows) {
-                    const row = rows[dataIndex];
-                    const name = row.querySelector('.name-input').value;
-                    const shape = row.querySelector('.unit-input').value; 
-                    const qty = row.querySelector('.qty-input').value;
-                    const nationalCode = row.querySelector('.code-cell').value || "";
-                    content += `<tr><td>${displaySeq}</td><td style="direction:ltr; text-align:left;">${name}</td><td>${shape}</td><td>${qty}</td><td style="direction:ltr;">${nationalCode}</td></tr>`;
-                } else { 
-                    content += `<tr><td>${displaySeq}</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>`; 
-                }
-            }
-            content += `</tbody></table><div style="text-align: left; font-weight: bold; font-size: 14pt; margin-top: 30px; margin-bottom: 30px; padding-left: 50px;">توقيع لجنة المشتريات</div><br><br><div class="notes-section"><u style="font-size: 14pt;">ملاحظة</u><br>- يرسل هذا الطلب الى ايميل التاجر موَقع من قبل رئيس لجنة المشتريات مثبت عليه رقم الاستمارة مع نسخه منه الى البريد الالكتروني الخاص بالمنصه ( <span dir="ltr">PO@ITP.IQ</span> )<br>- في حال تجاوز مبلغ المشتريات (50) مليون دينار سيتم ابرام عقد ويتحمل المتعاقد تسديد اجور ارشفة العقد عبر المنصة الالكترونية البالغ (250) الف دينار.<br>- يجب على المورد تحميل صورة هوية غرفة التجارة ان وجدت.<br>- على المورد بيان وجود خدمة توصيل لديه من عدمه.<br>- على المورد بيان وجود خدمة استبدال التالف لديه من عدمه.</div><div class="footer-page">page 4 of 5</div></div>`;
-            const fullHtml = preHtml6 + content + postHtml;
-            const blob = new Blob(['\ufeff', fullHtml], { type: 'application/msword' });
-            zip.file(totalFiles > 1 ? `خطوة_6_قائمة_المورد_جزء_${fileIndex+1}.doc` : 'خطوة_6_قائمة_المورد.doc', blob);
-        }
-
-        // ==========================================
-        // 5. جلب الخطوة 7 من السحابة (إن وجدت)
-        // ==========================================
-        try {
-            const snapshot = await db.ref('platform_step7').once('value');
-            const data = snapshot.val();
-            if (data && data.fileData) {
-                const base64Data = data.fileData.split(',')[1];
-                const fileName7 = data.fileName || 'خطوة_7.doc';
-                zip.file(fileName7, base64Data, {base64: true});
-            }
-        } catch(e) {
-            console.log("لم يتم العثور على الخطوة 7 في السحابة:", e);
-        }
-
-        // ==========================================
-        // 6. تجميع الملف وتنزيله
-        // ==========================================
-        zip.generateAsync({type:"blob"}).then(function(content) {
-            const link = document.createElement('a');
-            link.href = URL.createObjectURL(content);
-            link.download = zipFileName;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            
-            if(typeof showToast === 'function') {
-                showToast("✅ تم تنزيل الملف المضغوط (ZIP) بنجاح!");
-            }
-        });
-    }
-    
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
